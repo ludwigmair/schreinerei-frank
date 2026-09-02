@@ -16,7 +16,7 @@
 # ---------------------------------------------------------------
 backend:
   name: github
-  repo: "USERNAME/REPO"        # ← Hier GitHub-Benutzer/-Reponame eintragen
+  repo: "ludwigmair/schreinerei-frank"
   branch: main
   base_url: https://api.github.com
   # Für Netlify Identity (eigene Email-Einladung statt GitHub-Login) stattdessen:
