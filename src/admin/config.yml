@@ -6,21 +6,17 @@
 # rein technische Felder stehen gesammelt unter „Technische Einstellungen".
 
 # ---------------------------------------------------------------
-# WEG 1 (GitHub + Netlify): Admin läuft über GitHub-Login.
-#   1) Dieses Projekt in ein GitHub-Repo pushen (repo: "USER/REPO" unten eintragen)
-#   2) Bei Netlify ein neues Site aus dem Repo anlegen (Build: "npm run build", Output: "_site")
-#   3) In Netlify: Settings → Identity aktivieren
-#   4) In Netlify: Settings → OAuth → GitHub als externen Provider hinzufügen
-#   5) Netlify setzt base_url automatisch (api.github.com o.ä.) – https aktiviert, dann Admin nutzen.
-# Danach gibt es KEIN eigenes Passwort – man meldet sich mit dem GitHub-Konto an.
+# WEG (Netlify Identity + Git Gateway): Admin läuft über Netlify Identity.
+#   1) In Netlify: Identity aktivieren
+#   2) In Netlify: GitHub als externen Provider hinterlegen (OAuth-App)
+#   3) In Netlify: Git Gateway aktivieren (Repo autorisiert)
+#   4) Login im Admin über Netlify Identity (GitHub-Button).
+# Es gibt KEIN eigenes Passwort – man meldet sich mit dem GitHub-Konto an.
 # ---------------------------------------------------------------
 backend:
-  name: github
+  name: git-gateway
   repo: "ludwigmair/schreinerei-frank"
   branch: main
-  base_url: https://api.github.com
-  # Für Netlify Identity (eigene Email-Einladung statt GitHub-Login) stattdessen:
-  # name: git-gateway
 
 # Lokal ohne Login testen:  npm run cms   (startet decap-server auf :8081)
 local_backend: true

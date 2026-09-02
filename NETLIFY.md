@@ -28,7 +28,7 @@ Live-Inhalte sauber getrennt.
 5. **Deploy** anstoßen → Netlify liefert dir eine zufällige `.netlify.app`-URL.
    Verifiziere dort, dass die Seite sauber rendert.
 6. **Benutzerdefinierte Domain**:
-   - *Site settings → Domain management → Add custom domain* →
+   - *Sidebar → Domain management → Add custom domain* →
      `schreinerei-frank.typopublic.com`.
    - Bei **typopublic** einen **CNAME/CNAME-Flatten** anlegen: Netlify zeigt dir
      im Domain-Panel den exakten Zielwert (z. B. `deine-site.netlify.app`).
@@ -37,15 +37,15 @@ Live-Inhalte sauber getrennt.
 
 ## Teil 2 – Admin/Login auf der Test-Site aktivieren
 
-7. **Site settings → Identity → Enable Identity**.
-8. **Site settings → Identity → External providers → Add provider → GitHub**:
+7. **Sidebar → Identity → Enable Identity**.
+8. **Sidebar → Identity → External providers → Add provider → GitHub**:
    - GitHub **OAuth-App** unter `github.com/settings/developers` anlegen
      (New OAuth App):
      - Homepage URL: `https://schreinerei-frank.typopublic.com`
      - Authorization callback URL:
        `https://schreinerei-frank.typopublic.com/.netlify/identity/callback`
    - Die erhaltene **Client ID** + **Client Secret** in Netlify eintragen.
-9. **Site settings → Identity → Services → Git Gateway** aktivieren (bei
+9. **Sidebar → Identity → Services → Git Gateway** aktivieren (bei
    *Enable* wird das Repo autorisiert – bestätigen).
 10. **Redakteure**: Bei GitHub-Login ist **keine** Einladung nötig. Einladungen
     (`Identity → Invite users`) nur verwenden, wenn jemand ohne eigenen
@@ -63,7 +63,7 @@ Wiederhole **Teil 1 + 2** für eine **zweite, separate Netlify-Site** mit:
 
 - Branch `main`
 - Domain `www.schreinerei-frank.de` (DNS beim Domain-Anbieter,
-  Netlify verweist unter *Domain management* auf die Werte)
+  Netlify verweist unter *Sidebar → Domain management* auf die Werte)
 
 > **Tipp:** Für beide Sites kannst du eine **eine** *shared/server-side*
 > GitHub-OAuth-App verwenden, statt pro Site eine neue anzulegen. Das ist
