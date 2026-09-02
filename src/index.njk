@@ -1,0 +1,444 @@
+---
+permalink: /index.html
+---
+<!doctype html>
+<html lang="de" class="no-js">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script>document.documentElement.className = document.documentElement.className.replace('no-js','js');</script>
+
+<title>{{ site.meta.title }}</title>
+<meta name="description" content="{{ site.meta.description }}">
+<link rel="canonical" href="{{ site.meta.siteUrl }}/">
+<meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1">
+<meta name="theme-color" content="#2C5138">
+<meta name="author" content="{{ site.business.name }}, Inhaber {{ site.business.owner }}">
+
+<!-- Open Graph / Twitter -->
+<meta property="og:type" content="website">
+<meta property="og:locale" content="de_DE">
+<meta property="og:site_name" content="{{ site.business.name }}">
+<meta property="og:title" content="{{ site.meta.ogTitle }}">
+<meta property="og:description" content="{{ site.meta.ogDescription }}">
+<meta property="og:url" content="{{ site.meta.siteUrl }}/">
+<meta property="og:image" content="{{ site.meta.siteUrl }}{{ site.meta.ogImage }}">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="{{ site.business.name }}">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="{{ site.meta.ogTitle }}">
+<meta name="twitter:description" content="{{ site.meta.ogDescription }}">
+<meta name="twitter:image" content="{{ site.meta.siteUrl }}{{ site.meta.ogImage }}">
+
+<link rel="icon" href="/assets/img/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/assets/img/apple-touch-icon.png">
+<link rel="manifest" href="/site.webmanifest">
+
+<!-- Fonts (nicht blockierend; für Produktion self-hosten – siehe README) -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fira+Sans:wght@400;500;600;700&family=Spectral:ital,wght@1,400&display=swap"
+      media="print" onload="this.media='all'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fira+Sans:wght@400;500;600;700&family=Spectral:ital,wght@1,400&display=swap"></noscript>
+
+<!-- LCP-Bild vorladen (WebP = geladene Variante) -->
+<link rel="preload" as="image" href="{{ site.meta.lcpImage | toWebp }}" fetchpriority="high">
+
+<link rel="stylesheet" href="/assets/css/styles.css">
+
+<!-- Structured Data (aus content/site.json generiert) -->
+<script type="application/ld+json">
+{{ structuredData | dump(2) | safe }}
+</script>
+</head>
+<body>
+
+<a class="skip-link" href="#inhalt">Zum Inhalt springen</a>
+
+<div class="cookie-banner" data-cookie-banner role="dialog" aria-modal="false" aria-label="Cookie-Hinweis" hidden>
+  <div class="cookie-banner__inner">
+    <p class="cookie-banner__text">Wir verwenden Cookies, um unsere Website nutzerfreundlicher zu gestalten – z.&nbsp;B. um Ihre Einstellungen zu speichern. Technisch notwendige Cookies bleiben aktiv; alle weiteren setzen wir nur mit Ihrer Zustimmung.</p>
+    <div class="cookie-banner__actions">
+      <button class="btn btn--block" type="button" data-cookie-accept>Alle akzeptieren</button>
+      <button class="btn btn--ghost btn--block" type="button" data-cookie-decline>Nur notwendige</button>
+    </div>
+    <a class="cookie-banner__link" href="{{ site.footer.datenschutzHref }}">Datenschutzerklärung</a>
+  </div>
+</div>
+
+<header class="site-header">
+  <div class="wrap site-header__inner">
+    <a class="brand" href="#start" aria-label="Schreinerei Frank – Startseite">
+      <img class="brand__logo" src="/assets/img/logo-schreinerei-frank.svg" width="40" height="40" alt="" loading="eager">
+      <span>{{ site.business.name }}</span>
+    </a>
+
+    <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="primary-nav" aria-label="Menü öffnen">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6h18M3 12h18M3 18h18" stroke-linecap="round"/></svg>
+    </button>
+
+    <nav class="primary-nav" id="primary-nav" aria-label="Hauptnavigation">
+      <ul>
+        {%- for item in site.nav %}
+        <li><a href="{{ item.href }}">{{ item.label }}</a></li>
+        {%- endfor %}
+      </ul>
+    </nav>
+
+    <a class="tel-btn" href="{{ site.business.phoneHref }}" aria-label="Anrufen: {{ site.business.phone }}">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3 19.5 19.5 0 0 1-6-6 19.8 19.8 0 0 1-3-8.6A2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 2 .7 2.9a2 2 0 0 1-.5 2.1L8.1 12a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.5c.9.3 1.9.6 2.9.7a2 2 0 0 1 1.7 2Z"/></svg>
+      {{ site.business.phone | replace("+49 ", "0") }}
+    </a>
+  </div>
+</header>
+
+<main id="inhalt">
+
+  <!-- ============ HERO ============ -->
+  <section class="hero" id="start">
+    <div class="wrap hero__inner">
+      <div>
+        <span class="kicker">{{ site.hero.kicker }}</span>
+        <h1>{{ site.hero.heading }}</h1>
+        <p class="hero__claim">„{{ site.hero.claim }}"</p>
+        <p class="hero__lead">{{ site.hero.lead }}</p>
+        <div class="hero__cta">
+          <a class="btn" href="#kontakt">{{ site.hero.ctaPrimary }}</a>
+          <a class="btn btn--ghost" href="#galerie">{{ site.hero.ctaSecondary }}</a>
+        </div>
+      </div>
+      <div class="hero__media">
+        <div class="hero-slider" data-hero-slider data-autoplay="4000">
+          {%- for h in site.hero.images %}
+          <picture class="hero-slider__img{% if loop.first %} is-active{% endif %}" data-hero-img>
+            <source type="image/webp" srcset="{{ h.src | toWebp }}">
+            <img src="{{ h.src }}" width="1280" height="960" {% if loop.first %}fetchpriority="high"{% else %}loading="lazy"{% endif %} decoding="async" alt="{{ h.alt }}">
+          </picture>
+          {%- endfor %}
+          <button class="hero-slider__arrow hero-slider__arrow--prev" type="button" data-hero-prev aria-label="Vorheriges Bild">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <button class="hero-slider__arrow hero-slider__arrow--next" type="button" data-hero-next aria-label="Nächstes Bild">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <div class="hero-slider__dots" role="list" aria-label="Hero-Bilder">
+            {%- for h in site.hero.images %}
+            <button type="button" class="hero-slider__dot{% if loop.first %} is-active{% endif %}" data-hero-dot="{{ loop.index0 }}" aria-label="Bild {{ loop.index }} von {{ site.hero.images | length }}"></button>
+            {%- endfor %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ TRUST ROW ============ -->
+  <div class="trust">
+    <div class="wrap trust__inner">
+      {%- for t in site.trust %}
+      <div class="trust__item"><b>{{ t.value }}</b><span>{{ t.label }}</span></div>
+      {%- endfor %}
+    </div>
+  </div>
+
+  <!-- ============ LEISTUNGEN ============ -->
+  <section class="section" id="leistungen">
+    <div class="wrap">
+      <div class="section__head">
+        <span class="kicker">{{ site.servicesIntro.kicker }}</span>
+        <h2>{{ site.servicesIntro.heading }}</h2>
+        <p>{{ site.servicesIntro.text }}</p>
+      </div>
+      <div class="cards">
+        {%- for s in site.services %}
+        <article class="card">
+          <div class="card__icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="{{ s.icon }}"/></svg></div>
+          <h3>{{ s.title }}</h3>
+          <p>{{ s.text }}</p>
+        </article>
+        {%- endfor %}
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ GALERIE ============ -->
+  <section class="section section--band" id="galerie">
+    <div class="wrap">
+      <div class="section__head">
+        <span class="kicker">{{ site.galleryIntro.kicker }}</span>
+        <h2>{{ site.galleryIntro.heading }}</h2>
+      </div>
+
+      {#
+        Bild-Pipeline für Produktion: je Motiv 3 Formate (AVIF/WebP/JPG) in 640/960/1280 px.
+        <picture>
+          <source type="image/avif" srcset="…-640.avif 640w, …-960.avif 960w, …-1280.avif 1280w" sizes="(min-width:1000px) 25vw, (min-width:640px) 33vw, 50vw">
+          <source type="image/webp" srcset="…">
+          <img src="…-960.jpg" width="1000" height="1000" loading="lazy" decoding="async" alt="…">
+        </picture>
+      #}
+      <div class="gallery" data-gallery data-autoplay="6000" data-gallery-categories='{{ site.gallery | json | forceescape }}'>
+        <ul class="gallery__track" role="group" aria-roledescription="Karussell" aria-label="Ausgeführte Projekte" tabindex="0">
+          {%- for g in site.gallery %}
+          <li class="gallery__slide">
+            <figure>
+              <div class="gallery__thumb">
+                <button class="gallery__open" type="button" data-gallery-next-slide aria-label="Zum nächsten Bild blättern">
+                  <picture>
+                    <source type="image/webp" srcset="{{ g.mainImage | toWebp }}">
+                    <img src="{{ g.mainImage }}" width="1000" height="1000" {% if not loop.first %}loading="lazy" {% endif %}decoding="async" alt="{{ g.mainAlt }}">
+                  </picture>
+                </button>
+                <button class="gallery__zoom" type="button" data-gallery-open="{{ loop.index0 }}" aria-haspopup="dialog" aria-label="Galerie {{ g.category }} ansehen">
+                  <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/><path d="M8 11h6M11 8v6"/></svg>
+                </button>
+              </div>
+              <figcaption>{{ g.category }}</figcaption>
+            </figure>
+          </li>
+          {%- endfor %}
+        </ul>
+
+        <div class="gallery__controls">
+          <ul class="gallery__dots" data-gallery-dots aria-label="Zu Bildgruppe springen"></ul>
+          <div class="gallery__nav">
+            <button type="button" data-gallery-prev aria-label="Vorherige Bilder">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+            <button type="button" data-gallery-pause class="gallery__pause" aria-pressed="false" aria-label="Autoplay pausieren">
+              <svg class="gallery__pause-icon" data-icon-pause viewBox="0 0 24 24" aria-hidden="true"><path d="M7 5v14M17 5v14"/></svg>
+              <svg class="gallery__play-icon" data-icon-play viewBox="0 0 24 24" aria-hidden="true" hidden><path d="M8 5l12 7-12 7Z"/></svg>
+            </button>
+            <button type="button" data-gallery-next aria-label="Nächste Bilder">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+          </div>
+        </div>
+        <p class="gallery__hint">Slidet von links nach rechts · Bild antippen zum Weiterblättern · unten rechts auf die Lupe tippen für alle Fotos der Kategorie.</p>
+        <p class="sr-only" role="status" aria-live="polite" data-gallery-live></p>
+      </div>
+
+      <div class="lightbox" data-lightbox role="dialog" aria-modal="true" aria-label="Bildergalerie" hidden>
+        <button class="lightbox__close" type="button" data-lightbox-close aria-label="Schließen">×</button>
+        <div class="lightbox__stage">
+          <button class="lightbox__arrow lightbox__arrow--prev" type="button" data-lightbox-prev aria-label="Vorheriges Bild">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <figure class="lightbox__figure">
+            <img class="lightbox__img" src="" alt="">
+            <figcaption class="lightbox__caption"></figcaption>
+          </figure>
+          <button class="lightbox__arrow lightbox__arrow--next" type="button" data-lightbox-next aria-label="Nächstes Bild">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+        </div>
+        <p class="lightbox__counter" data-lightbox-counter aria-live="polite"></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ ÜBER UNS ============ -->
+  <section class="section" id="ueber-uns">
+    <div class="wrap">
+      <div class="section__head">
+        <span class="kicker">{{ site.about.kicker }}</span>
+        <h2>{{ site.about.heading }}</h2>
+      </div>
+      <div class="about">
+        <div>
+          <p>{{ site.about.text }}</p>
+          <ul class="checklist">
+            {%- for p in site.about.points %}
+            <li>{% if p is string %}{{ p }}{% else %}{{ p.punkt }}{% endif %}</li>
+            {%- endfor %}
+          </ul>
+        </div>
+        <div class="person">
+          <img class="person__portrait" src="{{ site.about.personImage }}" width="300" height="300" loading="lazy" decoding="async" alt="{{ site.about.personImageAlt }}">
+          <b>{{ site.business.owner }}</b>
+          <span>{{ site.about.personRole }}</span>
+          <a class="btn btn--ghost btn--block" href="#kontakt">{{ site.about.personCta }}</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ FAQ ============ -->
+  <section class="section section--band" id="faq">
+    <div class="wrap">
+      <div class="section__head">
+        <span class="kicker">{{ site.faqIntro.kicker }}</span>
+        <h2>{{ site.faqIntro.heading }}</h2>
+      </div>
+      <div class="faq" data-faq>
+        {%- for f in site.faq %}
+        <details{% if loop.first %} open{% endif %}>
+          <summary>{{ f.q }}</summary>
+          <p>{{ f.a }}</p>
+        </details>
+        {%- endfor %}
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ REZENSIONEN ============ -->
+  <section class="section" id="rezensionen">
+    <div class="wrap">
+      <div class="section__head">
+        <span class="kicker">{{ site.testimonialsIntro.kicker }}</span>
+        <h2>{{ site.testimonialsIntro.heading }}</h2>
+      </div>
+      {%- if site.testimonialsIntro.google and site.testimonialsIntro.google.rating > 0 %}
+      <div class="google-review">
+        <span class="google-review__stars" aria-hidden="true">
+          {%- set full = site.testimonialsIntro.google.rating | round(0, 'floor') %}
+          {%- for i in range(1, 6) %}{% if i <= full %}★{% else %}☆{% endif %}{% endfor %}
+        </span>
+        <span class="google-review__score">{{ site.testimonialsIntro.google.rating | round(1, 'floor') | replace(".", ",") }} / 5</span>
+        {%- if site.testimonialsIntro.google.reviewCount > 0 %}
+        <span class="google-review__count">aus {{ site.testimonialsIntro.google.reviewCount }} Google-Bewertungen</span>
+        {%- endif %}
+        {%- if site.testimonialsIntro.google.url %}
+        <a class="google-review__link" href="{{ site.testimonialsIntro.google.url }}" target="_blank" rel="noopener">Auf Google ansehen</a>
+        {%- endif %}
+      </div>
+      {%- endif %}
+      <div class="testi" data-testi>
+        <ul class="testi__track" data-testi-track role="group" aria-roledescription="Karussell" aria-label="Kundenrezensionen">
+          {%- for t in site.testimonials %}
+          <li class="testi__slide">
+            <blockquote class="testi__quote">„{{ t.quote }}"</blockquote>
+            <cite class="testi__source">{{ t.source }}</cite>
+          </li>
+          {%- endfor %}
+        </ul>
+        <div class="testi__nav">
+          <button type="button" data-testi-prev aria-label="Vorherige Rezension">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <div class="testi__dots" data-testi-dots aria-hidden="false" role="list" aria-label="Zu Rezension springen"></div>
+          <button type="button" data-testi-next aria-label="Nächste Rezension">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ KONTAKT ============ -->
+  <section class="section section--band" id="kontakt">
+    <div class="wrap">
+      <div class="section__head">
+        <span class="kicker">{{ site.contact.kicker }}</span>
+        <h2>{{ site.contact.heading }}</h2>
+      </div>
+      <div class="contact">
+        <form data-contact method="post" action="{{ site.contact.formAction }}" novalidate>
+          <div class="field">
+            <label for="f-name">Name</label>
+            <input id="f-name" name="name" type="text" autocomplete="name" required aria-describedby="f-name-error">
+            <p class="field-error" id="f-name-error" hidden></p>
+          </div>
+          <div class="field">
+            <label for="f-email">E-Mail</label>
+            <input id="f-email" name="email" type="email" autocomplete="email" required aria-describedby="f-email-error">
+            <p class="field-error" id="f-email-error" hidden></p>
+          </div>
+          <div class="field">
+            <label for="f-phone">Telefon</label>
+            <input id="f-phone" name="phone" type="tel" autocomplete="tel" aria-describedby="f-phone-error">
+            <p class="field-error" id="f-phone-error" hidden></p>
+          </div>
+          <div class="field">
+            <label for="f-msg">Ihr Vorhaben</label>
+            <textarea id="f-msg" name="message" required placeholder="Küche, Treppe, Innenausbau …" aria-describedby="f-msg-error"></textarea>
+            <p class="field-error" id="f-msg-error" hidden></p>
+          </div>
+          <div class="field field--hp" aria-hidden="true">
+            <label for="f-website">Website (bitte frei lassen)</label>
+            <input id="f-website" name="website" type="text" tabindex="-1" autocomplete="off">
+          </div>
+          <button class="btn btn--block" type="submit">Anfrage senden</button>
+          <p class="form-note">{{ site.contact.consent }} Details in der <a href="{{ site.footer.datenschutzHref }}">Datenschutzerklärung</a>.</p>
+          <p class="form-status" role="status" aria-live="polite" data-contact-status></p>
+        </form>
+
+        <div class="info-card">
+          <dl>
+            <dt>Adresse</dt>
+            <dd>{{ site.business.street }}<br>{{ site.business.postalCode }} {{ site.business.city }}</dd>
+            <dt>Telefon</dt>
+            <dd><a href="{{ site.business.phoneHref }}">{{ site.business.phone }}</a></dd>
+            <dt>Telefax</dt>
+            <dd>{{ site.business.fax }}</dd>
+            <dt>E-Mail</dt>
+            <dd><a href="mailto:{{ site.business.email }}">{{ site.business.email }}</a></dd>
+            <dt>Öffnungszeiten</dt>
+            <dd>{{ site.business.openingHoursText }}</dd>
+          </dl>
+          <div class="map">
+            <button class="map__btn" type="button" data-map-open data-map-url="{{ site.business.mapUrl }}" aria-haspopup="dialog" aria-label="Karte von Google Maps öffnen">
+              <img src="/assets/img/karte-seeon.svg" width="800" height="480" loading="lazy" decoding="async" alt="Kartenausschnitt: {{ site.business.name }}, {{ site.business.street }} in {{ site.business.postalCode }} {{ site.business.city }}.">
+              <span class="map__badge">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20s-7-4.6-7-10a7 7 0 0 1 14 0c0 5.4-7 10-7 10Z"/><circle cx="12" cy="10" r="2.5"/></svg>
+                Karte öffnen
+              </span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="map-dialog" data-map-dialog role="dialog" aria-modal="true" aria-labelledby="map-dialog-title" hidden>
+    <div class="map-dialog__box">
+      <h3 id="map-dialog-title">Google Maps öffnen?</h3>
+      <p>{{ site.contact.mapNotice }}</p>
+      <div class="map-dialog__actions">
+        <button class="btn" type="button" data-map-confirm>Öffnen</button>
+        <button class="btn btn--ghost" type="button" data-map-cancel>Abbrechen</button>
+      </div>
+      <a class="map-dialog__link" href="{{ site.footer.datenschutzHref }}">Datenschutzerklärung</a>
+    </div>
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap site-footer__inner">
+    <div>
+      <b>{{ site.business.name }}</b>
+      {{ site.business.street }} · {{ site.business.postalCode }} {{ site.business.city }}
+    </div>
+    <div>
+      Tel. <a href="{{ site.business.phoneHref }}">{{ site.business.phone }}</a><br>
+      <a href="mailto:{{ site.business.email }}">{{ site.business.email }}</a>
+    </div>
+    <div>
+      Inhaber {{ site.business.owner }}<br>
+      <a href="{{ site.footer.impressumHref }}">Impressum</a> · <a href="{{ site.footer.datenschutzHref }}">Datenschutz</a>
+    </div>
+  </div>
+</footer>
+
+<nav class="sticky-bar" data-sticky aria-label="Schnellzugriff">
+  <a class="sticky-bar__item" href="{{ site.business.phoneHref }}" aria-label="Anrufen">
+    <svg class="sticky-bar__icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3 19.5 19.5 0 0 1-6-6 19.8 19.8 0 0 1-3-8.6A2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 2 .7 2.9a2 2 0 0 1-.5 2.1L8.1 12a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.5c.9.3 1.9.6 2.9.7a2 2 0 0 1 1.7 2Z"/></svg>
+    <span class="sticky-bar__label">Anrufen</span>
+  </a>
+  <a class="sticky-bar__item" href="mailto:{{ site.business.email }}" data-sticky-mail aria-label="E-Mail schreiben">
+    <svg class="sticky-bar__icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16v12H4zM4 7l8 6 8-6"/></svg>
+    <span class="sticky-bar__label">Mail</span>
+  </a>
+  <a class="sticky-bar__item" href="#kontakt" aria-label="Anfrage / Kontaktformular">
+    <svg class="sticky-bar__icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H8l-5 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2Z"/><path d="M7.5 9h9M7.5 12.5h6"/></svg>
+    <span class="sticky-bar__label">Anfrage</span>
+  </a>
+  <button class="sticky-bar__item sticky-bar__item--btn" type="button" data-to-top aria-label="Nach oben scrollen">
+    <svg class="sticky-bar__icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19V5M5 12l7-7 7 7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    <span class="sticky-bar__label">Nach oben</span>
+  </button>
+</nav>
+
+<script src="/assets/js/main.js" defer></script>
+</body>
+</html>

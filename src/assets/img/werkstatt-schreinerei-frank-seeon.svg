@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 960" role="img" aria-label="Bildplatz · Werkstatt Seeon (Hero)">
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#8a6b45"/><stop offset="1" stop-color="#3f3121"/>
+    </linearGradient>
+    <pattern id="grain" width="14" height="960" patternUnits="userSpaceOnUse">
+      <rect width="14" height="960" fill="url(#g)"/>
+      <rect x="0" width="2" height="960" fill="#000" opacity="0.05"/>
+      <rect x="7" width="1" height="960" fill="#fff" opacity="0.05"/>
+    </pattern>
+  </defs>
+  <rect width="1280" height="960" fill="url(#grain)"/>
+  <rect width="1280" height="960" fill="none" stroke="#000" stroke-opacity="0.08" stroke-width="2"/>
+  <text x="640.0" y="946" text-anchor="middle" font-family="Fira Sans, Arial, sans-serif"
+        font-size="43" fill="#fff" fill-opacity="0.9" letter-spacing="1">Bildplatz · Werkstatt Seeon (Hero)</text>
+</svg>

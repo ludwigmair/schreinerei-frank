@@ -1,0 +1,57 @@
+---
+permalink: /impressum/index.html
+eleventyComputed:
+  title: "{{ site.legal.impressum.title }}"
+  description: "{{ site.legal.impressum.metaDescription }}"
+  canonical: "{{ site.meta.siteUrl }}/impressum/"
+---
+{% include "head.njk" %}
+
+<div class="legal wrap">
+  <header class="legal__head">
+    <p class="kicker"><a href="/">← Zurück</a></p>
+    <h1>{{ site.legal.impressum.heading }}</h1>
+    <p>{{ site.legal.impressum.intro }}</p>
+  </header>
+
+  <section class="legal__block">
+    <h2>{{ site.legal.impressum.companyName }}</h2>
+    <p>{{ site.legal.impressum.ownerName }}<br>{{ site.legal.impressum.address }}</p>
+    <p>Telefon: <a href="{{ site.business.phoneHref }}">{{ site.business.phone }}</a><br>
+      Telefax: {{ site.business.fax }}<br>
+      E-Mail: <a href="mailto:{{ site.legal.impressum.contact.emailHref }}">{{ site.legal.impressum.contact.emailHref }}</a><br>
+      Internet: <a href="{{ site.legal.impressum.contact.url }}">{{ site.legal.impressum.contact.url }}</a></p>
+  </section>
+
+  <section class="legal__block">
+    <h2>{{ site.legal.impressum.vat.kicker }}</h2>
+    <p>{{ site.legal.impressum.vat.text }}</p>
+  </section>
+
+  <section class="legal__block">
+    <h2>{{ site.legal.impressum.responsible.kicker }}</h2>
+    <p>{{ site.legal.impressum.responsible.text }}</p>
+  </section>
+
+  <section class="legal__block">
+    <h2>{{ site.legal.impressum.dispute.kicker }}</h2>
+    <p>{{ site.legal.impressum.dispute.text }}</p>
+  </section>
+
+  <section class="legal__block">
+    <h2>{{ site.legal.impressum.contentLiability.kicker }}</h2>
+    <p>{{ site.legal.impressum.contentLiability.text }}</p>
+  </section>
+
+  <section class="legal__block">
+    <h2>{{ site.legal.impressum.linkLiability.kicker }}</h2>
+    <p>{{ site.legal.impressum.linkLiability.text }}</p>
+  </section>
+
+  <section class="legal__block">
+    <h2>{{ site.legal.impressum.copyright.kicker }}</h2>
+    <p>{{ site.legal.impressum.copyright.text }}</p>
+  </section>
+</div>
+
+{% include "foot.njk" %}

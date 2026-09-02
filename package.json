@@ -1,0 +1,17 @@
+{
+  "name": "schreinerei-frank",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Onepager Schreinerei Frank – Eleventy + Decap CMS (git-basiert, kostenlos)",
+  "scripts": {
+    "build": "eleventy",
+    "serve": "eleventy --serve --port 9999",
+    "cms": "decap-server",
+    "dev": "concurrently -k -n site,cms -c green,cyan \"npm:serve\" \"npm:cms\""
+  },
+  "devDependencies": {
+    "@11ty/eleventy": "^3.0.0",
+    "concurrently": "^9.1.0",
+    "decap-server": "^3.1.3"
+  }
+}

@@ -1,0 +1,378 @@
+# Decap CMS / Sveltia CMS – git-basiert, kein Server, keine Datenbank.
+# Bearbeitet content/site.json im Repo. Docs: https://decapcms.org/docs/
+#
+# Wichtig: Decap speichert beim Bearbeiten NUR die hier deklarierten Felder.
+# Deshalb ist unten die komplette Struktur von content/site.json abgebildet –
+# rein technische Felder stehen gesammelt unter „Technische Einstellungen".
+
+# ---------------------------------------------------------------
+# WEG 1 (GitHub + Netlify): Admin läuft über GitHub-Login.
+#   1) Dieses Projekt in ein GitHub-Repo pushen (repo: "USER/REPO" unten eintragen)
+#   2) Bei Netlify ein neues Site aus dem Repo anlegen (Build: "npm run build", Output: "_site")
+#   3) In Netlify: Settings → Identity aktivieren
+#   4) In Netlify: Settings → OAuth → GitHub als externen Provider hinzufügen
+#   5) Netlify setzt base_url automatisch (api.github.com o.ä.) – https aktiviert, dann Admin nutzen.
+# Danach gibt es KEIN eigenes Passwort – man meldet sich mit dem GitHub-Konto an.
+# ---------------------------------------------------------------
+backend:
+  name: github
+  repo: "USERNAME/REPO"        # ← Hier GitHub-Benutzer/-Reponame eintragen
+  branch: main
+  base_url: https://api.github.com
+  # Für Netlify Identity (eigene Email-Einladung statt GitHub-Login) stattdessen:
+  # name: git-gateway
+
+# Lokal ohne Login testen:  npm run cms   (startet decap-server auf :8081)
+local_backend: true
+
+media_folder: "src/assets/img"
+public_folder: "/assets/img"
+
+locale: de
+
+collections:
+  - name: "inhalt"
+    label: "Website-Inhalte"
+    delete: false
+    editor: { preview: false }
+    files:
+      - name: "site"
+        label: "Onepager"
+        file: "content/site.json"
+        description: "Alle Texte, Bilder und Listen der Startseite."
+        fields:
+          # ---------------------------------------------------------------
+          - label: "SEO / Meta"
+            name: "meta"
+            widget: "object"
+            collapsed: true
+            fields:
+              - { label: "Basis-URL (ohne Slash am Ende)", name: "siteUrl", widget: "string" }
+              - { label: "Seitentitel", name: "title", widget: "string" }
+              - { label: "Meta-Description", name: "description", widget: "text", pattern: ['^.{80,165}$', 'Bitte 80–165 Zeichen'] }
+              - { label: "OG-Titel", name: "ogTitle", widget: "string" }
+              - { label: "OG-Beschreibung", name: "ogDescription", widget: "text" }
+              - { label: "OG-Bild", name: "ogImage", widget: "image" }
+              - { label: "LCP-Bild (Hero, wird vorgeladen)", name: "lcpImage", widget: "image" }
+
+          # ---------------------------------------------------------------
+          - label: "Betrieb / Kontaktdaten"
+            name: "business"
+            widget: "object"
+            collapsed: true
+            fields:
+              - { label: "Name", name: "name", widget: "string" }
+              - { label: "Inhaber", name: "owner", widget: "string" }
+              - { label: "Straße", name: "street", widget: "string" }
+              - { label: "PLZ", name: "postalCode", widget: "string" }
+              - { label: "Ort", name: "city", widget: "string" }
+              - { label: "Bundesland", name: "region", widget: "string" }
+              - { label: "Land (ISO, z. B. DE)", name: "country", widget: "string" }
+              - { label: "Telefon (Anzeige)", name: "phone", widget: "string" }
+              - { label: "Telefon (Link, tel:+49…)", name: "phoneHref", widget: "string" }
+              - { label: "Telefon (Schema, +49-…)", name: "phoneSchema", widget: "string" }
+              - { label: "Telefax (Anzeige)", name: "fax", widget: "string", required: false }
+              - { label: "Telefax (Schema)", name: "faxSchema", widget: "string", required: false }
+              - { label: "E-Mail", name: "email", widget: "string" }
+              - { label: "Preisniveau (z. B. €€)", name: "priceRange", widget: "string" }
+              - { label: "Karten-Link (Google Maps)", name: "mapUrl", widget: "string" }
+              - { label: "Öffnungszeiten (Anzeigetext)", name: "openingHoursText", widget: "string" }
+              - label: "Geo-Koordinaten"
+                name: "geo"
+                widget: "object"
+                fields:
+                  - { label: "Breite (lat)", name: "lat", widget: "number", value_type: "float" }
+                  - { label: "Länge (lng)", name: "lng", widget: "number", value_type: "float" }
+              - label: "Öffnungszeiten (strukturiert, für Google)"
+                name: "openingHoursSpec"
+                widget: "list"
+                fields:
+                  - { label: "Tage (Monday, Tuesday …)", name: "days", widget: "list", field: { label: "Tag", name: "tag", widget: "string" } }
+                  - { label: "Öffnet (HH:MM)", name: "opens", widget: "string" }
+                  - { label: "Schließt (HH:MM)", name: "closes", widget: "string" }
+              - { label: "Einzugsgebiet (Orte)", name: "areaServed", widget: "list", field: { label: "Ort", name: "ort", widget: "string" } }
+
+          # ---------------------------------------------------------------
+          - label: "Navigation"
+            name: "nav"
+            widget: "list"
+            fields:
+              - { label: "Beschriftung", name: "label", widget: "string" }
+              - { label: "Ziel (#anker)", name: "href", widget: "string" }
+
+          # ---------------------------------------------------------------
+          - label: "Hero"
+            name: "hero"
+            widget: "object"
+            fields:
+              - { label: "Kicker", name: "kicker", widget: "string" }
+              - { label: "Überschrift (H1)", name: "heading", widget: "string" }
+              - { label: "Claim (wird in „…\" gesetzt)", name: "claim", widget: "string" }
+              - { label: "Einleitung", name: "lead", widget: "text" }
+              - { label: "Button primär", name: "ctaPrimary", widget: "string" }
+              - { label: "Button sekundär", name: "ctaSecondary", widget: "string" }
+              - label: "Hero-Slider-Bilder (4 Möbelbilder)"
+                name: "images"
+                widget: "list"
+                summary: "{{fields.alt}}"
+                max: 4
+                fields:
+                  - { label: "Bild", name: "src", widget: "image" }
+                  - { label: "Alt-Text", name: "alt", widget: "string" }
+
+          # ---------------------------------------------------------------
+          - label: "Trust-Row (4 Punkte)"
+            name: "trust"
+            widget: "list"
+            max: 4
+            fields:
+              - { label: "Wert (fett)", name: "value", widget: "string" }
+              - { label: "Beschriftung", name: "label", widget: "string" }
+
+          # ---------------------------------------------------------------
+          - label: "Leistungen – Einleitung"
+            name: "servicesIntro"
+            widget: "object"
+            fields:
+              - { label: "Kicker", name: "kicker", widget: "string" }
+              - { label: "Überschrift", name: "heading", widget: "string" }
+              - { label: "Text", name: "text", widget: "text" }
+          - label: "Leistungen"
+            name: "services"
+            widget: "list"
+            summary: "{{fields.title}}"
+            fields:
+              - { label: "Titel", name: "title", widget: "string" }
+              - { label: "Typ (für Schema)", name: "serviceType", widget: "string" }
+              - { label: "Text", name: "text", widget: "text" }
+              - { label: "Icon (SVG-Pfad, d-Attribut)", name: "icon", widget: "string" }
+
+          # ---------------------------------------------------------------
+          - label: "Galerie – Einleitung"
+            name: "galleryIntro"
+            widget: "object"
+            fields:
+              - { label: "Kicker", name: "kicker", widget: "string" }
+              - { label: "Überschrift", name: "heading", widget: "string" }
+          - label: "Galerie (Kategorien)"
+            name: "gallery"
+            widget: "list"
+            summary: "{{fields.category}}"
+            fields:
+              - { label: "Kategorie", name: "category", widget: "string", hint: "Z. B. Küchen, Treppen, Türen …" }
+              - label: "Hauptbild (Slider)"
+                name: "mainImage"
+                widget: "image"
+                hint: "Dieses Bild wird im Hauptslider angezeigt."
+              - { label: "Alt-Text Hauptbild", name: "mainAlt", widget: "string" }
+              - label: "Weitere Bilder (Popup-Slider)"
+                name: "images"
+                widget: "list"
+                summary: "{{fields.alt}}"
+                fields:
+                  - { label: "Bild", name: "src", widget: "image" }
+                  - { label: "Alt-Text", name: "alt", widget: "string" }
+
+          # ---------------------------------------------------------------
+          - label: "Über uns"
+            name: "about"
+            widget: "object"
+            fields:
+              - { label: "Kicker", name: "kicker", widget: "string" }
+              - { label: "Überschrift", name: "heading", widget: "string" }
+              - { label: "Text", name: "text", widget: "text" }
+              - { label: "Punkte", name: "points", widget: "list", field: { label: "Punkt", name: "punkt", widget: "string" } }
+              - { label: "Ansprechpartner Rolle", name: "personRole", widget: "string" }
+              - { label: "Ansprechpartner Foto", name: "personImage", widget: "image", hint: "Standard ist ein Bild aus der Galerie; es ersetzt das bestehende Bild." }
+              - { label: "Foto Alt-Text", name: "personImageAlt", widget: "string" }
+              - { label: "Button-Text", name: "personCta", widget: "string" }
+
+          # ---------------------------------------------------------------
+          - label: "FAQ – Einleitung"
+            name: "faqIntro"
+            widget: "object"
+            fields:
+              - { label: "Kicker", name: "kicker", widget: "string" }
+              - { label: "Überschrift", name: "heading", widget: "string" }
+          - label: "FAQ"
+            name: "faq"
+            widget: "list"
+            summary: "{{fields.q}}"
+            fields:
+              - { label: "Frage", name: "q", widget: "string" }
+              - { label: "Antwort", name: "a", widget: "text" }
+
+          # ---------------------------------------------------------------
+          - label: "Rezensionen – Einleitung"
+            name: "testimonialsIntro"
+            widget: "object"
+            fields:
+              - { label: "Kicker", name: "kicker", widget: "string" }
+              - { label: "Überschrift", name: "heading", widget: "string" }
+              - label: "Google Bewertungsübersicht"
+                name: "google"
+                widget: "object"
+                collapsed: true
+                fields:
+                  - { label: "Google-Platz-ID (Google Place ID)", name: "placeId", widget: "string", hint: "Z. B. ChIJN1t_tDeuEmsRUsoyG83frY4 (aus dem Google Place-ID-Finder)" }
+                  - { label: "Google-Maps-Link (Bewertungen)", name: "url", widget: "string", hint: "Link auf das Google-Business-Profil" }
+                  - { label: "Google-API-Key (optional, für Live-Abgleich)", name: "apiKey", widget: "string", required: false, hint: "Nur falls Sie Rezensionen automatisch laden möchten" }
+                  - { label: "Durchschnittsbewertung (z. B. 4,8)", name: "rating", widget: "number", value_type: "float", min: 0, max: 5, required: false }
+                  - { label: "Anzahl Bewertungen", name: "reviewCount", widget: "number", value_type: "int", min: 0, required: false }
+          - label: "Rezensionen / Zitate"
+            name: "testimonials"
+            widget: "list"
+            fields:
+              - { label: "Zitat (ohne Anführungszeichen)", name: "quote", widget: "text" }
+              - { label: "Quelle", name: "source", widget: "string" }
+
+          # ---------------------------------------------------------------
+          - label: "Kontakt"
+            name: "contact"
+            widget: "object"
+            fields:
+              - { label: "Kicker", name: "kicker", widget: "string" }
+              - { label: "Überschrift", name: "heading", widget: "string" }
+              - { label: "Formular-Ziel (action)", name: "formAction", widget: "string" }
+              - { label: "Einwilligungshinweis", name: "consent", widget: "text" }
+              - { label: "Karten-Hinweis (Bestätigung vor Google Maps)", name: "mapNotice", widget: "text" }
+
+          # ---------------------------------------------------------------
+          - label: "Footer"
+            name: "footer"
+            widget: "object"
+            fields:
+              - { label: "Impressum-Link", name: "impressumHref", widget: "string" }
+              - { label: "Datenschutz-Link", name: "datenschutzHref", widget: "string" }
+
+          # ---------------------------------------------------------------
+          - label: "Impressum"
+            name: "legal"
+            widget: "object"
+            collapsed: true
+            fields:
+              - label: "Impressum"
+                name: "impressum"
+                widget: "object"
+                fields:
+                  - { label: "Seiten-Titel", name: "title", widget: "string" }
+                  - { label: "Meta-Beschreibung (SEO)", name: "metaDescription", widget: "text" }
+                  - { label: "Überschrift (H1)", name: "heading", widget: "string" }
+                  - { label: "Intro", name: "intro", widget: "text" }
+                  - { label: "Firmenname", name: "companyName", widget: "string" }
+                  - { label: "Inhaber", name: "ownerName", widget: "string" }
+                  - { label: "Anschrift", name: "address", widget: "string" }
+                  - label: "Kontakt"
+                    name: "contact"
+                    widget: "object"
+                    fields:
+                      - { label: "Telefon", name: "phone", widget: "string" }
+                      - { label: "Telefax", name: "fax", widget: "string" }
+                      - { label: "E-Mail (Link-Ziel)", name: "emailHref", widget: "string" }
+                      - { label: "Internetadresse", name: "url", widget: "string" }
+                  - label: "Umsatzsteuer-ID"
+                    name: "vat"
+                    widget: "object"
+                    fields:
+                      - { label: "Überschrift", name: "kicker", widget: "string" }
+                      - { label: "Text", name: "text", widget: "text" }
+                  - label: "Redaktionell verantwortlich"
+                    name: "responsible"
+                    widget: "object"
+                    fields:
+                      - { label: "Überschrift", name: "kicker", widget: "string" }
+                      - { label: "Text", name: "text", widget: "text" }
+                  - label: "EU-Streitschlichtung"
+                    name: "dispute"
+                    widget: "object"
+                    fields:
+                      - { label: "Überschrift", name: "kicker", widget: "string" }
+                      - { label: "Text", name: "text", widget: "text" }
+                  - label: "Haftung für Inhalte"
+                    name: "contentLiability"
+                    widget: "object"
+                    fields:
+                      - { label: "Überschrift", name: "kicker", widget: "string" }
+                      - { label: "Text", name: "text", widget: "text" }
+                  - label: "Haftung für Links"
+                    name: "linkLiability"
+                    widget: "object"
+                    fields:
+                      - { label: "Überschrift", name: "kicker", widget: "string" }
+                      - { label: "Text", name: "text", widget: "text" }
+                  - label: "Urheberrecht"
+                    name: "copyright"
+                    widget: "object"
+                    fields:
+                      - { label: "Überschrift", name: "kicker", widget: "string" }
+                      - { label: "Text", name: "text", widget: "text" }
+
+          # ---------------------------------------------------------------
+          - label: "Datenschutz"
+            name: "datenschutz"
+            widget: "object"
+            collapsed: true
+            fields:
+              - label: "Datenschutzerklärung"
+                name: "datenschutz"
+                widget: "object"
+                fields:
+                  - { label: "Seiten-Titel", name: "title", widget: "string" }
+                  - { label: "Meta-Beschreibung (SEO)", name: "metaDescription", widget: "text" }
+                  - { label: "Überschrift (H1)", name: "heading", widget: "string" }
+                  - { label: "Intro", name: "intro", widget: "text" }
+                  - label: "1. Verantwortlicher"
+                    name: "controller"
+                    widget: "object"
+                    fields:
+                      - { label: "Überschrift", name: "kicker", widget: "string" }
+                      - { label: "Text", name: "text", widget: "text" }
+                  - label: "2. Allgemeines zur Datenverarbeitung"
+                    name: "processing"
+                    widget: "object"
+                    fields:
+                      - { label: "Überschrift", name: "kicker", widget: "string" }
+                      - { label: "Text", name: "text", widget: "text" }
+                  - label: "3. Server-Logfiles"
+                    name: "serverLogs"
+                    widget: "object"
+                    fields:
+                      - { label: "Überschrift", name: "kicker", widget: "string" }
+                      - { label: "Text", name: "text", widget: "text" }
+                  - label: "4. Cookies"
+                    name: "cookies"
+                    widget: "object"
+                    fields:
+                      - { label: "Überschrift", name: "kicker", widget: "string" }
+                      - { label: "Text", name: "text", widget: "text" }
+                  - label: "5. Kontaktformular"
+                    name: "contactForm"
+                    widget: "object"
+                    fields:
+                      - { label: "Überschrift", name: "kicker", widget: "string" }
+                      - { label: "Text", name: "text", widget: "text" }
+                  - label: "6. Google Maps"
+                    name: "googleMaps"
+                    widget: "object"
+                    fields:
+                      - { label: "Überschrift", name: "kicker", widget: "string" }
+                      - { label: "Text", name: "text", widget: "text" }
+                  - label: "7. Hosting"
+                    name: "hosting"
+                    widget: "object"
+                    fields:
+                      - { label: "Überschrift", name: "kicker", widget: "string" }
+                      - { label: "Text", name: "text", widget: "text" }
+                  - label: "8. Ihre Rechte als betroffene Person"
+                    name: "rights"
+                    widget: "object"
+                    fields:
+                      - { label: "Überschrift", name: "kicker", widget: "string" }
+                      - { label: "Text", name: "text", widget: "text" }
+                  - label: "9. Aufsichtsbehörde"
+                    name: "supervisoryAuthority"
+                    widget: "object"
+                    fields:
+                      - { label: "Überschrift", name: "kicker", widget: "string" }
+                      - { label: "Text", name: "text", widget: "text" }
+
