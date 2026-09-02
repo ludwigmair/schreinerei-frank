@@ -465,7 +465,7 @@
       status.textContent = '';
       /* --- Ohne Backend: hier greift der normale POST an action="/api/kontakt".
              Für eine reine Static-Site einen Formular-Dienst eintragen
-             (Formspree, Web3Forms, Netlify Forms, Cloudflare Pages Functions …)
+             (Web3Forms, Formspree, Cloudflare Pages Functions …)
              oder das folgende fetch() aktivieren und action anpassen. --- */
       // e.preventDefault();
       // fetch(form.action, { method:'POST', body:new FormData(form), headers:{Accept:'application/json'} })

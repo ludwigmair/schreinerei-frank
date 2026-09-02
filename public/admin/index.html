@@ -1,0 +1,481 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Inhalte pflegen · Schreinerei Frank</title>
+<style>
+  :root{
+    --bg:#f5f4f1; --card:#ffffff; --ink:#1f1e1c; --muted:#6b675f;
+    --line:#e3e0d9; --accent:#7a5c3a; --accent-2:#5a431f;
+    --err:#a03020; --ok:#2f6b3a; --radius:10px;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    background:var(--bg);color:var(--ink);line-height:1.45}
+  .wrap{max-width:880px;margin:0 auto;padding:28px 18px 80px}
+  header.top{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:20px;flex-wrap:wrap}
+  header.top h1{font-size:20px;margin:0;font-weight:600}
+  header.top .sub{font-size:13px;color:var(--muted)}
+  .btn{display:inline-flex;align-items:center;gap:6px;border:none;cursor:pointer;border-radius:8px;
+    padding:9px 14px;font-size:14px;font-weight:600;background:var(--accent);color:#fff;transition:filter .15s}
+  .btn:hover{filter:brightness(1.08)}
+  .btn.secondary{background:#e7e3da;color:var(--ink)}
+  .btn:disabled{opacity:.5;cursor:not-allowed}
+  .banner{padding:10px 14px;border-radius:8px;font-size:14px;margin-bottom:16px;display:none}
+  .banner.err{background:#fbe9e4;color:var(--err);display:block}
+  .banner.ok{background:#e7f3e9;color:var(--ok);display:block}
+  .back{display:inline-block;margin-bottom:16px;color:var(--accent-2);text-decoration:none;font-size:14px;font-weight:600}
+
+  .login-card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+    padding:32px;max-width:380px;margin:70px auto;text-align:center}
+  .login-card h2{margin:0 0 6px;font-size:18px}
+  .login-card p{color:var(--muted);font-size:14px;margin:0 0 18px}
+  .login-card input{width:100%;padding:11px 12px;font-size:15px;border:1px solid var(--line);
+    border-radius:8px;margin-bottom:12px}
+  .login-card .btn{width:100%;justify-content:center}
+
+  .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+    padding:18px 20px;margin-bottom:16px}
+  .card>h3{margin:0 0 14px;font-size:16px;font-weight:600;color:var(--accent-2);
+    border-bottom:1px solid var(--line);padding-bottom:8px}
+  .field{margin-bottom:14px}
+  .field label{display:block;font-size:13px;font-weight:600;margin-bottom:5px;color:#3a362f}
+  .field .hint{font-size:12px;color:var(--muted);margin-top:4px}
+  .field input[type=text],.field input[type=number],.field textarea{width:100%;padding:9px 11px;font-size:14px;
+    border:1px solid var(--line);border-radius:7px;background:#fff;color:var(--ink)}
+  .field textarea{min-height:70px;resize:vertical;font-family:inherit}
+  .field input[type=checkbox]{width:auto}
+  .sub-card{background:#faf9f6;border:1px solid var(--line);border-radius:8px;padding:12px 14px;margin:10px 0}
+  .sub-card>h4{margin:0 0 10px;font-size:14px;color:#57492f;font-weight:700;letter-spacing:.2px}
+  .row-flex{display:flex;gap:10px;flex-wrap:wrap}
+  .row-flex .field{flex:1;min-width:150px}
+  .list-item{background:#f3f1ec;border:1px solid var(--line);border-radius:8px;padding:12px 14px;margin:8px 0}
+  .list-item-head{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:8px}
+  .list-item-head .title{font-size:13px;font-weight:700;color:#57492f}
+  .icon-btn{border:none;background:none;cursor:pointer;font-size:15px;color:var(--err);padding:2px 8px;border-radius:6px}
+  .icon-btn:hover{background:#fbe9e4}
+  .toolbar{position:sticky;bottom:0;background:var(--bg);padding:12px 0;display:flex;gap:10px;align-items:center;
+    border-top:1px solid var(--line)}
+  .toolbar .status{color:var(--muted);font-size:13px;margin-right:auto}
+  .nav-cards{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
+  .nav-cards button{border:1px solid var(--line);background:var(--card);border-radius:20px;padding:6px 14px;
+    font-size:13px;cursor:pointer;color:var(--ink)}
+  .nav-cards button.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+  .img-row{display:flex;gap:8px;align-items:flex-start}
+  .img-row input[type=text]{flex:1}
+  .img-row .preview{width:56px;height:56px;object-fit:cover;border-radius:7px;border:1px solid var(--line);
+    background:#eee;flex:0 0 auto;display:block}
+  .upload-btn{flex:0 0 auto;border:1px solid var(--line);background:#fff;cursor:pointer;border-radius:7px;
+    padding:9px 12px;font-size:13px;color:var(--accent-2)}
+  .upload-btn:hover{background:#f3f1ec}
+  .load-screen{padding:40px;text-align:center;color:var(--muted)}
+  [hidden]{display:none!important}
+</style>
+</head>
+<body>
+<script id="content-data" type="application/json"></script>
+
+<div class="wrap">
+  <a class="back" href="../index.html">← Zur Website</a>
+
+  <div class="load-screen" id="load-screen">Lade Inhalte …</div>
+  <div class="banner err" id="load-err" hidden>Inhalte konnten nicht geladen werden (data/site.json oder data/admin.json).</div>
+
+  <div id="login-view" hidden>
+    <div class="login-card">
+      <h2>Inhalte pflegen</h2>
+      <p>Bitte mit Benutzer und Passwort anmelden.</p>
+      <input type="text" id="user" placeholder="Benutzer" autocomplete="username">
+      <input type="password" id="pw" placeholder="Passwort" autocomplete="current-password">
+      <div class="banner err" id="login-err" hidden>Benutzername oder Passwort falsch.</div>
+      <button class="btn" id="login-btn" type="button">Anmelden</button>
+    </div>
+  </div>
+
+  <div id="editor-view" hidden>
+    <header class="top">
+      <div>
+        <h1>Inhalte pflegen</h1>
+        <div class="sub">Änderungen speichern = exportierte JSON im Repo ablegen (content/site.json).</div>
+      </div>
+      <button class="btn secondary" id="logout-btn" type="button">Abmelden</button>
+    </header>
+
+    <div class="nav-cards" id="nav-cards"></div>
+
+    <div id="form-root"></div>
+
+    <div class="toolbar">
+      <span class="status" id="status">Bereit</span>
+      <button class="btn secondary" id="reload-btn" type="button">Zurücksetzen</button>
+      <button class="btn" id="export-btn" type="button">⬇ Exportieren (site.json)</button>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+"use strict";
+
+var ADMIN_USERS = {};
+var data;
+var work;
+
+/* ---------- Anzeige-Namen & Sektionen ---------- */
+var SECTIONS = [
+  { key:"hero", label:"Hero" },
+  { key:"trust", label:"Trust-Punkte" },
+  { key:"servicesIntro", label:"Leistungen (Einleitung)" },
+  { key:"services", label:"Leistungen" },
+  { key:"galleryIntro", label:"Galerie (Einleitung)" },
+  { key:"gallery", label:"Galerie / Projekte" },
+  { key:"about", label:"Über uns" },
+  { key:"faqIntro", label:"FAQ (Einleitung)" },
+  { key:"faq", label:"FAQ" },
+  { key:"testimonialsIntro", label:"Rezensionen (Einleitung)" },
+  { key:"testimonials", label:"Rezensionen" },
+  { key:"contact", label:"Kontakt" },
+  { key:"nav", label:"Navigation" },
+  { key:"business", label:"Betrieb / Kontaktdaten" },
+  { key:"meta", label:"SEO / Meta" },
+  { key:"footer", label:"Footer" },
+  { key:"legal", label:"Impressum / Datenschutz" }
+];
+
+var FORM_LABELS = {
+  kicker:"Kicker", heading:"Überschrift", claim:"Claim", lead:"Einleitung",
+  text:"Text", title:"Titel", description:"Beschreibung",
+  ctaPrimary:"Button primär", ctaSecondary:"Button sekundär", personCta:"Button-Text",
+  label:"Beschriftung", value:"Wert", quote:"Zitat", source:"Quelle",
+  category:"Kategorie", serviceType:"Typ", icon:"Icon (SVG)",
+  q:"Frage", a:"Antwort", name:"Name", owner:"Inhaber", street:"Straße",
+  postalCode:"PLZ", city:"Ort", region:"Region", country:"Land (ISO)",
+  phone:"Telefon (Anzeige)", phoneHref:"Telefon (Link)", phoneSchema:"Telefon (Schema)",
+  fax:"Telefax (Anzeige)", faxSchema:"Telefax (Schema)", email:"E-Mail",
+  priceRange:"Preisniveau", mapUrl:"Karten-Link", openingHoursText:"Öffnungszeiten",
+  siteUrl:"Basis-URL", ogTitle:"OG-Titel", ogDescription:"OG-Beschreibung",
+  ogImage:"OG-Bild (Pfad)", lcpImage:"LCP-Bild (Pfad)",
+  intro:"Intro", personRole:"Rolle", personImage:"Foto (Pfad)", personImageAlt:"Foto Alt-Text",
+  mainImage:"Hauptbild", mainAlt:"Alt-Text Hauptbild", src:"Bild (Pfad)", alt:"Alt-Text",
+  href:"Ziel (#anker)", url:"URL", impressumHref:"Impressum-Link", datenschutzHref:"Datenschutz-Link",
+  formAction:"Formular-Ziel", consent:"Einwilligungshinweis", mapNotice:"Karten-Hinweis",
+  days:"Tage", opens:"Öffnet", closes:"Schließt", lat:"Breite (lat)", lng:"Länge (lng)",
+  placeId:"Google-Platz-ID", apiKey:"API-Key (optional)", rating:"Bewertung", reviewCount:"Anzahl",
+  editCount:"", companyName:"Firmenname", ownerName:"Inhaber", address:"Anschrift"
+};
+
+function friendly(name){
+  if(FORM_LABELS[name]) return FORM_LABELS[name];
+  return name.replace(/([a-z])([A-Z])/g,"$1 $2").replace(/[_-]+/g," ").trim().replace(/^./,function(c){return c.toUpperCase();});
+}
+function isObj(v){return v && typeof v==="object" && !Array.isArray(v);}
+
+/* Pfad-Utilities */
+function getPath(obj, path){
+  return path.reduce(function(o,k){ return o==null?undefined:o[k]; }, obj);
+}
+function setPath(obj, path, val){
+  var last = path[path.length-1];
+  var o = path.slice(0,-1).reduce(function(o,k){ return (o[k]=o[k]||{}); }, obj);
+  o[last] = val;
+}
+function delPath(obj, path){
+  var last = path[path.length-1];
+  var o = path.slice(0,-1).reduce(function(o,k){ return o?o[k]:undefined; }, obj);
+  if(o) delete o[last];
+}
+
+/* ---------- Feld-Renderer ---------- */
+function el(tag, cls, text){
+  var n=document.createElement(tag);
+  if(cls) n.className=cls;
+  if(text!=null) n.textContent=text;
+  return n;
+}
+
+var IMAGE_KEYS = ["src","mainImage","personImage","ogImage","lcpImage"];
+function isImagePath(v){
+  if(typeof v!=="string") return false;
+  return /\.(jpe?g|png|webp|gif|svg|avif)(\?.*)?$/i.test(v) || v.indexOf("data:image/")===0;
+}
+
+var uploads = {};
+
+function makeField(holder, key, value){
+  var wrap = el("div","field");
+  wrap.appendChild(el("label",null,friendly(key)));
+  var type = typeof value;
+  if(type==="boolean"){
+    var cb=el("input"); cb.type="checkbox"; cb.checked=!!value;
+    cb.addEventListener("change",function(){ holder[key]=cb.checked; });
+    wrap.appendChild(cb);
+  } else if(type==="number"){
+    var num=el("input"); num.type="number"; num.value=value;
+    num.addEventListener("input",function(){ holder[key]=parseFloat(num.value)||0; });
+    wrap.appendChild(num);
+  } else if(isImagePath(value) && key !== "apiKey"){
+    wrap.appendChild(makeImageField(holder, key, value));
+  } else {
+    var isLong = key==="text"||key==="lead"||key==="quote"||key==="a"||key==="consent"
+      ||key==="mapNotice"||key==="intro"||(typeof value==="string"&&value.length>120);
+    if(isLong){
+      var ta=el("textarea"); ta.value=value;
+      ta.addEventListener("input",function(){ holder[key]=ta.value; });
+      wrap.appendChild(ta);
+    } else {
+      var inp=el("input"); inp.type="text"; inp.value=value;
+      inp.addEventListener("input",function(){ holder[key]=inp.value; });
+      wrap.appendChild(inp);
+    }
+  }
+  return wrap;
+}
+
+function makeImageField(holder, key, value){
+  var row = el("div","img-row");
+
+  var img = el("img","preview");
+  img.alt="";
+  img.src = uploads[value] ? URL.createObjectURL(uploads[value].blob)
+           : (value.indexOf("data:")===0 ? value : value);
+
+  var inp = el("input"); inp.type="text"; inp.value=value;
+  inp.addEventListener("input",function(){
+    holder[key]=inp.value;
+    if(uploads[inp.value]){ img.src=URL.createObjectURL(uploads[inp.value].blob); }
+    else if(inp.value.indexOf("data:")===0){ img.src=inp.value; }
+  });
+
+  var file = el("input"); file.type="file"; file.accept="image/*"; file.hidden=true;
+  file.addEventListener("change",function(){
+    if(!file.files || !file.files[0]) return;
+    var f = file.files[0];
+    var ext = (f.name.split(".").pop()||"jpg").toLowerCase();
+    var dir = "/assets/img/";
+    var m = (inp.value||"").match(/^(.*)\/[^\/]+$/);
+    if(m && !m[1].endsWith("..")) dir = (m[1].slice(1) || "assets/img") + "/";
+    dir = dir.replace(/^\/+/,"").replace(/\/+$/,"") + "/";
+    if(dir.indexOf("assets/")!==0) dir = "assets/img/";
+    var base = (f.name.replace(/\.[^.]+$/,"")||"bild").toLowerCase().replace(/[^a-z0-9_-]+/g,"-");
+    var target = "/"+dir+base+"."+ext;
+    var n=1, t0=target;
+    while(uploads[target]){ target=t0.replace(/\.[^.]+$/,"-"+ (n++) +"."+ext); }
+
+    uploads[target] = { blob:f, name:target.replace(/^\/+/,"") };
+    holder[key]=target;
+    inp.value=target;
+    img.src=URL.createObjectURL(f);
+  });
+
+  var btn = el("button","upload-btn","⬆ Hochladen");
+  btn.type="button";
+  btn.addEventListener("click",function(){ file.click(); });
+
+  row.appendChild(img);
+  row.appendChild(inp);
+  row.appendChild(btn);
+  row.appendChild(file);
+  return row;
+}
+
+function makePrimArrayField(holder, key, arr){
+  var wrap = el("div","field");
+  wrap.appendChild(el("label",null,friendly(key)));
+  var inp=el("input"); inp.type="text"; inp.value=arr.join(", ");
+  inp.addEventListener("input",function(){
+    holder[key]=inp.value.split(",").map(function(s){return s.trim();}).filter(Boolean);
+  });
+  wrap.appendChild(inp);
+  var h=el("div","hint","Mit Komma getrennt.");
+  wrap.appendChild(h);
+  return wrap;
+}
+
+function renderInto(container, holder, value, holderKey){
+  if(Array.isArray(value)){
+    var allPrim = value.every(function(v){return !isObj(v)&&!Array.isArray(v);});
+    if(allPrim){ container.appendChild(makePrimArrayField(holder, holderKey, value)); return; }
+
+    var listWrap = el("div");
+    listWrap.style.margin="8px 0";
+    var addBtn=el("button","btn secondary","+ Eintrag hinzufügen");
+    addBtn.type="button";
+    addBtn.style.margin="8px 0 4px";
+
+    function renderItem(itemObj){
+      var box=el("div","list-item");
+      var head=el("div","list-item-head");
+      head.appendChild(el("span","title",friendly(holderKey)));
+      var del=el("button","icon-btn","✕");
+      del.title="Eintrag entfernen";
+      del.addEventListener("click",function(){
+        var arr = holder[holderKey];
+        var i = arr.indexOf(itemObj);
+        if(i>-1) arr.splice(i,1);
+        listWrap.removeChild(box);
+      });
+      head.appendChild(del);
+      box.appendChild(head);
+      var body=el("div");
+      if(isObj(itemObj)){
+        Object.keys(itemObj).forEach(function(k){
+          renderInto(body, itemObj, itemObj[k], k);
+        });
+      }
+      box.appendChild(body);
+      listWrap.insertBefore(box, addBtn);
+    }
+
+    listWrap.appendChild(addBtn);
+
+    value.forEach(renderItem);
+
+    addBtn.addEventListener("click",function(){
+      var schema = value.length>0 ? value[0] : {};
+      var blank={};
+      Object.keys(schema).forEach(function(k){
+        var v=schema[k];
+        if(isObj(v)) blank[k]={};
+        else if(Array.isArray(v)) blank[k]=[];
+        else if(typeof v==="boolean") blank[k]=false;
+        else if(typeof v==="number") blank[k]=0;
+        else blank[k]="";
+      });
+      holder[holderKey].push(blank);
+      renderItem(blank);
+    });
+
+    container.appendChild(listWrap);
+    return;
+  }
+
+  if(isObj(value)){
+    var sub=el("div","sub-card");
+    sub.appendChild(el("h4",null,friendly(holderKey)));
+    Object.keys(value).forEach(function(k){
+      renderInto(sub, value, value[k], k);
+    });
+    container.appendChild(sub);
+    return;
+  }
+
+  container.appendChild(makeField(holder, holderKey, value));
+}
+
+function exportJson(){
+  var blob=new Blob([JSON.stringify(work,null,2)],{type:"application/json"});
+  var a=document.createElement("a");
+  a.href=URL.createObjectURL(blob);
+  a.download="site.json";
+  document.body.appendChild(a);
+  a.click();
+  setTimeout(function(){URL.revokeObjectURL(a.href);document.body.removeChild(a);},100);
+  document.getElementById("status").textContent="Export gestartet – Datei im Download.";
+}
+
+/* ---------- Sektionen renderen ---------- */
+function activeSection(){ return document.querySelector("#nav-cards button.active"); }
+function showSection(key){
+  var root=document.getElementById("form-root");
+  root.innerHTML="";
+  var card=el("div","card");
+  var h3=el("h3",null, (SECTIONS.find(function(s){return s.key===key;})||{}).label||friendly(key));
+  card.appendChild(h3);
+  if(!(key in work)){
+    card.appendChild(el("p","hint","Dieser Abschnitt ist noch nicht vorhanden."));
+  } else {
+    renderInto(card, work, work[key], key);
+  }
+  root.appendChild(card);
+  document.getElementById("status").textContent = "Abschnitt geöffnet";
+}
+
+function buildNav(){
+  var nav=document.getElementById("nav-cards");
+  nav.innerHTML="";
+  SECTIONS.forEach(function(s){
+    var b=el("button",null,s.label);
+    b.dataset.key=s.key;
+    b.addEventListener("click",function(){
+      nav.querySelectorAll("button.active").forEach(function(x){x.classList.remove("active");});
+      b.classList.add("active");
+      showSection(s.key);
+    });
+    nav.appendChild(b);
+  });
+}
+
+/* ---------- Login ---------- */
+function sha256(str){
+  var buf = new TextEncoder().encode(str);
+  return crypto.subtle.digest("SHA-256", buf).then(function(hash){
+    return Array.from(new Uint8Array(hash)).map(function(b){return b.toString(16).padStart(2,"0");}).join("");
+  });
+}
+
+function login(){
+  var user = (document.getElementById("user").value || "").trim().toLowerCase();
+  var pass = document.getElementById("pw").value;
+  var expected = ADMIN_USERS[user] || null;
+  if(!expected){ document.getElementById("login-err").hidden=false; return; }
+  sha256(pass).then(function(hash){
+    if(hash === expected){
+      document.getElementById("login-view").hidden=true;
+      document.getElementById("editor-view").hidden=false;
+      document.getElementById("login-err").hidden=true;
+      document.getElementById("user").value="";
+      document.getElementById("pw").value="";
+      buildNav();
+      var first=SECTIONS[0];
+      var b=document.querySelector('#nav-cards button[data-key="'+first.key+'"]');
+      if(b){b.classList.add("active");}
+      showSection(first.key);
+    } else {
+      document.getElementById("login-err").hidden=false;
+    }
+  });
+}
+
+function tryLogin(e){ if(e.key==="Enter"){ e.preventDefault(); login(); } }
+document.getElementById("login-btn").addEventListener("click",login);
+document.getElementById("user").addEventListener("keydown",tryLogin);
+document.getElementById("pw").addEventListener("keydown",tryLogin);
+document.getElementById("logout-btn").addEventListener("click",function(){
+  document.getElementById("editor-view").hidden=true;
+  document.getElementById("login-view").hidden=false;
+  document.getElementById("pw").value="";
+});
+document.getElementById("reload-btn").addEventListener("click",function(){
+  work=JSON.parse(JSON.stringify(data));
+  var cur=activeSection();
+  showSection(cur?cur.dataset.key:"hero");
+  document.getElementById("status").textContent="Auf letzten Stand zurückgesetzt";
+});
+document.getElementById("export-btn").addEventListener("click",exportJson);
+
+/* ---------- Daten aus statischen JSON laden ---------- */
+function load(){
+  var loadScreen=document.getElementById("load-screen");
+  var loadErr=document.getElementById("load-err");
+  Promise.all([
+    fetch("/data/site.json").then(function(r){ if(!r.ok) throw 0; return r.json(); }),
+    fetch("/data/admin.json").then(function(r){ if(!r.ok) throw 0; return r.json(); })
+  ]).then(function(res){
+    data = res[0];
+    ADMIN_USERS = res[1] || {};
+    work = JSON.parse(JSON.stringify(data));
+    loadScreen.hidden = true;
+    document.getElementById("login-view").hidden = false;
+  }).catch(function(){
+    loadScreen.hidden = true;
+    loadErr.hidden = false;
+  });
+}
+load();
+
+})();
+</script>
+</body>
+</html>
