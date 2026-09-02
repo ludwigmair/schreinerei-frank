@@ -9,9 +9,16 @@ Live-Inhalte sauber getrennt.
 | **Test** (läuft zuerst) | `staging` | `https://schreinerei-frank.typopublic.com` |
 | **Live** (später) | `main` | `https://www.schreinerei-frank.de` |
 
-> In beiden Branches ist `backend: github` mit `repo: "ludwigmair/schreinerei-frank"`
-> gesetzt (`src/admin/config.yml`). Der Admin meldet sich mit **GitHub-Login**
-> an – es gibt kein eigenes Passwort.
+> In beiden Branches ist `backend: git-gateway` mit
+> `repo: "ludwigmair/schreinerei-frank"` gesetzt (`src/admin/config.yml`).
+> Der Admin meldet sich über **Netlify Identity** mit **GitHub-Login** an –
+> es gibt kein eigenes Passwort.
+>
+> **Wichtig – `branch:` muss in der config.yml je Umgebung passen:**
+> - `staging`-Branch → `branch: staging`
+> - `main`-Branch → `branch: main`
+> So speichert jeder Admin automatisch im richtigen Branch. Kein manuelles
+> Pull/Push/Abgleichen nötig – Git Gateway erledigt das automatisch.
 
 ---
 
@@ -51,9 +58,9 @@ Live-Inhalte sauber getrennt.
     (`Identity → Invite users`) nur verwenden, wenn jemand ohne eigenen
     GitHub-Account einloggen soll.
 11. **Test**: Öffne `https://schreinerei-frank.typopublic.com/admin/` →
-    **„Login with GitHub"** → erster Seitenaufbau kann einige Sekunden dauern.
-    Jedes Speichern committet in `staging`, Netlify baut neu, die Seite wird
-    aktualisiert.
+    **„Login with GitHub"** (Netlify Identity) → erster Seitenaufbau kann einige
+    Sekunden dauern. Jedes Speichern committet automatisch in `staging`,
+    Netlify baut neu, die Test-Site wird aktualisiert.
 
 ---
 
@@ -64,6 +71,11 @@ Wiederhole **Teil 1 + 2** für eine **zweite, separate Netlify-Site** mit:
 - Branch `main`
 - Domain `www.schreinerei-frank.de` (DNS beim Domain-Anbieter,
   Netlify verweist unter *Sidebar → Domain management* auf die Werte)
+- config.yml im `main`-Branch hat `branch: main` (bereits so eingestellt)
+
+> Der Live-Admin speichert mit jedem Speichern automatisch in `main` – die
+> Live-Site aktualisiert sich selbst. Inhalte von Test und Live bleiben so
+> sauber getrennt (getrennte Branches).
 
 > **Tipp:** Für beide Sites kannst du eine **eine** *shared/server-side*
 > GitHub-OAuth-App verwenden, statt pro Site eine neue anzulegen. Das ist
@@ -79,6 +91,11 @@ Wiederhole **Teil 1 + 2** für eine **zweite, separate Netlify-Site** mit:
   den **CNAME bei typopublic** anlegen. Den Zielwert zeigt Netlify im Domain-Panel.
 - **`base_url`**: Auf Netlify mit Git-Gateway/GitHub-Login musst du nichts weiter
   setzen – das funktioniert automatisch.
+- **`branch:` in config.yml** muss je Umgebung passen (`staging` bzw. `main`).
+  Nur so speichern Test- und Live-Admin in getrennte Branches.
+- **Kein manuelles Pull/Push**: Der Admin committet mit jedem Speichern
+  automatisch in den Branch der jeweiligen Site. Test-Login speichert in
+  `staging`, Live-Login in `main`.
 - **Domain-Angaben in Content**: `meta.siteUrl` in `content/site.json` sowie
   `src/robots.txt`, `src/sitemap.xml`, `src/llms.txt` sind **je Branch** bereits
   auf die passende Domain gesetzt:
