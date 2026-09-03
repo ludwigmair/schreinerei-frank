@@ -1,13 +1,13 @@
 /* =============================================================
    Schreinerei Frank – schlichter statischer Dev-Server (ohne Dependencies)
-   Liefert den Inhalt von public/ aus. Kein Build, kein Rendering –
+   Liefert den Inhalt des Projekt-Roots aus. Kein Build, kein Rendering –
    die Seite ist reines HTML/CSS/JS.
    ============================================================= */
 const http = require("http");
 const fs = require("fs");
 const path = require("path");
 
-const ROOT = path.join(__dirname, "public");
+const ROOT = path.join(__dirname, "..");
 const PORT = process.env.PORT || 9999;
 
 const MIME = {

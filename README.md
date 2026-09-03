@@ -22,7 +22,7 @@ Dev-Server, auf dem Server selbst ist nichts nötig.
 ## Schnellstart
 
 ```bash
-cd schreinerei-frank
+cd schreinerei-frank/dev
 npm run serve        # http://localhost:9999 · Admin: /admin/
 ```
 
@@ -40,23 +40,23 @@ keine Datenbank, kein Build, kein Account.
 
 ```
 schreinerei-frank/
-├── package.json               # nur "npm run serve" (statischer Dev-Server)
-├── serve.js                   # Node-HTTP-Dateiserver (ohne Dependencies)
-├── public/                    # DAS ist die deploybare Statische Website
-│   ├── index.html             # Onepager
-│   ├── impressum/index.html
-│   ├── datenschutz/index.html
-│   ├── admin/index.html       # lokaler Inhalte-Editor (Export nach site.json)
-│   ├── data/
-│   │   ├── site.json          # ALLE Inhalte – das bearbeitest du (Single-Source)
-│   │   └── admin.json         # Admin-Benutzer-Hashes (nur für den lokalen Editor)
-│   ├── js/
-│   │   ├── render.js          # liest data/site.json und befüllt die Seite per JS
-│   │   └── main.js            # Interaktion: Nav, FAQ, Slider, Lightbox, Formular …
-│   ├── assets/
-│   │   ├── css/styles.css
-│   │   └── img/*.{png,jpg,webp,svg}
-│   ├── llms.txt  robots.txt  sitemap.xml  site.webmanifest
+├── dev/                        # nur LOKALE Dev-Tools (werden NICHT deployed)
+│   ├── package.json            # nur "npm run serve" (statischer Dev-Server)
+│   └── serve.js                # Node-HTTP-Dateiserver (ohne Dependencies)
+├── index.html                  # Onepager
+├── impressum/index.html
+├── datenschutz/index.html
+├── admin/index.html           # lokaler Inhalte-Editor (Export nach site.json)
+├── data/
+│   ├── site.json              # ALLE Inhalte – das bearbeitest du (Single-Source)
+│   └── admin.json             # Admin-Benutzer-Hashes (nur für den lokalen Editor)
+├── js/
+│   ├── render.js              # liest data/site.json und befüllt die Seite per JS
+│   └── main.js                # Interaktion: Nav, FAQ, Slider, Lightbox, Formular …
+├── assets/
+│   ├── css/styles.css
+│   └── img/*.{png,jpg,webp,svg}
+├── llms.txt  robots.txt  sitemap.xml  site.webmanifest
 ├── DESIGN.md  README.md
 ```
 
@@ -65,7 +65,7 @@ schreinerei-frank/
 ## Inhalte bearbeiten
 
 Alle Texte, Listen, Bilder-Pfade, Öffnungszeiten, FAQ usw. stehen zentral in
-**`public/data/site.json`**. Änderungen dort sind beim nächsten Aufruf der Seite
+**`data/site.json`**. Änderungen dort sind beim nächsten Aufruf der Seite
 sofort wirksam – **kein Build nötig**.
 
 ### JSON-Struktur (Kurzübersicht)
@@ -107,38 +107,39 @@ Leistungen oder FAQ wandern automatisch mit.
 ## Admin (lokaler Inhalte-Editor)
 
 `/admin/` ist ein **passwortgeschützter Editor ohne externen Dienst**. Er läuft **nur
-lokal** über `npm run serve` und exportiert die bearbeiteten Inhalte als `site.json`
-(Download). Diesen Stand ersetzt du in `public/data/site.json`.
+lokal** über `npm run serve` (aus dem `dev/`-Ordner) und exportiert die bearbeiteten
+Inhalte als `site.json` (Download). Diesen Stand ersetzt du in `data/site.json`.
 
 - **Login:** Benutzer + Passwort. Die Zugangsdaten stehen als **SHA-256-Hashes** in
-  `public/data/admin.json` (`admin`, `frank` …). Hash erzeugen:
+  `data/admin.json` (`admin`, `frank` …). Hash erzeugen:
   `echo -n "passwort" | shasum -a 256`.
 - Bilder-Upload: funktioniert lokal über den Editor (Dateien werden nicht serverseitig
   abgelegt, sondern in die JSON eingebettet bzw. als Pfad gesetzt).
 
 > **Sicherheitswarnung:** Der Editor und die Passwort-Hashes liegen **in der
-> deploybaren `public/`-Struktur** und sind damit für jeden im Browser einsehbar.
+> deploybaren Root-Struktur** und sind damit für jeden im Browser einsehbar.
 > Das ist für einen echten, öffentlich erreichbaren Website-Admin **nicht sicher**.
-> Nutze den Editor ausschließlich lokal zum Pflegen und Lade niemals `admin/` mit
+> Nutze den Editor ausschließlich lokal zum Pflegen und lade niemals `admin/` mit
 > echten Passwort-Hashes auf einen öffentlichen Server hoch (oder entferne `admin/`
 > vor dem Deploy). Alternativ: Hashes leer lassen und Inhalte direkt in
-> `public/data/site.json` bearbeiten.
+> `data/site.json` bearbeiten.
 
 ---
 
 ## Deployment
 
-Deploybar ist **komplett der Ordner `public/`** – reines statisches Hosting. Kein Node,
+Deploybar ist **komplett der Projekt-Root** – reines statisches Hosting. Kein Node,
 kein PHP, keine Datenbank, kein Build auf dem Server.
 
 | | Nötig? | Warum |
 |---|---|---|
-| Statisches Hosting (HTTPS) | **ja** | liefert `public/` aus (Beliebiges: Cloudflare Pages, GitHub Pages, Vercel, nginx/Apache, Webspace …) |
+| Statisches Hosting (HTTPS) | **ja** | liefert die Root-Dateien aus (Beliebiges: Cloudflare Pages, GitHub Pages, Vercel, nginx/Apache, Webspace …) |
 | Node/Build auf dem Server | nein | es gibt keinen Build |
 | Formular-Dienst | ja, sobald das Kontaktformular live soll | statisches Hosting kann keine Mails senden – siehe unten |
 
-1. Inhalte in `public/data/site.json` anpassen.
-2. Inhalt von `public/` auf das statische Hosting hochladen.
+1. Inhalte in `data/site.json` anpassen.
+2. Den Projekt-Root auf das statische Hosting hochladen – den `dev/`-Ordner
+   **weglassen** (nur lokale Tools, nicht für den Live-Betrieb).
 3. Domain in `site.json` (`meta.siteUrl`) sowie `sitemap.xml`, `robots.txt`,
    `llms.txt` prüfen (aktuell `https://www.schreinerei-frank.de`).
 4. **Search Console** Property + Sitemap; **Google-Unternehmensprofil** verknüpfen;
@@ -161,7 +162,7 @@ kein PHP, keine Datenbank, kein Build auf dem Server.
 | **Formspree** | ✔ (50/Monat) | `formAction` = `https://formspree.io/f/xxxx` |
 | **Cloudflare Pages Functions** | ✔ | `functions/api/kontakt.js`, Mail über MailChannels/Resend |
 
-Setze `contact.formAction` in `public/data/site.json` entsprechend. Der Fetch-Zweig
+Setze `contact.formAction` in `data/site.json` entsprechend. Der Fetch-Zweig
 (JSON-Antwort → Erfolg/Fehler) ist in `js/main.js` unten auskommentiert vorbereitet;
 das Honeypot-Feld (`website`) ist vorhanden.
 

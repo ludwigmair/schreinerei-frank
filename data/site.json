@@ -120,8 +120,14 @@
       "mainImage": "/assets/img/projekt-innenausbau.jpg",
       "mainAlt": "Individueller Innenausbau aus Massivholz – einzigartige Möbel, Küchen, Türen, Fenster und Treppen aus heimischen Hölzern.",
       "images": [
-        { "src": "/assets/img/projekt-innenausbau.jpg", "alt": "Individueller Innenausbau – Blick in einen offenen Wohnraum aus Massivholz" },
-        { "src": "/assets/img/projekt-innenausbau-2.jpg", "alt": "Innenausbau im Detail: Wand- und Deckenverkleidung aus heimischem Holz" }
+        {
+          "src": "/assets/img/projekt-innenausbau.jpg",
+          "alt": "Individueller Innenausbau – Blick in einen offenen Wohnraum aus Massivholz"
+        },
+        {
+          "src": "/assets/img/projekt-innenausbau-2.jpg",
+          "alt": "Innenausbau im Detail: Wand- und Deckenverkleidung aus heimischem Holz"
+        }
       ]
     },
     {
@@ -129,7 +135,10 @@
       "mainImage": "/assets/img/projekt-kueche.jpg",
       "mainAlt": "Massivholzküche mit durchdachter Funktion und langlebigen Fronten aus heimischem Holz.",
       "images": [
-        { "src": "/assets/img/projekt-kueche.jpg", "alt": "Massivholzküche mit Arbeitsplatte und Grifflosen-Fronten" }
+        {
+          "src": "/assets/img/projekt-kueche.jpg",
+          "alt": "Massivholzküche mit Arbeitsplatte und Grifflosen-Fronten"
+        }
       ]
     },
     {
@@ -137,11 +146,26 @@
       "mainImage": "/assets/img/projekt-badmoebel.jpg",
       "mainAlt": "Feuchtraumgeeigneter Waschtisch und Badmöbel nach Maß aus Massivholz.",
       "images": [
-        { "src": "/assets/img/projekt-badmoebel.jpg", "alt": "Waschtisch aus Massivholz mit Unterbau" },
-        { "src": "/assets/img/projekt-badmoebel-1.jpg", "alt": "Badmöbelserie – Hochschrank und Waschtisch" },
-        { "src": "/assets/img/projekt-badmoebel-2.jpg", "alt": "Badmöbel aus Massivholz im Detail" },
-        { "src": "/assets/img/projekt-badmoebel-4.jpg", "alt": "Badezimmer – Waschtisch aus heimischem Holz" },
-        { "src": "/assets/img/projekt-badmoebel-5.jpg", "alt": "Badmöbel im Detail: Griffe und Beschläge" }
+        {
+          "src": "/assets/img/projekt-badmoebel.jpg",
+          "alt": "Waschtisch aus Massivholz mit Unterbau"
+        },
+        {
+          "src": "/assets/img/projekt-badmoebel-1.jpg",
+          "alt": "Badmöbelserie – Hochschrank und Waschtisch"
+        },
+        {
+          "src": "/assets/img/projekt-badmoebel-2.jpg",
+          "alt": "Badmöbel aus Massivholz im Detail"
+        },
+        {
+          "src": "/assets/img/projekt-badmoebel-4.jpg",
+          "alt": "Badezimmer – Waschtisch aus heimischem Holz"
+        },
+        {
+          "src": "/assets/img/projekt-badmoebel-5.jpg",
+          "alt": "Badmöbel im Detail: Griffe und Beschläge"
+        }
       ]
     },
     {
@@ -149,11 +173,26 @@
       "mainImage": "/assets/img/projekt-tuer.jpg",
       "mainAlt": "Massive Türen aus Holz für innen und außen in gedämmtem Massivholz.",
       "images": [
-        { "src": "/assets/img/projekt-tuer.jpg", "alt": "Massive Holztür" },
-        { "src": "/assets/img/projekt-tuer-1.jpg", "alt": "Holztür im Innenausbau" },
-        { "src": "/assets/img/projekt-tuer-2.jpg", "alt": "Gedämmte Massivholztür" },
-        { "src": "/assets/img/projekt-tuer-5.jpg", "alt": "Türblatt aus heimischem Massivholz" },
-        { "src": "/assets/img/projekt-tuer-6.jpg", "alt": "Massivholztür im Detail" }
+        {
+          "src": "/assets/img/projekt-tuer.jpg",
+          "alt": "Massive Holztür"
+        },
+        {
+          "src": "/assets/img/projekt-tuer-1.jpg",
+          "alt": "Holztür im Innenausbau"
+        },
+        {
+          "src": "/assets/img/projekt-tuer-2.jpg",
+          "alt": "Gedämmte Massivholztür"
+        },
+        {
+          "src": "/assets/img/projekt-tuer-5.jpg",
+          "alt": "Türblatt aus heimischem Massivholz"
+        },
+        {
+          "src": "/assets/img/projekt-tuer-6.jpg",
+          "alt": "Massivholztür im Detail"
+        }
       ]
     },
     {
@@ -161,9 +200,18 @@
       "mainImage": "/assets/img/projekt-treppe.jpg",
       "mainAlt": "Treppe aus heimischem Massivholz – gerade, gewendelt oder freitragend.",
       "images": [
-        { "src": "/assets/img/projekt-treppe.jpg", "alt": "Massivholztreppe" },
-        { "src": "/assets/img/projekt-treppe-1.jpg", "alt": "Gewendelte Treppe aus Massivholz" },
-        { "src": "/assets/img/projekt-treppe-2.jpg", "alt": "Treppenstufen aus heimischem Eichenholz" }
+        {
+          "src": "/assets/img/projekt-treppe.jpg",
+          "alt": "Massivholztreppe"
+        },
+        {
+          "src": "/assets/img/projekt-treppe-1.jpg",
+          "alt": "Gewendelte Treppe aus Massivholz"
+        },
+        {
+          "src": "/assets/img/projekt-treppe-2.jpg",
+          "alt": "Treppenstufen aus heimischem Eichenholz"
+        }
       ]
     },
     {
@@ -171,9 +219,18 @@
       "mainImage": "/assets/img/projekt-fenster.jpg",
       "mainAlt": "Holz- und Holz-Alu-Fenster mit moderner Verglasung für Neubau und Sanierung.",
       "images": [
-        { "src": "/assets/img/projekt-fenster.jpg", "alt": "Holz-Alu-Fenster mit Dreifachverglasung" },
-        { "src": "/assets/img/projekt-fenster-2.jpg", "alt": "Holzfenster im Neubau" },
-        { "src": "/assets/img/projekt-fenster-3.jpg", "alt": "Fenster mit moderner Verglasung" }
+        {
+          "src": "/assets/img/projekt-fenster.jpg",
+          "alt": "Holz-Alu-Fenster mit Dreifachverglasung"
+        },
+        {
+          "src": "/assets/img/projekt-fenster-2.jpg",
+          "alt": "Holzfenster im Neubau"
+        },
+        {
+          "src": "/assets/img/projekt-fenster-3.jpg",
+          "alt": "Fenster mit moderner Verglasung"
+        }
       ]
     }
   ],
@@ -251,17 +308,29 @@
     "heading": "Projekte aus unserer Werkstatt"
   },
   "hero": {
-    "kicker": "Schreinermeister · Seeon im Chiemgau",
+    "kicker": "Schreinermeister · Seeon im Chiemgauxx",
     "heading": "Möbel, Küchen und Treppen aus heimischem Holz.",
     "claim": "Von der Idee zum Traumhaus.",
     "lead": "Wir planen, fertigen und montieren einzigartige Einzelstücke aus regionalen Hölzern – mit viel Herzblut und Liebe zum Detail. Ein Ansprechpartner von der Beratung bis zur Montage.",
     "ctaPrimary": "Kostenlos beraten lassen",
     "ctaSecondary": "Arbeiten ansehen",
     "images": [
-      { "src": "/assets/img/projekt-kueche.jpg", "alt": "Massivholzküche nach Maß aus heimischem Holz – ein Projekt der Schreinerei Frank." },
-      { "src": "/assets/img/projekt-treppe.jpg", "alt": "Freitragende Massivholztreppe aus heimischem Holz – ein Projekt der Schreinerei Frank." },
-      { "src": "/assets/img/projekt-innenausbau.jpg", "alt": "Massivholz-Innenausbau mit maßgefertigten Möbeln – ein Projekt der Schreinerei Frank." },
-      { "src": "/assets/img/projekt-badmoebel.jpg", "alt": "Feuchtraumgeeignete Badmöbel und Waschtisch aus Massivholz – ein Projekt der Schreinerei Frank." }
+      {
+        "src": "/assets/img/projekt-kueche.jpg",
+        "alt": "Massivholzküche nach Maß aus heimischem Holz – ein Projekt der Schreinerei Frank."
+      },
+      {
+        "src": "/assets/img/projekt-treppe.jpg",
+        "alt": "Freitragende Massivholztreppe aus heimischem Holz – ein Projekt der Schreinerei Frank."
+      },
+      {
+        "src": "/assets/img/projekt-innenausbau.jpg",
+        "alt": "Massivholz-Innenausbau mit maßgefertigten Möbeln – ein Projekt der Schreinerei Frank."
+      },
+      {
+        "src": "/assets/img/projekt-badmoebel.jpg",
+        "alt": "Feuchtraumgeeignete Badmöbel und Waschtisch aus Massivholz – ein Projekt der Schreinerei Frank."
+      }
     ]
   },
   "footer": {

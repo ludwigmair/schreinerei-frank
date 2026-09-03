@@ -393,18 +393,47 @@
     if (!form) return;
     var status = form.querySelector('[data-contact-status]');
 
-    var EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
-    var PHONE_RE = /^[+()\d][\d\s()+\-/. ]{4,}$/;
+    var EMAIL_RE = /^[A-Za-z0-9](?:[A-Za-z0-9._%+-]*[A-Za-z0-9])?@[A-Za-z0-9](?:[A-Za-z0-9-]*[A-Za-z0-9])?(?:\.[A-Za-z0-9](?:[A-Za-z0-9-]*[A-Za-z0-9])?)+$/;
+    var PLACEHOLDER_DOMAINS = /(^|\.)(example\.(com|org|net)|beispiel\.\w+|test\.\w+|local(host)?(\.\w+)?|domain\.invalid|foo\.\w+|bar\.\w+)$/i;
+    var DISPOSABLE_DOMAINS = /(^|\.)(mailinator\.\w+|yopmail\.\w+|mailnesia\.\w+|10minutemail\.\w+|guerrillamail\.\w+|throwaway\.\w+|tempmail\.\w+|trashmail\.\w+|temp-mail\.\w+|spam4\.\w+|maildrop\.\w+|getnada\.\w+|sharklasers\.\w+|dispostable\.\w+|inboxbear\.\w+|mintemail\.\w+)$/i;
+
+    function validEmail(v) {
+      var s = v.trim();
+      if (!EMAIL_RE.test(s)) return false;
+      var domain = s.split('@')[1];
+      if (PLACEHOLDER_DOMAINS.test(domain)) return false;
+      if (DISPOSABLE_DOMAINS.test(domain)) return false;
+      return true;
+    }
+
+    function validPhone(v) {
+      var s = v.replace(/[\s()./\-]+/g, '');
+      if (s.length < 9 || s.length > 15) return false;
+      if (!/^[+]?\d+$/.test(s)) return false;
+      if (s.charAt(0) === '+') return /^\+\d{8,14}$/.test(s);
+      if (/^0\d{7,14}$/.test(s)) return true;
+      if (/^00\d{7,14}$/.test(s)) return true;
+      if (/^(49|0049)\d{7,14}$/.test(s)) return true;
+      return /^\d{7,14}$/.test(s);
+    }
 
     var fields = {
       name: { input: form.elements.name, required: true, validate: function (v) { return v.trim().length >= 2; }, msg: 'Bitte geben Sie Ihren Namen ein.' },
-      email: { input: form.elements.email, required: true, validate: function (v) { return EMAIL_RE.test(v.trim()); }, msg: 'Bitte geben Sie eine gültige E-Mail-Adresse ein.' },
-      phone: { input: form.elements.phone, required: false, validate: function (v) { return v.trim() === '' || PHONE_RE.test(v.trim()); }, msg: 'Bitte geben Sie eine gültige Telefonnummer ein.' },
+      email: { input: form.elements.email, required: true, validate: validEmail, msg: 'Bitte geben Sie eine gültige E-Mail-Adresse ein.' },
+      phone: { input: form.elements.phone, required: false, validate: function (v) { return v.trim() === '' || validPhone(v); }, msg: 'Bitte geben Sie eine gültige Telefonnummer ein.' },
       message: { input: form.elements.message, required: true, validate: function (v) { return v.trim().length >= 5; }, msg: 'Bitte beschreiben Sie Ihr Vorhaben kurz.' }
     };
 
     function errorNode(name) {
-      return form.querySelector('#' + name + '-error');
+      var f = fields[name];
+      if (!f || !f.input) return null;
+      var describedBy = f.input.getAttribute('aria-describedby');
+      if (describedBy) {
+        var first = form.querySelector('#' + describedBy.split(/\s+/)[0]);
+        if (first) return first;
+      }
+      var wrap = f.input.closest ? f.input.closest('.field') : null;
+      return wrap ? wrap.querySelector('.field-error') : null;
     }
     function setError(name, message) {
       var f = fields[name];
