@@ -1,0 +1,57 @@
+# Schreinerei Frank – Apache-Konfiguration
+# Liefert SEO/KI-Dateien dynamisch aus site.json (immer aktuell).
+
+RewriteEngine On
+
+# >>> PROJECT ADMIN (generiert aus php/config.php) >>>
+SetEnvIf Request_URI ".*" ADMIN_PATH=/frank-adm
+
+# Alte Admin-URL (/admin/) auf das neue Admin weiterleiten
+RewriteCond %{ENV:ADMIN_PATH} ^(/[^/]+)$
+RewriteRule ^admin(/.*)?$ %1/ [R=301,L]
+
+# Admin-includes nie direkt aufrufen
+<IfModule mod_rewrite.c>
+  RewriteRule ^php/.*\.php$ - [F]
+  RewriteCond %{ENV:ADMIN_PATH} ^(/[^/]+)$
+  RewriteRule ^%1/includes/.*\.php$ - [F]
+</IfModule>
+# <<< PROJECT ADMIN (generiert aus php/config.php) <<<
+
+# Direkter Zugriff auf .php-Endpunkte erlaubt – zusätzlich saubere URLs:
+RewriteRule ^sitemap\.xml$     sitemap.php     [L]
+RewriteRule ^robots\.txt$      robots.php      [L]
+RewriteRule ^llms\.txt$        llms.php        [L]
+RewriteRule ^site\.webmanifest$ webmanifest.php [L]
+
+# Verzeichnisse ohne Datei -> index.php (z. B. /impressum/ , /datenschutz/)
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule ^([^\.]+)/?$ $1/index.php [L]
+
+# Caching für Assets (Bilder, CSS, JS) – 1 Jahr immutable
+<IfModule mod_expires.c>
+  ExpiresActive On
+  ExpiresByType image/jpeg "access plus 1 year"
+  ExpiresByType image/webp "access plus 1 year"
+  ExpiresByType image/png "access plus 1 year"
+  ExpiresByType image/svg+xml "access plus 1 year"
+  ExpiresByType image/gif "access plus 1 year"
+  ExpiresByType text/css "access plus 1 year"
+  ExpiresByType application/javascript "access plus 1 year"
+  ExpiresByType application/json "access plus 1 hour"
+</IfModule>
+
+# Kompression
+<IfModule mod_deflate.c>
+  AddOutputFilterByType DEFLATE text/html text/css application/javascript application/json text/plain
+</IfModule>
+
+# Sicherheit: Admin-Ordner vor Zugriff schützen (PHP-Handling kommt aus frank-adm/)
+<FilesMatch "^\.">
+  Require all denied
+</FilesMatch>
+
+# Sensible Daten-Dateien nicht direkt ausliefern
+<FilesMatch "^(admin\.json|admin\.local\.json|site\.json|\.env)$">
+  Require all denied
+</FilesMatch>

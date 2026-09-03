@@ -2,8 +2,12 @@ node_modules/
 .DS_Store
 .env
 
-# Lokale Dev-Tools (nicht deployen)
+# Lokale/Produktions-Admin-Zugangsdaten (NIE versionieren)
+data/admin.local.json
+
+# Lokale Dev-Tools / Caches
 dev/.env
 
-# Eleventy-Build-Ordner (Altbestand)
-_site/
+# Lokale Dev-Server-Logs (NIE versionieren)
+dev/server.log
+dev/srv_t.log

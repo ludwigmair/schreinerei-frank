@@ -1,463 +1,554 @@
 {
-  "contact": {
-    "kicker": "Kontakt",
-    "heading": "Jetzt unverbindlich anfragen",
-    "formAction": "/api/kontakt",
-    "consent": "Mit dem Absenden stimmen Sie der Verarbeitung Ihrer Angaben zur Bearbeitung der Anfrage zu.",
-    "mapNotice": "Beim Öffnen von Google Maps werden Daten (u. a. Ihre IP-Adresse) an Google übertragen. Möchten Sie die Karte dennoch in Google Maps öffnen?"
-  },
-  "business": {
-    "areaServed": [
-      "Seeon-Seebruck",
-      "Obing",
-      "Traunstein",
-      "Trostberg",
-      "Chieming",
-      "Bad Endorf",
-      "Prien am Chiemsee",
-      "Rosenheim"
-    ],
-    "street": "Seestraße 61",
-    "openingHoursText": "Mo–Do 7:00–16:30 Uhr, Fr 7:00–13:00 Uhr",
-    "city": "Seeon",
-    "name": "Schreinerei Frank - Meisterbetrieb",
-    "phone": "+49 8624 1260",
-    "phoneSchema": "+49-8624-1260",
-    "geo": {
-      "lat": 47.9761,
-      "lng": 12.4536
+    "config": {
+        "name": "Schreinerei Frank - Meisterbetrieb",
+        "domain": "https://www.schreinerei-frank.de",
+        "email": "info@schreinerei-frank.de",
+        "phone": "+49 8624 1260",
+        "phoneSchema": "+49-8624-1260",
+        "fax": "+49 8667 1372",
+        "faxSchema": "+49-8667-1372",
+        "themeColor": "#3D6490",
+        "assetsBase": "/assets",
+        "logo": "site/logo-schreinerei-frank.png",
+        "port": 9999,
+        "adminPath": "/frank-adm"
     },
-    "openingHoursSpec": [
-      {
-        "days": [
-          "Monday",
-          "Tuesday",
-          "Wednesday",
-          "Thursday"
-        ],
-        "opens": "07:00",
-        "closes": "16:30"
-      },
-      {
-        "days": [
-          "Friday"
-        ],
-        "opens": "07:00",
-        "closes": "13:00"
-      }
-    ],
-    "mapUrl": "https://www.google.com/maps?q=Schreinerei+Frank+Seestra%C3%9Fe+61+83370+Seeon",
-    "owner": "Hubert und Stefan Frank",
-    "priceRange": "€€",
-    "region": "Bayern",
-    "country": "DE",
-    "postalCode": "83370",
-    "phoneHref": "tel:+4986241260",
-    "email": "info@schreinerei-frank.de",
-    "fax": "+49 8667 1372",
-    "faxSchema": "+49-8667-1372"
-  },
-  "nav": [
-    {
-      "label": "Leistungen",
-      "href": "#leistungen"
-    },
-    {
-      "label": "Arbeiten",
-      "href": "#galerie"
-    },
-    {
-      "label": "Über uns",
-      "href": "#ueber-uns"
-    },
-    {
-      "label": "Rezensionen",
-      "href": "#rezensionen"
-    },
-    {
-      "label": "Fragen",
-      "href": "#faq"
-    },
-    {
-      "label": "Kontakt",
-      "href": "#kontakt"
-    }
-  ],
-  "meta": {
-    "siteUrl": "https://www.schreinerei-frank.de",
-    "title": "Schreinerei Frank - Meisterbetrieb · Küchen, Treppen & Innenausbau aus Massivholz | Seeon Chiemgau",
-    "description": "Meisterschreinerei in Seeon im Chiemgau: Küchen, Treppen, Türen und Möbel aus heimischem Massivholz – Beratung, Fertigung und Montage aus einer Hand.",
-    "ogTitle": "Schreinerei Frank - Meisterbetrieb · Massivholz aus Seeon im Chiemgau",
-    "ogDescription": "Küchen, Treppen, Türen und Möbel aus heimischem Massivholz. Meisterbetrieb im Chiemgau – Beratung, Fertigung und Montage aus einer Hand.",
-    "ogImage": "/assets/img/og-schreinerei-frank.jpg",
-    "lcpImage": "/assets/img/projekt-kueche.jpg"
-  },
-  "about": {
-    "heading": "Geht ned gibt's neda",
-    "personImageAlt": "Massivholzküche nach Maß aus heimischem Holz – ein Projekt der Schreinerei Frank.",
-    "points": [
-      "Individuelle Wohnkonzepte statt Katalogware",
-      "Handgefertigte Einzelstücke aus eigener Werkstatt",
-      "Heimische, nachwachsende Hölzer",
-      "Ökologische Oberflächenbehandlung",
-      "All-inclusive-Service durch feste Partnerbetriebe",
-      "Barrierefreies Wohnen auf Wunsch mitgeplant"
-    ],
-    "personImage": "/assets/img/projekt-kueche.jpg",
-    "personRole": "Schreinermeister & Inhaber",
-    "text": "Seit Jahrzehnten steht die Schreinerei Frank in Seeon für ehrliches Handwerk. Wir setzen auf Langlebigkeit und Qualität statt Wegwerfmöbel – mit regionalen Rohstoffen, kurzen Wegen und ökologischer Verarbeitung. Für Ihr Projekt nehmen wir uns Zeit: Beratung vor Ort, individuelle Planung, Montage bis zur letzten Schraube.",
-    "kicker": "Über uns",
-    "personCta": "Termin vereinbaren"
-  },
-  "servicesIntro": {
-    "kicker": "Leistungen",
-    "heading": "Alles rund ums Holz – aus einer Hand",
-    "text": "Sechs Gewerke aus der eigenen Werkstatt in Seeon. Für alles Weitere arbeiten wir mit festen regionalen Partnerbetrieben zusammen."
-  },
-  "gallery": [
-    {
-      "category": "Individueller Innenausbau",
-      "mainImage": "/assets/img/projekt-innenausbau.jpg",
-      "mainAlt": "Individueller Innenausbau aus Massivholz – einzigartige Möbel, Küchen, Türen, Fenster und Treppen aus heimischen Hölzern.",
-      "images": [
-        {
-          "src": "/assets/img/projekt-innenausbau.jpg",
-          "alt": "Individueller Innenausbau – Blick in einen offenen Wohnraum aus Massivholz"
-        },
-        {
-          "src": "/assets/img/projekt-innenausbau-2.jpg",
-          "alt": "Innenausbau im Detail: Wand- und Deckenverkleidung aus heimischem Holz"
-        }
-      ]
-    },
-    {
-      "category": "Küchen",
-      "mainImage": "/assets/img/projekt-kueche.jpg",
-      "mainAlt": "Massivholzküche mit durchdachter Funktion und langlebigen Fronten aus heimischem Holz.",
-      "images": [
-        {
-          "src": "/assets/img/projekt-kueche.jpg",
-          "alt": "Massivholzküche mit Arbeitsplatte und Grifflosen-Fronten"
-        }
-      ]
-    },
-    {
-      "category": "Badmöbel",
-      "mainImage": "/assets/img/projekt-badmoebel.jpg",
-      "mainAlt": "Feuchtraumgeeigneter Waschtisch und Badmöbel nach Maß aus Massivholz.",
-      "images": [
-        {
-          "src": "/assets/img/projekt-badmoebel.jpg",
-          "alt": "Waschtisch aus Massivholz mit Unterbau"
-        },
-        {
-          "src": "/assets/img/projekt-badmoebel-1.jpg",
-          "alt": "Badmöbelserie – Hochschrank und Waschtisch"
-        },
-        {
-          "src": "/assets/img/projekt-badmoebel-2.jpg",
-          "alt": "Badmöbel aus Massivholz im Detail"
-        },
-        {
-          "src": "/assets/img/projekt-badmoebel-4.jpg",
-          "alt": "Badezimmer – Waschtisch aus heimischem Holz"
-        },
-        {
-          "src": "/assets/img/projekt-badmoebel-5.jpg",
-          "alt": "Badmöbel im Detail: Griffe und Beschläge"
-        }
-      ]
-    },
-    {
-      "category": "Türen für innen & außen",
-      "mainImage": "/assets/img/projekt-tuer.jpg",
-      "mainAlt": "Massive Türen aus Holz für innen und außen in gedämmtem Massivholz.",
-      "images": [
-        {
-          "src": "/assets/img/projekt-tuer.jpg",
-          "alt": "Massive Holztür"
-        },
-        {
-          "src": "/assets/img/projekt-tuer-1.jpg",
-          "alt": "Holztür im Innenausbau"
-        },
-        {
-          "src": "/assets/img/projekt-tuer-2.jpg",
-          "alt": "Gedämmte Massivholztür"
-        },
-        {
-          "src": "/assets/img/projekt-tuer-5.jpg",
-          "alt": "Türblatt aus heimischem Massivholz"
-        },
-        {
-          "src": "/assets/img/projekt-tuer-6.jpg",
-          "alt": "Massivholztür im Detail"
-        }
-      ]
-    },
-    {
-      "category": "Treppen",
-      "mainImage": "/assets/img/projekt-treppe.jpg",
-      "mainAlt": "Treppe aus heimischem Massivholz – gerade, gewendelt oder freitragend.",
-      "images": [
-        {
-          "src": "/assets/img/projekt-treppe.jpg",
-          "alt": "Massivholztreppe"
-        },
-        {
-          "src": "/assets/img/projekt-treppe-1.jpg",
-          "alt": "Gewendelte Treppe aus Massivholz"
-        },
-        {
-          "src": "/assets/img/projekt-treppe-2.jpg",
-          "alt": "Treppenstufen aus heimischem Eichenholz"
-        }
-      ]
-    },
-    {
-      "category": "Fensterbau",
-      "mainImage": "/assets/img/projekt-fenster.jpg",
-      "mainAlt": "Holz- und Holz-Alu-Fenster mit moderner Verglasung für Neubau und Sanierung.",
-      "images": [
-        {
-          "src": "/assets/img/projekt-fenster.jpg",
-          "alt": "Holz-Alu-Fenster mit Dreifachverglasung"
-        },
-        {
-          "src": "/assets/img/projekt-fenster-2.jpg",
-          "alt": "Holzfenster im Neubau"
-        },
-        {
-          "src": "/assets/img/projekt-fenster-3.jpg",
-          "alt": "Fenster mit moderner Verglasung"
-        }
-      ]
-    }
-  ],
-  "testimonials": [
-    {
-      "quote": "Die Küche ist nach zwölf Jahren wie am ersten Tag – und wenn wir anrufen, ist der Frank da.",
-      "source": "Familie H. · Seeon-Seebruck"
-    },
-    {
-      "quote": "Unsere freitragende Treppe ist jetzt das Herzstück im Haus. Saubere Arbeit, alles wie besprochen.",
-      "source": "M. & T. Berger · Obing"
-    },
-    {
-      "quote": "Ehrliche Beratung, fairer Preis, Termine eingehalten. Wir empfehlen die Schreinerei gerne weiter.",
-      "source": "Praxis Dr. L. · Traunstein"
-    }
-  ],
-  "faqIntro": {
-    "kicker": "Häufige Fragen",
-    "heading": "Gut zu wissen"
-  },
-  "faq": [
-    {
-      "q": "In welchem Umkreis arbeiten Sie?",
-      "a": "Wir sind im gesamten Chiemgau für Sie da – unter anderem in Seeon-Seebruck, Obing, Traunstein, Trostberg, Chieming und rund um den Chiemsee. Sprechen Sie uns bei größeren Projekten auch außerhalb dieser Region gern an."
-    },
-    {
-      "q": "Welche Hölzer verwenden Sie?",
-      "a": "Vorwiegend heimische Hölzer wie Eiche, Esche, Nussbaum, Lärche und Fichte. Die Oberflächen behandeln wir ökologisch, zum Beispiel mit Ölen und Wachsen."
-    },
-    {
-      "q": "Übernehmen Sie auch die Montage?",
-      "a": "Ja. Wir planen, fertigen und montieren selbst und koordinieren bei Bedarf die beteiligten Gewerke über feste regionale Partnerbetriebe. Die Montage übernehmen wir im gesamten Chiemgau – unter anderem in Seeon-Seebruck, Obing, Traunstein, Trostberg, Chieming und rund um den Chiemsee. Größere Projekte außerhalb dieser Region sprechen wir gern individuell ab."
-    },
-    {
-      "q": "Wie läuft ein Projekt ab?",
-      "a": "Kostenlose Erstberatung vor Ort, individuelle Planung mit Zeichnung und Angebot, Fertigung in der Werkstatt in Seeon und Montage bei Ihnen zu Hause."
-    },
-    {
-      "q": "Planen Sie barrierefreie Lösungen?",
-      "a": "Ja, barrierefreies Wohnen berücksichtigen wir auf Wunsch von Anfang an – etwa bei unterfahrbaren Küchen, Bädern und schwellenlosen Übergängen."
-    }
-  ],
-  "trust": [
-    {
-      "value": "Meisterbetrieb",
-      "label": "Inhaber Hubert und Stefan Frank"
-    },
-    {
-      "value": "Fertigung in Seeon",
-      "label": "eigene Werkstatt im Chiemgau"
-    },
-    {
-      "value": "Heimische Hölzer",
-      "label": "Eiche, Esche, Nussbaum, Lärche"
-    },
-    {
-      "value": "Ökologische Oberflächen",
-      "label": "Öle und Wachse statt Lack"
-    }
-  ],
-  "testimonialsIntro": {
-    "kicker": "Rezensionen",
-    "heading": "Was Kundinnen und Kunden sagen",
-    "google": {
-      "placeId": "",
-      "url": "https://www.google.com/maps?q=Schreinerei+Frank+Seestra%C3%9Fe+61+83370+Seeon",
-      "apiKey": "",
-      "rating": 0,
-      "reviewCount": 0
-    }
-  },
-  "galleryIntro": {
-    "kicker": "Arbeiten",
-    "heading": "Projekte aus unserer Werkstatt"
-  },
-  "hero": {
-    "kicker": "Schreinermeister · Seeon im Chiemgauxx",
-    "heading": "Möbel, Küchen und Treppen aus heimischem Holz.",
-    "claim": "Von der Idee zum Traumhaus.",
-    "lead": "Wir planen, fertigen und montieren einzigartige Einzelstücke aus regionalen Hölzern – mit viel Herzblut und Liebe zum Detail. Ein Ansprechpartner von der Beratung bis zur Montage.",
-    "ctaPrimary": "Kostenlos beraten lassen",
-    "ctaSecondary": "Arbeiten ansehen",
-    "images": [
-      {
-        "src": "/assets/img/projekt-kueche.jpg",
-        "alt": "Massivholzküche nach Maß aus heimischem Holz – ein Projekt der Schreinerei Frank."
-      },
-      {
-        "src": "/assets/img/projekt-treppe.jpg",
-        "alt": "Freitragende Massivholztreppe aus heimischem Holz – ein Projekt der Schreinerei Frank."
-      },
-      {
-        "src": "/assets/img/projekt-innenausbau.jpg",
-        "alt": "Massivholz-Innenausbau mit maßgefertigten Möbeln – ein Projekt der Schreinerei Frank."
-      },
-      {
-        "src": "/assets/img/projekt-badmoebel.jpg",
-        "alt": "Feuchtraumgeeignete Badmöbel und Waschtisch aus Massivholz – ein Projekt der Schreinerei Frank."
-      }
-    ]
-  },
-  "footer": {
-    "impressumHref": "/impressum",
-    "datenschutzHref": "/datenschutz"
-  },
-  "legal": {
-    "impressum": {
-      "title": "Impressum – Schreinerei Frank",
-      "metaDescription": "Impressum der Schreinerei Frank, Meisterbetrieb in Seeon im Chiemgau: Anbieterkennzeichnung, Kontakt, Umsatzsteuer-ID und Verantwortlicher gemäß TMG/DDG.",
-      "heading": "Impressum",
-      "intro": "Angaben gemäß § 5 DDG (Digitale-Dienste-Gesetz) und § 18 Abs. 2 MStV (Medienstaatsvertrag):",
-      "companyName": "Schreinerei Frank – Meisterbetrieb",
-      "ownerName": "Inhaber: Hubert Frank und Stefan Frank",
-      "address": "Seestraße 61, 83370 Seeon-Seebruck",
-      "contact": {
+    "contact": {
         "kicker": "Kontakt",
-        "phone": "Telefon: +49 8624 1260",
-        "fax": "Telefax: +49 8667 1372",
-        "email": "E-Mail: info@schreinerei-frank.de",
-        "emailHref": "info@schreinerei-frank.de",
-        "url": "https://www.schreinerei-frank.de"
-      },
-      "vat": {
-        "kicker": "Umsatzsteuer-ID",
-        "text": "Umsatzsteuer-Identifikationsnummer gemäß § 27a Umsatzsteuergesetz: … (hier eintragen)"
-      },
-      "responsible": {
-        "kicker": "Redaktionell verantwortlich",
-        "text": "Hubert Frank und Stefan Frank, Seestraße 61, 83370 Seeon-Seebruck"
-      },
-      "dispute": {
-        "kicker": "EU-Streitschlichtung",
-        "text": "Die Europäische Kommission stellt eine Plattform zur Online-Streitbeilegung (OS) bereit: https://ec.europa.eu/consumers/odr. Wir sind nicht bereit oder verpflichtet, an Streitbeilegungsverfahren vor einer Verbraucherschlichtungsstelle teilzunehmen."
-      },
-      "contentLiability": {
-        "kicker": "Haftung für Inhalte",
-        "text": "Als Diensteanbieter sind wir gemäß § 7 Abs. 1 DDG für eigene Inhalte auf diesen Seiten nach den allgemeinen Gesetzen verantwortlich. Nach §§ 8 bis 10 DDG sind wir als Diensteanbieter jedoch nicht verpflichtet, übermittelte oder gespeicherte fremde Informationen zu überwachen oder nach Umständen zu forschen, die auf eine rechtswidrige Tätigkeit hinweisen. Verpflichtungen zur Entfernung oder Sperrung der Nutzung von Informationen nach den allgemeinen Gesetzen bleiben hiervon unberührt. Eine diesbezügliche Haftung ist jedoch erst ab dem Zeitpunkt der Kenntnis einer konkreten Rechtsverletzung möglich. Bei Bekanntwerden von entsprechenden Rechtsverletzungen werden wir diese Inhalte umgehend entfernen."
-      },
-      "linkLiability": {
-        "kicker": "Haftung für Links",
-        "text": "Unser Angebot enthält Links zu externen Websites Dritter, auf deren Inhalte wir keinen Einfluss haben. Deshalb können wir für diese fremden Inhalte auch keine Gewähr übernehmen. Für die Inhalte der verlinkten Seiten ist stets der jeweilige Anbieter oder Betreiber der Seiten verantwortlich. Die verlinkten Seiten wurden zum Zeitpunkt der Verlinkung auf mögliche Rechtsverstöße überprüft. Rechtswidrige Inhalte waren zum Zeitpunkt der Verlinkung nicht erkennbar. Eine permanente inhaltliche Kontrolle der verlinkten Seiten ist jedoch ohne konkrete Anhaltspunkte einer Rechtsverletzung nicht zumutbar. Bei Bekanntwerden von Rechtsverletzungen werden wir derartige Links umgehend entfernen."
-      },
-      "copyright": {
-        "kicker": "Urheberrecht",
-        "text": "Die durch die Seitenbetreiber erstellten Inhalte und Werke auf diesen Seiten unterliegen dem deutschen Urheberrecht. Die Vervielfältigung, Bearbeitung, Verbreitung und jede Art der Verwertung außerhalb der Grenzen des Urheberrechtes bedürfen der schriftlichen Zustimmung des jeweiligen Autors bzw. Erstellers. Downloads und Kopien dieser Seite sind nur für den privaten, nicht kommerziellen Gebrauch gestattet."
-      }
+        "heading": "Jetzt unverbindlich anfragen",
+        "formAction": "/api/kontakt",
+        "consent": "Mit dem Absenden stimmen Sie der Verarbeitung Ihrer Angaben zur Bearbeitung der Anfrage zu.",
+        "mapNotice": "Beim Öffnen von Google Maps werden Daten (u. a. Ihre IP-Adresse) an Google übertragen. Möchten Sie die Karte dennoch in Google Maps öffnen?"
     },
-    "datenschutz": {
-      "title": "Datenschutzerklärung – Schreinerei Frank",
-      "metaDescription": "Datenschutzerklärung der Schreinerei Frank, Seeon im Chiemgau: Verantwortlicher, Verarbeitung personenbezogener Daten, Cookies, Kontaktformular, Ihre Rechte.",
-      "heading": "Datenschutzerklärung",
-      "intro": "Wir freuen uns sehr über Ihr Interesse an unserem Unternehmen. Datenschutz hat einen besonders hohen Stellenwert für die Leitung der Schreinerei Frank. Diese Datenschutzerklärung informiert Sie über Art, Umfang und Zweck der Verarbeitung personenbezogener Daten innerhalb unseres Onlineangebots.",
-      "controller": {
-        "kicker": "1. Verantwortlicher",
-        "text": "Verantwortlicher im Sinne der Datenschutz-Grundverordnung (DSGVO):\n\nSchreinerei Frank – Meisterbetrieb\nInhaber: Hubert Frank und Stefan Frank\nSeestraße 61, 83370 Seeon-Seebruck\n\nTelefon: +49 8624 1260\nE-Mail: info@schreinerei-frank.de"
-      },
-      "processing": {
-        "kicker": "2. Allgemeines zur Datenverarbeitung",
-        "text": "Wir verarbeiten personenbezogene Daten unserer Nutzer grundsätzlich nur, soweit dies zur Bereitstellung einer funktionsfähigen Website sowie unserer Inhalte und Leistungen erforderlich ist. Die Verarbeitung personenbezogener Daten erfolgt regelmäßig nur nach Einwilligung des Nutzers (Art. 6 Abs. 1 lit. a DSGVO) oder auf Grundlage eines Vertrages bzw. vorvertraglicher Maßnahmen (Art. 6 Abs. 1 lit. b DSGVO), zur Erfüllung rechtlicher Verpflichtungen (Art. 6 Abs. 1 lit. c DSGVO) oder aufgrund unseres berechtigten Interesses (Art. 6 Abs. 1 lit. f DSGVO)."
-      },
-      "serverLogs": {
-        "kicker": "3. Server-Logfiles",
-        "text": "Beim Aufruf unserer Website werden durch den Hosting-Anbieter automatisch Informationen in sogenannten Server-Logfiles erfasst: Browsertyp und -version, verwendetes Betriebssystem, Referrer-URL, Hostname des zugreifenden Rechners, Uhrzeit der Serveranfrage und IP-Adresse. Diese Daten sind nicht bestimmten Personen zuordenbar und werden nicht mit anderen Datenquellen zusammengeführt. Rechtsgrundlage ist Art. 6 Abs. 1 lit. f DSGVO (berechtigtes Interesse an der technisch fehlerfreien Darstellung und Sicherheit unserer Website). Die Logfiles werden nach spätestens 7 Tagen gelöscht."
-      },
-      "cookies": {
-        "kicker": "4. Cookies",
-        "text": "Unsere Website verwendet ausschließlich technisch notwendige Cookies (z. B. zur Speicherung Ihrer Cookie-Einwilligung in Ihrem Browser). Rechtsgrundlage ist Art. 6 Abs. 1 lit. f DSGVO. Andere Cookies (z. B. für Analyse, Werbung) setzen wir nur nach Ihrer ausdrücklichen Einwilligung gemäß Art. 6 Abs. 1 lit. a DSGVO bzw. § 25 Abs. 1 TTDSG. Sie können Ihre Einwilligung jederzeit mit Wirkung für die Zukunft widerrufen. Die Einwilligung wird als Einstellung in Ihrem Browser (localStorage) gespeichert."
-      },
-      "contactForm": {
-        "kicker": "5. Kontaktformular",
-        "text": "Wenn Sie uns über das Kontaktformular eine Anfrage zukommen lassen, werden Ihre Angaben aus dem Formular (Name, E-Mail, Telefon, Nachricht) inklusive der von dort angegebenen Kontaktdaten zwecks Bearbeitung der Anfrage und für den Fall von Anschlussfragen bei uns gespeichert. Diese Daten geben wir nicht ohne Ihre Einwilligung weiter. Die Verarbeitung erfolgt auf Grundlage von Art. 6 Abs. 1 lit. b DSGVO (Vertragsvorbereitung bzw. Vertrag) bzw. Art. 6 Abs. 1 lit. f DSGVO (berechtigtes Interesse). Die Daten werden gelöscht, sobald sie für die Erreichung des Zweckes nicht mehr erforderlich sind und keine gesetzlichen Aufbewahrungspflichten entgegenstehen."
-      },
-      "googleMaps": {
-        "kicker": "6. Google Maps",
-        "text": "Unsere Website bindet Inhalte des Dienstes Google Maps der Google Ireland Limited, Gordon House, Barrow Street, Dublin 4, Irland („Google“) ein. Beim Aufruf von Seiten mit eingebetteten Karten wird eine Verbindung zu den Servern von Google hergestellt; dabei wird die IP-Adresse übertragen. Rechtsgrundlage ist Ihre Einwilligung gemäß Art. 6 Abs. 1 lit. a DSGVO bzw. § 25 Abs. 1 TTDSG bzw. unser berechtigtes Interesse (Art. 6 Abs. 1 lit. f DSGVO). Details entnehmen Sie der Datenschutzerklärung von Google: https://policies.google.com/privacy."
-      },
-      "hosting": {
-        "kicker": "7. Hosting",
-        "text": "Diese Website wird bei einem externen Dienstleister (Hoster) gehostet (hier Hoster und Anschrift eintragen). Die personenbezogenen Daten, die auf dieser Website erfasst werden, werden auf den Servern des Hosters gespeichert. Der Einsatz des Hosters erfolgt auf Grundlage von Art. 6 Abs. 1 lit. f DSGVO. Mit dem Anbieter wurde ein Vertrag über Auftragsverarbeitung gemäß Art. 28 DSGVO geschlossen."
-      },
-      "rights": {
-        "kicker": "8. Ihre Rechte als betroffene Person",
-        "text": "Sie haben nach der DSGVO folgende Rechte: Auskunft (Art. 15), Berichtigung (Art. 16), Löschung (Art. 17), Einschränkung der Verarbeitung (Art. 18), Datenübertragbarkeit (Art. 20), Widerspruch gegen die Verarbeitung (Art. 21) sowie Beschwerde bei einer Aufsichtsbehörde (Art. 77). Sofern Ihre Daten auf Grundlage einer Einwilligung verarbeitet werden, können Sie diese jederzeit widerrufen."
-      },
-      "supervisoryAuthority": {
-        "kicker": "9. Aufsichtsbehörde",
-        "text": "Zuständige Datenschutz-Aufsichtsbehörde: Bayerisches Landesamt für Datenschutzaufsicht (BayLDA), Promenade 18, 91522 Ansbach, Deutschland, https://www.lda.bayern.de."
-      }
+    "business": {
+        "areaServed": [
+            "Seeon-Seebruck",
+            "Obing",
+            "Traunstein",
+            "Trostberg",
+            "Chieming",
+            "Bad Endorf",
+            "Prien am Chiemsee",
+            "Rosenheim"
+        ],
+        "areaServedNote": "und der gesamte Chiemgau.",
+        "street": "Seestraße 61",
+        "openingHoursText": "Mo–Do 7:00–16:30 Uhr, Fr 7:00–13:00 Uhr",
+        "city": "Seeon",
+        "name": "{config.name}",
+        "phone": "{config.phone}",
+        "phoneSchema": "{config.phoneSchema}",
+        "geo": {
+            "lat": 47.9761,
+            "lng": 12.4536
+        },
+        "openingHoursSpec": [
+            {
+                "days": [
+                    "Monday",
+                    "Tuesday",
+                    "Wednesday",
+                    "Thursday"
+                ],
+                "opens": "07:00",
+                "closes": "16:30"
+            },
+            {
+                "days": [
+                    "Friday"
+                ],
+                "opens": "07:00",
+                "closes": "13:00"
+            }
+        ],
+        "mapUrl": "https://www.google.com/maps?q=Schreinerei+Frank+Seestra%C3%9Fe+61+83370+Seeon",
+        "owner": "Hubert und Stefan Frank",
+        "priceRange": "€€",
+        "region": "Bayern",
+        "country": "DE",
+        "postalCode": "83370",
+        "phoneHref": "tel:{config.phone}",
+        "email": "{config.email}",
+        "fax": "{config.fax}",
+        "faxSchema": "{config.faxSchema}"
+    },
+    "nav": [
+        {
+            "label": "Leistungen",
+            "href": "#leistungen"
+        },
+        {
+            "label": "Arbeiten",
+            "href": "#galerie"
+        },
+        {
+            "label": "Über uns",
+            "href": "#ueber-uns"
+        },
+        {
+            "label": "Rezensionen",
+            "href": "#rezensionen"
+        },
+        {
+            "label": "Fragen",
+            "href": "#faq"
+        },
+        {
+            "label": "Kontakt",
+            "href": "#kontakt"
+        }
+    ],
+    "meta": {
+        "siteUrl": "{config.domain}",
+        "title": "Schreinerei Frank - Meisterbetrieb · Küchen, Treppen & Innenausbau aus Massivholz | Seeon Chiemgau",
+        "description": "Meisterschreinerei in Seeon im Chiemgau: Küchen, Treppen, Türen und Möbel aus heimischem Massivholz – Beratung, Fertigung und Montage aus einer Hand.",
+        "ogTitle": "Schreinerei Frank - Meisterbetrieb · Massivholz aus Seeon im Chiemgau",
+        "ogDescription": "Küchen, Treppen, Türen und Möbel aus heimischem Massivholz. Meisterbetrieb im Chiemgau – Beratung, Fertigung und Montage aus einer Hand.",
+        "ogImage": "/assets/site/og-schreinerei-frank.jpg",
+        "lcpImage": "/assets/img/projekt-badmoebel-5.jpg"
+    },
+    "about": {
+        "heading": "Geht ned gibt's neda",
+        "personImageAlt": "Badmöbelserie aus Massivholz – Hochschrank und Waschtisch nach Maß.",
+        "points": [
+            "Individuelle Wohnkonzepte statt Katalogware",
+            "Handgefertigte Einzelstücke aus eigener Werkstatt",
+            "Heimische, nachwachsende Hölzer",
+            "Ökologische Oberflächenbehandlung",
+            "All-inclusive-Service durch feste Partnerbetriebe",
+            "Barrierefreies Wohnen auf Wunsch mitgeplant"
+        ],
+        "personImage": "/assets/content/badmoebel/projekt-badmoebel-1.jpg",
+        "personRole": "Schreinermeister & Inhaber",
+        "text": "Seit Jahrzehnten steht die Schreinerei Frank in Seeon für ehrliches Handwerk. Wir setzen auf Langlebigkeit und Qualität statt Wegwerfmöbel – mit regionalen Rohstoffen, kurzen Wegen und ökologischer Verarbeitung. Für Ihr Projekt nehmen wir uns Zeit: Beratung vor Ort, individuelle Planung, Montage bis zur letzten Schraube.",
+        "kicker": "Über uns",
+        "personCta": "Termin vereinbaren"
+    },
+    "servicesIntro": {
+        "kicker": "Leistungen",
+        "heading": "Alles rund ums Holz – aus einer Hand",
+        "text": "Sechs Gewerke aus der eigenen Werkstatt in Seeon. Für alles Weitere arbeiten wir mit festen regionalen Partnerbetrieben zusammen."
+    },
+    "gallery": [
+        {
+            "category": "Badmöbel",
+            "mainImage": "/assets/content/badmoebel/projekt-badmoebel-1.jpg",
+            "mainAlt": "Feuchtraumgeeigneter Waschtisch und Badmöbel nach Maß aus Massivholz.",
+            "images": [
+                {
+                    "src": "/assets/content/badmoebel/projekt-badmoebel-2.jpg",
+                    "alt": "Badmöbel aus Massivholz im Detail"
+                },
+                {
+                    "src": "/assets/content/badmoebel/projekt-badmoebel-1.jpg",
+                    "alt": "Badmöbelserie – Hochschrank und Waschtisch"
+                },
+                {
+                    "src": "/assets/content/badmoebel/projekt-badmoebel-4.jpg",
+                    "alt": "Badezimmer – Waschtisch aus heimischem Holz"
+                },
+                {
+                    "src": "/assets/content/badmoebel/projekt-badmoebel-5.jpg",
+                    "alt": "Badmöbel im Detail: Griffe und Beschläge"
+                }
+            ],
+            "active": true
+        },
+        {
+            "category": "Küchen",
+            "mainImage": "/assets/content/hero/projekt-kueche.jpg",
+            "mainAlt": "Massivholzküche mit durchdachter Funktion und langlebigen Fronten aus heimischem Holz.",
+            "images": [
+                {
+                    "src": "/assets/content/hero/projekt-kueche.jpg",
+                    "alt": "Massivholzküche mit Arbeitsplatte und Grifflosen-Fronten"
+                }
+            ]
+        },
+        {
+            "category": "Individueller Innenausbau",
+            "mainImage": "/assets/content/innenausbau/projekt-innenausbau-2.jpg",
+            "mainAlt": "Individueller Innenausbau aus Massivholz – einzigartige Möbel, Küchen, Türen, Fenster und Treppen aus heimischen Hölzern.",
+            "images": [
+                {
+                    "src": "/assets/content/innenausbau/projekt-innenausbau-2.jpg",
+                    "alt": "Innenausbau im Detail: Wand- und Deckenverkleidung aus heimischem Holz"
+                }
+            ]
+        },
+        {
+            "category": "Türen für innen & außen",
+            "mainImage": "/assets/content/tueren/projekt-tuer.jpg",
+            "mainAlt": "Massive Türen aus Holz für innen und außen in gedämmtem Massivholz.",
+            "images": [
+                {
+                    "src": "/assets/content/tueren/projekt-tuer.jpg",
+                    "alt": "Massive Holztür"
+                },
+                {
+                    "src": "/assets/content/tueren/projekt-tuer-2.jpg",
+                    "alt": "Gedämmte Massivholztür"
+                },
+                {
+                    "src": "/assets/content/tueren/projekt-tuer-5.jpg",
+                    "alt": "Türblatt aus heimischem Massivholz"
+                },
+                {
+                    "src": "/assets/content/tueren/projekt-tuer-6.jpg",
+                    "alt": "Massivholztür im Detail"
+                }
+            ]
+        },
+        {
+            "category": "Treppen",
+            "mainImage": "/assets/content/treppen/projekt-treppe-1.jpg",
+            "mainAlt": "Treppe aus heimischem Massivholz – gerade, gewendelt oder freitragend.",
+            "images": [
+                {
+                    "src": "/assets/content/treppen/projekt-treppe-1.jpg",
+                    "alt": "Gewendelte Treppe aus Massivholz"
+                },
+                {
+                    "src": "/assets/content/treppen/projekt-treppe-2.jpg",
+                    "alt": "Treppenstufen aus heimischem Eichenholz"
+                }
+            ]
+        },
+        {
+            "category": "Fensterbau",
+            "mainImage": "/assets/content/fenster/projekt-fenster.jpg",
+            "mainAlt": "Holz- und Holz-Alu-Fenster mit moderner Verglasung für Neubau und Sanierung.",
+            "images": [
+                {
+                    "src": "/assets/content/fenster/projekt-fenster.jpg",
+                    "alt": "Holz-Alu-Fenster mit Dreifachverglasung"
+                },
+                {
+                    "src": "/assets/content/fenster/projekt-fenster-2.jpg",
+                    "alt": "Holzfenster im Neubau"
+                },
+                {
+                    "src": "/assets/content/fenster/projekt-fenster-3.jpg",
+                    "alt": "Fenster mit moderner Verglasung"
+                }
+            ]
+        },
+        {
+            "category": "",
+            "mainImage": "",
+            "mainAlt": "",
+            "images": [],
+            "active": false
+        }
+    ],
+    "testimonials": [
+        {
+            "quote": "Unsere freitragende Treppe ist jetzt das Herzstück im Haus. Saubere Arbeit, alles wie besprochen.",
+            "source": "M. & T. Berger · Obing"
+        },
+        {
+            "quote": "Ehrliche Beratung, fairer Preis, Termine eingehalten. Wir empfehlen die Schreinerei gerne weiter.",
+            "source": "Praxis Dr. L. · Traunstein"
+        },
+        {
+            "quote": "Die Küche ist nach zwölf Jahren wie am ersten Tag – und wenn wir anrufen, ist der Frank da.",
+            "source": "Familie H. · Seeon-Seebruck"
+        }
+    ],
+    "faqIntro": {
+        "kicker": "Häufige Fragen",
+        "heading": "Gut zu wissen"
+    },
+    "faq": [
+        {
+            "q": "Wie läuft ein Projekt ab?",
+            "a": "Kostenlose Erstberatung vor Ort, individuelle Planung mit Zeichnung und Angebot, Fertigung in der Werkstatt in Seeon und Montage bei Ihnen zu Hause."
+        },
+        {
+            "q": "Übernehmen Sie auch die Montage?",
+            "a": "Ja. Wir planen, fertigen und montieren selbst und koordinieren bei Bedarf die beteiligten Gewerke über feste regionale Partnerbetriebe. Die Montage übernehmen wir im gesamten Chiemgau – unter anderem in Seeon-Seebruck, Obing, Traunstein, Trostberg, Chieming und rund um den Chiemsee. Größere Projekte außerhalb dieser Region sprechen wir gern individuell ab."
+        },
+        {
+            "q": "In welchem Umkreis arbeiten Sie?",
+            "a": "Wir sind im gesamten Chiemgau für Sie da – unter anderem in Seeon-Seebruck, Obing, Traunstein, Trostberg, Chieming und rund um den Chiemsee. Sprechen Sie uns bei größeren Projekten auch außerhalb dieser Region gern an."
+        },
+        {
+            "q": "Welche Hölzer verwenden Sie?",
+            "a": "Vorwiegend heimische Hölzer wie Eiche, Esche, Nussbaum, Lärche und Fichte. Die Oberflächen behandeln wir ökologisch, zum Beispiel mit Ölen und Wachsen."
+        },
+        {
+            "q": "Planen Sie barrierefreie Lösungen?",
+            "a": "Ja, barrierefreies Wohnen berücksichtigen wir auf Wunsch von Anfang an – etwa bei unterfahrbaren Küchen, Bädern und schwellenlosen Übergängen."
+        }
+    ],
+    "trust": [
+        {
+            "value": "Meisterbetrieb",
+            "label": "Inhaber Hubert und Stefan Frank"
+        },
+        {
+            "value": "Fertigung in Seeon",
+            "label": "eigene Werkstatt im Chiemgau"
+        },
+        {
+            "value": "Heimische Hölzer",
+            "label": "Eiche, Esche, Nussbaum, Lärche"
+        },
+        {
+            "value": "Ökologische Oberflächen",
+            "label": "Öle und Wachse statt Lack"
+        }
+    ],
+    "testimonialsIntro": {
+        "kicker": "Rezensionen",
+        "heading": "Was Kundinnen und Kunden sagen",
+        "google": {
+            "placeId": "",
+            "url": "https://www.google.com/maps?q=Schreinerei+Frank+Seestra%C3%9Fe+61+83370+Seeon",
+            "apiKey": "",
+            "rating": 0,
+            "reviewCount": 0
+        }
+    },
+    "galleryIntro": {
+        "kicker": "Arbeiten",
+        "heading": "Projekte aus unserer Werkstatt"
+    },
+    "hero": {
+        "kicker": "Schreinermeister · Seeon im Chiemgau",
+        "heading": "Möbel, Küchen und Treppen aus heimischem Holz.",
+        "claim": "Von der Idee zum Traumhaus.",
+        "lead": "Wir planen, fertigen und montieren einzigartige Einzelstücke aus regionalen Hölzern – mit viel Herzblut und Liebe zum Detail. Ein Ansprechpartner von der Beratung bis zur Montage.",
+        "ctaPrimary": "Kostenlos beraten lassen",
+        "ctaSecondary": "Arbeiten ansehen",
+        "images": [
+            {
+                "src": "/assets/content/hero/projekt-kueche.jpg",
+                "alt": "Massivholzküche nach Maß aus heimischem Holz – ein Projekt der Schreinerei Frank."
+            },
+            {
+                "src": "/assets/content/hero/projekt-treppe.jpg",
+                "alt": "Freitragende Massivholztreppe aus heimischem Holz – ein Projekt der Schreinerei Frank."
+            },
+            {
+                "src": "/assets/content/hero/projekt-badmoebel.jpg",
+                "alt": "Feuchtraumgeeignete Badmöbel und Waschtisch aus Massivholz – ein Projekt der Schreinerei Frank."
+            },
+            {
+                "src": "/assets/content/hero/projekt-innenausbau.jpg",
+                "alt": "Massivholz-Innenausbau mit maßgefertigten Möbeln – ein Projekt der Schreinerei Frank."
+            }
+        ]
+    },
+    "footer": {
+        "impressumHref": "/impressum",
+        "datenschutzHref": "/datenschutz"
+    },
+    "legal": {
+        "impressum": {
+            "title": "Impressum",
+            "metaDescription": "Impressum der Schreinerei Frank, Meisterbetrieb in Seeon im Chiemgau: Anbieterkennzeichnung, Kontakt, Umsatzsteuer-ID und Verantwortlicher gemäß TMG/DDG.",
+            "heading": "Impressum",
+            "intro": "Angaben gemäß § 5 DDG (Digitale-Dienste-Gesetz) und § 18 Abs. 2 MStV (Medienstaatsvertrag):",
+            "companyName": "{config.name}",
+            "ownerName": "Inhaber: Hubert Frank und Stefan Frank",
+            "address": "Seestraße 61, 83370 Seeon-Seebruck",
+            "contact": {
+                "kicker": "Kontakt",
+                "phone": "Telefon: {config.phone}",
+                "fax": "Telefax: {config.fax}",
+                "email": "E-Mail: {config.email}",
+                "emailHref": "{config.email}",
+                "url": "{config.domain}"
+            },
+            "vat": {
+                "kicker": "Umsatzsteuer-ID",
+                "text": "Umsatzsteuer-Identifikationsnummer gemäß § 27a Umsatzsteuergesetz: … (hier eintragen)"
+            },
+            "responsible": {
+                "kicker": "Redaktionell verantwortlich",
+                "text": "Hubert Frank und Stefan Frank, Seestraße 61, 83370 Seeon-Seebruck"
+            },
+            "dispute": {
+                "kicker": "EU-Streitschlichtung",
+                "text": "Die Europäische Kommission stellt eine Plattform zur Online-Streitbeilegung (OS) bereit: https://ec.europa.eu/consumers/odr. Wir sind nicht bereit oder verpflichtet, an Streitbeilegungsverfahren vor einer Verbraucherschlichtungsstelle teilzunehmen."
+            },
+            "contentLiability": {
+                "kicker": "Haftung für Inhalte",
+                "text": "Als Diensteanbieter sind wir gemäß § 7 Abs. 1 DDG für eigene Inhalte auf diesen Seiten nach den allgemeinen Gesetzen verantwortlich. Nach §§ 8 bis 10 DDG sind wir als Diensteanbieter jedoch nicht verpflichtet, übermittelte oder gespeicherte fremde Informationen zu überwachen oder nach Umständen zu forschen, die auf eine rechtswidrige Tätigkeit hinweisen. Verpflichtungen zur Entfernung oder Sperrung der Nutzung von Informationen nach den allgemeinen Gesetzen bleiben hiervon unberührt. Eine diesbezügliche Haftung ist jedoch erst ab dem Zeitpunkt der Kenntnis einer konkreten Rechtsverletzung möglich. Bei Bekanntwerden von entsprechenden Rechtsverletzungen werden wir diese Inhalte umgehend entfernen."
+            },
+            "linkLiability": {
+                "kicker": "Haftung für Links",
+                "text": "Unser Angebot enthält Links zu externen Websites Dritter, auf deren Inhalte wir keinen Einfluss haben. Deshalb können wir für diese fremden Inhalte auch keine Gewähr übernehmen. Für die Inhalte der verlinkten Seiten ist stets der jeweilige Anbieter oder Betreiber der Seiten verantwortlich. Die verlinkten Seiten wurden zum Zeitpunkt der Verlinkung auf mögliche Rechtsverstöße überprüft. Rechtswidrige Inhalte waren zum Zeitpunkt der Verlinkung nicht erkennbar. Eine permanente inhaltliche Kontrolle der verlinkten Seiten ist jedoch ohne konkrete Anhaltspunkte einer Rechtsverletzung nicht zumutbar. Bei Bekanntwerden von Rechtsverletzungen werden wir derartige Links umgehend entfernen."
+            },
+            "copyright": {
+                "kicker": "Urheberrecht",
+                "text": "Die durch die Seitenbetreiber erstellten Inhalte und Werke auf diesen Seiten unterliegen dem deutschen Urheberrecht. Die Vervielfältigung, Bearbeitung, Verbreitung und jede Art der Verwertung außerhalb der Grenzen des Urheberrechtes bedürfen der schriftlichen Zustimmung des jeweiligen Autors bzw. Erstellers. Downloads und Kopien dieser Seite sind nur für den privaten, nicht kommerziellen Gebrauch gestattet."
+            }
+        },
+        "datenschutz": {
+            "title": "Datenschutzerklärung – Schreinerei Frank - Meisterbetrieb",
+            "metaDescription": "Datenschutzerklärung der Schreinerei Frank, Seeon im Chiemgau: Verantwortlicher, Verarbeitung personenbezogener Daten, Cookies, Kontaktformular, Ihre Rechte.",
+            "heading": "Datenschutzerklärung",
+            "intro": "Wir freuen uns sehr über Ihr Interesse an unserem Unternehmen. Datenschutz hat einen besonders hohen Stellenwert für die Leitung der Schreinerei Frank. Diese Datenschutzerklärung informiert Sie über Art, Umfang und Zweck der Verarbeitung personenbezogener Daten innerhalb unseres Onlineangebots.",
+            "controller": {
+                "kicker": "1. Verantwortlicher",
+                "text": "{config.name}"
+            },
+            "processing": {
+                "kicker": "2. Allgemeines zur Datenverarbeitung",
+                "text": "Wir verarbeiten personenbezogene Daten unserer Nutzer grundsätzlich nur, soweit dies zur Bereitstellung einer funktionsfähigen Website sowie unserer Inhalte und Leistungen erforderlich ist. Die Verarbeitung personenbezogener Daten erfolgt regelmäßig nur nach Einwilligung des Nutzers (Art. 6 Abs. 1 lit. a DSGVO) oder auf Grundlage eines Vertrages bzw. vorvertraglicher Maßnahmen (Art. 6 Abs. 1 lit. b DSGVO), zur Erfüllung rechtlicher Verpflichtungen (Art. 6 Abs. 1 lit. c DSGVO) oder aufgrund unseres berechtigten Interesses (Art. 6 Abs. 1 lit. f DSGVO)."
+            },
+            "serverLogs": {
+                "kicker": "3. Server-Logfiles",
+                "text": "Beim Aufruf unserer Website werden durch den Hosting-Anbieter automatisch Informationen in sogenannten Server-Logfiles erfasst: Browsertyp und -version, verwendetes Betriebssystem, Referrer-URL, Hostname des zugreifenden Rechners, Uhrzeit der Serveranfrage und IP-Adresse. Diese Daten sind nicht bestimmten Personen zuordenbar und werden nicht mit anderen Datenquellen zusammengeführt. Rechtsgrundlage ist Art. 6 Abs. 1 lit. f DSGVO (berechtigtes Interesse an der technisch fehlerfreien Darstellung und Sicherheit unserer Website). Die Logfiles werden nach spätestens 7 Tagen gelöscht."
+            },
+            "cookies": {
+                "kicker": "4. Cookies",
+                "text": "Unsere Website verwendet ausschließlich technisch notwendige Cookies (z. B. zur Speicherung Ihrer Cookie-Einwilligung in Ihrem Browser). Rechtsgrundlage ist Art. 6 Abs. 1 lit. f DSGVO. Andere Cookies (z. B. für Analyse, Werbung) setzen wir nur nach Ihrer ausdrücklichen Einwilligung gemäß Art. 6 Abs. 1 lit. a DSGVO bzw. § 25 Abs. 1 TTDSG. Sie können Ihre Einwilligung jederzeit mit Wirkung für die Zukunft widerrufen. Die Einwilligung wird als Einstellung in Ihrem Browser (localStorage) gespeichert."
+            },
+            "contactForm": {
+                "kicker": "5. Kontaktformular",
+                "text": "Wenn Sie uns über das Kontaktformular eine Anfrage zukommen lassen, werden Ihre Angaben aus dem Formular (Name, E-Mail, Telefon, Nachricht) inklusive der von dort angegebenen Kontaktdaten zwecks Bearbeitung der Anfrage und für den Fall von Anschlussfragen bei uns gespeichert. Diese Daten geben wir nicht ohne Ihre Einwilligung weiter. Die Verarbeitung erfolgt auf Grundlage von Art. 6 Abs. 1 lit. b DSGVO (Vertragsvorbereitung bzw. Vertrag) bzw. Art. 6 Abs. 1 lit. f DSGVO (berechtigtes Interesse). Die Daten werden gelöscht, sobald sie für die Erreichung des Zweckes nicht mehr erforderlich sind und keine gesetzlichen Aufbewahrungspflichten entgegenstehen."
+            },
+            "googleMaps": {
+                "kicker": "6. Google Maps",
+                "text": "Unsere Website bindet Inhalte des Dienstes Google Maps der Google Ireland Limited, Gordon House, Barrow Street, Dublin 4, Irland („Google“) ein. Beim Aufruf von Seiten mit eingebetteten Karten wird eine Verbindung zu den Servern von Google hergestellt; dabei wird die IP-Adresse übertragen. Rechtsgrundlage ist Ihre Einwilligung gemäß Art. 6 Abs. 1 lit. a DSGVO bzw. § 25 Abs. 1 TTDSG bzw. unser berechtigtes Interesse (Art. 6 Abs. 1 lit. f DSGVO). Details entnehmen Sie der Datenschutzerklärung von Google: https://policies.google.com/privacy."
+            },
+            "hosting": {
+                "kicker": "7. Hosting",
+                "text": "Diese Website wird bei einem externen Dienstleister (Hoster) gehostet (hier Hoster und Anschrift eintragen). Die personenbezogenen Daten, die auf dieser Website erfasst werden, werden auf den Servern des Hosters gespeichert. Der Einsatz des Hosters erfolgt auf Grundlage von Art. 6 Abs. 1 lit. f DSGVO. Mit dem Anbieter wurde ein Vertrag über Auftragsverarbeitung gemäß Art. 28 DSGVO geschlossen."
+            },
+            "rights": {
+                "kicker": "8. Ihre Rechte als betroffene Person",
+                "text": "Sie haben nach der DSGVO folgende Rechte: Auskunft (Art. 15), Berichtigung (Art. 16), Löschung (Art. 17), Einschränkung der Verarbeitung (Art. 18), Datenübertragbarkeit (Art. 20), Widerspruch gegen die Verarbeitung (Art. 21) sowie Beschwerde bei einer Aufsichtsbehörde (Art. 77). Sofern Ihre Daten auf Grundlage einer Einwilligung verarbeitet werden, können Sie diese jederzeit widerrufen."
+            },
+            "supervisoryAuthority": {
+                "kicker": "9. Aufsichtsbehörde",
+                "text": "Zuständige Datenschutz-Aufsichtsbehörde: Bayerisches Landesamt für Datenschutzaufsicht (BayLDA), Promenade 18, 91522 Ansbach, Deutschland, https://www.lda.bayern.de."
+            }
+        }
+    },
+    "services": [
+        {
+            "title": "Individueller Innenausbau",
+            "serviceType": "Innenausbau nach Maß",
+            "text": "Einbauschränke, Raumteiler und Wohnwände nach Maß – auch für Dachschrägen.",
+            "icon": "M3 20h18M5 20V9l7-5 7 5v11M9 20v-6h6v6"
+        },
+        {
+            "title": "Küchen",
+            "serviceType": "Massivholzküchen",
+            "text": "Massivholzküchen mit durchdachter Funktion und langlebigen Fronten.",
+            "icon": "M4 4h16v16H4zM4 10h16M9 4v6M15 14h3"
+        },
+        {
+            "title": "Badmöbel",
+            "serviceType": "Badmöbel nach Maß",
+            "text": "Feuchtraumgeeignete Waschtische, Spiegelschränke und Regale, passgenau.",
+            "icon": "M5 21V7a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v14M9 12h6M12 5v7"
+        },
+        {
+            "title": "Türen für innen & außen",
+            "serviceType": "Türenbau",
+            "text": "Zimmertüren, Haustüren und Sonderformate in gedämmtem Massivholz.",
+            "icon": "M6 3h12v18H6zM14 12h1"
+        },
+        {
+            "title": "Treppen",
+            "serviceType": "Treppenbau",
+            "text": "Gerade, gewendelt oder freitragend – als tragendes Gestaltungselement.",
+            "icon": "M3 21h4v-4h4v-4h4v-4h4V5"
+        },
+        {
+            "title": "Fensterbau",
+            "serviceType": "Holzfenster und Holz-Alu-Fenster",
+            "text": "Holz- und Holz-Alu-Fenster mit moderner Verglasung, Neubau und Sanierung.",
+            "icon": "M4 4h16v16H4zM12 4v16M4 12h16"
+        }
+    ],
+    "ui": {
+        "skipLink": "Zum Inhalt springen",
+        "brandAria": "Schreinerei Frank – Startseite",
+        "navToggleAria": "Menü öffnen",
+        "navAria": "Hauptnavigation",
+        "telBtnAria": "Anrufen",
+        "footerInhaberLabel": "Inhaber",
+        "footerImpressum": "Impressum",
+        "footerDatenschutz": "Datenschutz",
+        "stickyCall": "Anrufen",
+        "stickyMail": "Mail",
+        "stickyContact": "Anfrage",
+        "stickyTop": "Nach oben",
+        "stickyAria": "Schnellzugriff",
+        "stickyCallAria": "Anrufen",
+        "stickyMailAria": "E-Mail schreiben",
+        "stickyContactAria": "Anfrage / Kontaktformular",
+        "stickyTopAria": "Nach oben scrollen",
+        "cookieText": "Wir verwenden Cookies, um unsere Website nutzerfreundlicher zu gestalten – z.&nbsp;B. um Ihre Einstellungen zu speichern. Technisch notwendige Cookies bleiben aktiv; alle weiteren setzen wir nur mit Ihrer Zustimmung.",
+        "cookieAccept": "Alle akzeptieren",
+        "cookieDecline": "Nur notwendige",
+        "cookieLink": "Datenschutzerklärung",
+        "cookieAria": "Cookie-Hinweis",
+        "heroPrevAria": "Vorheriges Bild",
+        "heroNextAria": "Nächstes Bild",
+        "heroDotsAria": "Hero-Bilder",
+        "heroDotAria": "Bild {aktuell} von {gesamt}",
+        "galleryTrackAria": "Ausgeführte Projekte",
+        "galleryOpenAria": "Bild vergrößern",
+        "galleryZoomAria": "Galerie ansehen",
+        "galleryDotsAria": "Zu Bildgruppe springen",
+        "galleryPrevAria": "Vorherige Bilder",
+        "galleryPauseAria": "Autoplay pausieren",
+        "galleryNextAria": "Nächste Bilder",
+        "galleryHint": "Der Slider bewegt sich von links nach rechts · Bild antippen zum Vergrößern · in der Galerie über die Pfeile bzw. die Lupe alle Fotos der Kategorie durchblättern.",
+        "lightboxAria": "Bildergalerie",
+        "lightboxThumbsAria": "Galerie-Kategorien",
+        "lightboxCloseAria": "Schließen",
+        "lightboxPrevAria": "Vorheriges Bild",
+        "lightboxNextAria": "Nächstes Bild",
+        "testiAria": "Kundenrezensionen",
+        "testiPrevAria": "Vorherige Rezension",
+        "testiNextAria": "Nächste Rezension",
+        "testiDotsAria": "Zu Rezension springen",
+        "mapOpenAria": "Karte von Google Maps öffnen",
+        "mapImageAlt": "Kartenausschnitt Schreinerei Frank",
+        "mapBadge": "Karte öffnen",
+        "mapDialogTitle": "Google Maps öffnen?",
+        "mapDialogConfirm": "Öffnen",
+        "mapDialogCancel": "Abbrechen",
+        "mapDialogLink": "Datenschutzerklärung",
+        "mapDialogLinkHref": "datenschutz",
+        "contactAddressLabel": "Adresse",
+        "contactPhoneLabel": "Telefon",
+        "contactFaxLabel": "Telefax",
+        "contactEmailLabel": "E-Mail",
+        "contactHoursLabel": "Öffnungszeiten",
+        "formNameLabel": "Name",
+        "formEmailLabel": "E-Mail",
+        "formPhoneLabel": "Telefon",
+        "formMessageLabel": "Ihr Vorhaben",
+        "formMessagePlaceholder": "Küche, Treppe, Innenausbau …",
+        "formWebsiteLabel": "Website (bitte frei lassen)",
+        "formSubmit": "Anfrage senden",
+        "formConsentIntro": "Details in der",
+        "formConsentLink": "Datenschutzerklärung",
+        "formConsentLinkHref": "datenschutz",
+        "legalBack": "← Zurück",
+        "legalPhoneLabel": "Telefon:",
+        "legalFaxLabel": "Telefax:",
+        "legalEmailLabel": "E-Mail:",
+        "legalInternetLabel": "Internet:",
+        "llms": {
+            "headingServices": "Leistungen",
+            "headingApproach": "Arbeitsweise",
+            "headingServiceArea": "Einzugsgebiet",
+            "headingContact": "Kontakt",
+            "labelAddress": "Adresse:",
+            "labelPhone": "Telefon:",
+            "labelEmail": "E-Mail:",
+            "labelHours": "Öffnungszeiten:",
+            "labelWebsite": "Website:"
+        }
     }
-  },
-  "services": [
-    {
-      "title": "Individueller Innenausbau",
-      "serviceType": "Innenausbau nach Maß",
-      "text": "Einbauschränke, Raumteiler und Wohnwände nach Maß – auch für Dachschrägen.",
-      "icon": "M3 20h18M5 20V9l7-5 7 5v11M9 20v-6h6v6"
-    },
-    {
-      "title": "Küchen",
-      "serviceType": "Massivholzküchen",
-      "text": "Massivholzküchen mit durchdachter Funktion und langlebigen Fronten.",
-      "icon": "M4 4h16v16H4zM4 10h16M9 4v6M15 14h3"
-    },
-    {
-      "title": "Badmöbel",
-      "serviceType": "Badmöbel nach Maß",
-      "text": "Feuchtraumgeeignete Waschtische, Spiegelschränke und Regale, passgenau.",
-      "icon": "M5 21V7a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v14M9 12h6M12 5v7"
-    },
-    {
-      "title": "Türen für innen & außen",
-      "serviceType": "Türenbau",
-      "text": "Zimmertüren, Haustüren und Sonderformate in gedämmtem Massivholz.",
-      "icon": "M6 3h12v18H6zM14 12h1"
-    },
-    {
-      "title": "Treppen",
-      "serviceType": "Treppenbau",
-      "text": "Gerade, gewendelt oder freitragend – als tragendes Gestaltungselement.",
-      "icon": "M3 21h4v-4h4v-4h4v-4h4V5"
-    },
-    {
-      "title": "Fensterbau",
-      "serviceType": "Holzfenster und Holz-Alu-Fenster",
-      "text": "Holz- und Holz-Alu-Fenster mit moderner Verglasung, Neubau und Sanierung.",
-      "icon": "M4 4h16v16H4zM12 4v16M4 12h16"
-    }
-  ]
 }

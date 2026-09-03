@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 480" role="img" aria-label="Kartenausschnitt Seeon">
+  <rect width="800" height="480" fill="#ECF0EA"/>
+  <g stroke="#c9d3c6" stroke-width="2">
+    <path d="M0 120 H800 M0 260 H800 M0 380 H800 M160 0 V480 M420 0 V480 M620 0 V480"/>
+  </g>
+  <path d="M-20 300 C200 240 260 360 480 300 S760 220 840 300" fill="none" stroke="#bcd0d8" stroke-width="26"/>
+  <circle cx="420" cy="260" r="12" fill="#3D6490"/>
+  <circle cx="420" cy="260" r="22" fill="none" stroke="#3D6490" stroke-width="3"/>
+  <text x="440" y="250" font-family="Fira Sans, Arial, sans-serif" font-size="20" fill="#1F2A24">Schreinerei Frank</text>
+  <text x="440" y="274" font-family="Fira Sans, Arial, sans-serif" font-size="15" fill="#55605A">Seestraße 61 · 83370 Seeon</text>
+  <text x="24" y="456" font-family="Fira Sans, Arial, sans-serif" font-size="13" fill="#55605A">Platzhalter – für Produktion statisches Kartenbild (z. B. MapTiler/Mapbox Static API) + Link einsetzen.</text>
+</svg>

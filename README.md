@@ -1,38 +1,45 @@
-# Schreinerei Frank – Onepager (statisch)
+# Schreinerei Frank – PHP-Website
 
 SEO-/KI-optimierte Single-Page-Website für die Schreinerei Frank, Seeon (Chiemgau).
 Design: **Konzept C „Meisterhand"** – Details in [`DESIGN.md`](DESIGN.md).
 
-**Vollständig statische Website** (HTML/CSS/JS) ohne Server und ohne Build-Schritt:
-Alle Inhalte liegen als `data/site.json` vor und werden **zur Laufzeit per JavaScript**
-in die statischen HTML-Seiten gerendert. Änderst du die `site.json`, ist die Änderung
-beim nächsten Seitenaufruf sofort sichtbar. Es gibt **keine Abhängigkeiten** (kein
-Express, kein Eleventy, keine npm-Pakete) – reines Node für einen simplen lokalen
-Dev-Server, auf dem Server selbst ist nichts nötig.
+> **Stellschrauben:** Alle zentralen Projektwerte (Firmenname, Domain, E-Mail,
+> Farben, Pfade, sichtbare Texte) sind an zentraler Stelle gepflegt und in
+> [`PROJECT.md`](PROJECT.md) dokumentiert.
 
-> **Hinweis (wichtig):** Weil die Inhalte clientseitig gerendert werden, funktioniert
-> die Seite **ohne JavaScript nur eingeschränkt**. Für maximale SEO empfehlen wir, die
-> exakt gleichen Inhalte serverseitig als statisches HTML auszuliefern, sofern du auf
-> einem Build-Schritt bestehen möchtest. Alternativ bleibt die `site.json` als
-> Single-Source-of-Truth erhalten und kann von einem Crawler/Static-Site-Generator
-> zu reinem HTML vorgerendert werden.
+**PHP-Webspace-Setup:** Alle editierbaren Inhalte liegen zentral in
+`data/site.json` (Single Source of Truth) und werden **serverseitig per PHP**
+in die Seiten gerendert. Der Admin unter `/frank-adm/` schreibt direkt in diese
+Datei – Änderungen sind **sofort nach dem Speichern live**, ganz ohne Build.
+
+> Vorteile gegenüber der früheren reinen Client-Rendering-Variante:
+> SEO-Tags, Meta, JSON-LD (`LocalBusiness`, `FAQPage`, …), Sitemap, `robots.txt`
+> und `llms.txt` werden als **fertiges HTML serverseitig** ausgeliefert – voll
+> crawler-/KI-lesbar auch ohne JavaScript.
 
 ---
 
-## Schnellstart
+## Voraussetzungen
+
+- **PHP ≥ 8.1** mit JSON, Session und GD (für WebP bei Bild-Upload) – auf einem
+  klassischen PHP-Webspace (Apache mit `.htaccess`) bereits vorhanden.
+- Optional Node/npm **nur für den lokalen Dev-Server** (der ruft dann PHP auf).
+
+---
+
+## Schnellstart (lokal)
 
 ```bash
 cd schreinerei-frank/dev
-npm run serve        # http://localhost:9999 · Admin: /admin/
+npm run serve        # nutzt PHP: http://localhost:9999 · Admin: /frank-adm/
 ```
 
-Verfügbare Befehle:
+Ohne npm:
 
-- `npm run serve` – startet einen schlanken statischen Dev-Server (Node, ohne Dependencies)
-- `/admin/` – **Passwort-geschützter Editor, der nur lokal funktioniert** (siehe unten)
-
-**Voraussetzung:** Node ≥ 18 (getestet mit 24 und 26). Sonst nichts – kein globales Tool,
-keine Datenbank, kein Build, kein Account.
+```bash
+cd schreinerei-frank/dev
+bash serve.sh
+```
 
 ---
 
@@ -41,143 +48,142 @@ keine Datenbank, kein Build, kein Account.
 ```
 schreinerei-frank/
 ├── dev/                        # nur LOKALE Dev-Tools (werden NICHT deployed)
-│   ├── package.json            # nur "npm run serve" (statischer Dev-Server)
-│   └── serve.js                # Node-HTTP-Dateiserver (ohne Dependencies)
-├── index.html                  # Onepager
-├── impressum/index.html
-├── datenschutz/index.html
-├── admin/index.html           # lokaler Inhalte-Editor (Export nach site.json)
+│   ├── package.json            # "npm run serve" -> ruft PHP-Dev-Server
+│   ├── serve.sh                # startet `php -S` + Router
+│   └── router.php              # bildet die .htaccess-Regeln lokal nach
+├── index.php                   # Router (Home) – bindet Partial-Templates ein
+├── impressum/index.php         # nutzt gemeinsame Partials aus /php/
+├── datenschutz/index.php       # nutzt gemeinsame Partials aus /php/
+├── php/                        # gemeinsame serverseitige Templates + Helfer
+│   ├── bootstrap.php           # lädt Daten + Helfer einmalig
+│   ├── config.php              # ZENTRALE Projekt-Konfiguration (Namen/Pfade)
+│   ├── data.php                # lädt data/site.json, Getter/Helfer
+│   ├── seo.php                 # erzeugt <head>-Meta + JSON-LD serverseitig
+│   ├── header.php              # <head> + Header (Nav, Tel-Button)
+│   ├── footer.php              # Footer + Sticky-Bar + main.js
+│   ├── home.php                # Startseiten-Sektionen (Hero, Leistungen, …)
+│   └── legal.php               # Impressum / Datenschutz
+├── frank-adm/                  # PHP-Admin (Inhalte + Bilder)
+│   ├── index.php               # Editor-UI (Login + Formular)
+│   ├── api.php                 # JSON-API: login/logout/load/save/upload
+│   ├── includes/helpers.php    # Session, Auth, save/load site.json
+│   ├── includes/upload.php     # Bild-Upload + WebP-Erzeugung
+│   └── assets/                 # admin.css / admin.js
 ├── data/
-│   ├── site.json              # ALLE Inhalte – das bearbeitest du (Single-Source)
-│   └── admin.json             # Admin-Benutzer-Hashes (nur für den lokalen Editor)
-├── js/
-│   ├── render.js              # liest data/site.json und befüllt die Seite per JS
-│   └── main.js                # Interaktion: Nav, FAQ, Slider, Lightbox, Formular …
-├── assets/
-│   ├── css/styles.css
-│   └── img/*.{png,jpg,webp,svg}
-├── llms.txt  robots.txt  sitemap.xml  site.webmanifest
-├── DESIGN.md  README.md
+│   ├── site.json               # ALLE Inhalte – die Quelle (Single Source)
+│   └── admin.json              # Admin-Benutzer-Hashes (Standard-Login)
+├── js/main.js                  # Interaktion (Slider, FAQ, Formular, …)
+├── assets/css/styles.css
+├── assets/img/*                # Bilder (inkl. WebP-Varianten)
+├── sitemap.php  robots.php  llms.php   # dynamisch aus site.json
+├── .htaccess                   # saubere URLs + Caching + Zugriffsschutz
+└── DESIGN.md  README.md  PROJECT.md
 ```
 
 ---
 
-## Inhalte bearbeiten
+## Inhalte bearbeiten (Admin: `/frank-adm/`)
 
-Alle Texte, Listen, Bilder-Pfade, Öffnungszeiten, FAQ usw. stehen zentral in
-**`data/site.json`**. Änderungen dort sind beim nächsten Aufruf der Seite
-sofort wirksam – **kein Build nötig**.
+Der Admin ist eine **PHP-App**, die direkt auf `data/site.json` arbeitet:
 
-### JSON-Struktur (Kurzübersicht)
+- **Login** mit Benutzer + Passwort (SHA-256-Hashes).
+- **Alle Inhalte** sind über den Schema-Editor editierbar: Texte, Kicker,
+  Überschriften, Button-Texte, Leistungen, Trust, FAQ, Rezensionen, Nav,
+  Kontaktdaten, Footer und SEO/Meta (Title, Description, OG, LCP-Bild).
+- **Speichern** schreibt atomar in `data/site.json` → öffentliche Seite ist
+  **sofort aktuell**.
+- **Slider (Hero)** und **Galerie/Projekte** werden über die Listen des Editors
+  verwaltet; Bilder lassen sich per **Hochladen** (→ `assets/img/`, inkl. WebP)
+  hinzufügen oder aus der **Bild-Bibliothek** wählen.
+- **Hinweis:** Lade niemals `frank-adm/` auf einen öffentlichen Server, wenn du
+  echte Passwort-Hashes in `data/admin.json` abgelegt hast → siehe Sicherheit.
 
-| Block | Inhalt |
+### Zugangsdaten
+
+Standard-Login aus `data/admin.json`:
+
+| Benutzer | Passwort |
 |---|---|
-| `meta` | Title, Description, OG-Texte/-Bild, `siteUrl`, LCP-Bild |
-| `business` | NAP, Fax, E-Mail, Öffnungszeiten (Text **und** strukturiert für Google), Geo, Einzugsgebiet |
-| `nav` | Header-Menüpunkte |
-| `hero` | Kicker, H1, Claim, Einleitung, 2 Buttons, Bild(er) |
-| `trust` | 4 Vertrauens-Punkte |
-| `servicesIntro` + `services` | Leistungs-Überschrift + 6 Karten (Titel, Text, Icon-Pfad) |
-| `galleryIntro` + `gallery` | Galerie-Kategorien mit Hauptbild + voller Bildliste |
-| `about` | Text, Punkte-Liste, Ansprechpartner (Name, Rolle, Foto) |
-| `faqIntro` + `faq` | Frage/Antwort-Paare → auch als `FAQPage`-JSON-LD |
-| `testimonialsIntro` + `testimonials` | Zitat + Quelle |
-| `contact` | Überschrift, Formular-`action`, Einwilligungstext |
-| `footer` | Impressum-/Datenschutz-Links |
+| `admin` | `frank-adm` |
 
-Die **strukturierten Daten (JSON-LD)** (`LocalBusiness`/`Carpenter`, `Organization`,
-`WebSite`, `WebPage`, `BreadcrumbList`, `FAQPage`, `OfferCatalog`) werden in
-`js/render.js` aus `site.json` generiert – Änderungen an NAP, Öffnungszeiten,
-Leistungen oder FAQ wandern automatisch mit.
+**Dieses Standard-Passwort bitte vor dem Live-Gang ändern** – Hash erzeugen:
 
----
+```bash
+echo -n "neuespasswort" | shasum -a 256
+```
 
-## So funktioniert das Rendern (JS)
+### Sicherheit (wichtig)
 
-- Jede statische HTML-Seite enthält **`<template data-list="…">`-**Blöcke für
-  wiederkehrende Elemente (Leistungen, Galerie, FAQ, Rezensionen, Trust, Hero-Bilder)
-  und **`data-bind`-Attribute** für einzelne Textschnipsel.
-- `js/render.js` holt `data/site.json` per `fetch`, schreibt Titel/Description/
-  Canonical/OG/JSON-LD in den `<head>` und füllt die Platzhalter + Listen.
-- Danach wird `js/main.js` geladen – die Slider/Lightbox/FAQ laufen auf dem fertigen DOM.
-- Eigene Pfad-Helfer: nicht vorhandene Werte werden einfach leer gelassen (kein Absturz).
+- Für **Produktion** die echten Passwort-Hashes **nicht in Git** legen, sondern
+  in einer **nicht versionierten** Datei `data/admin.local.json` (dieses Schema
+  wird automatisch bevorzugt gelesen und ist per `.gitignore`/`.htaccess`
+  geschützt). Beispiel-Inhalt:
+  ```json
+  { "admin": "<sha256-hash>" }
+  ```
+- `.htaccess` blockiert den direkten Zugriff auf `data/*.json`, `.env`,
+  `/php/*.php` und `/frank-adm/includes/*.php`.
+- In `data/admin.json` können die Hashes leer bleiben bzw. nur der
+  Standard-Login stehen, solange die echten Zugangsdaten nur in
+  `data/admin.local.json` liegen.
 
 ---
 
-## Admin (lokaler Inhalte-Editor)
+## Seitentypen & Routing
 
-`/admin/` ist ein **passwortgeschützter Editor ohne externen Dienst**. Er läuft **nur
-lokal** über `npm run serve` (aus dem `dev/`-Ordner) und exportiert die bearbeiteten
-Inhalte als `site.json` (Download). Diesen Stand ersetzt du in `data/site.json`.
+- `index.php` ist ein **Router**: `/?page=impressum|datenschutz` oder die
+  physischen Ordner `/impressum/`, `/datenschutz/` binden dieselben
+  Partial-Templates aus `/php/` ein.
+- Alle Inhalte/SEO kommen **serverseitig** aus `site.json` – kein reines
+  Client-Rendering mehr; `js/render.js` wurde entfernt.
+- `js/main.js` liefert weiterhin die Interaktion (Nav, FAQ-Akkordeon, Slider,
+  Lightbox, Formular, Cookie-Banner) per Progressive Enhancement.
 
-- **Login:** Benutzer + Passwort. Die Zugangsdaten stehen als **SHA-256-Hashes** in
-  `data/admin.json` (`admin`, `frank` …). Hash erzeugen:
-  `echo -n "passwort" | shasum -a 256`.
-- Bilder-Upload: funktioniert lokal über den Editor (Dateien werden nicht serverseitig
-  abgelegt, sondern in die JSON eingebettet bzw. als Pfad gesetzt).
+### SEO / KI (automatisch aktuell)
 
-> **Sicherheitswarnung:** Der Editor und die Passwort-Hashes liegen **in der
-> deploybaren Root-Struktur** und sind damit für jeden im Browser einsehbar.
-> Das ist für einen echten, öffentlich erreichbaren Website-Admin **nicht sicher**.
-> Nutze den Editor ausschließlich lokal zum Pflegen und lade niemals `admin/` mit
-> echten Passwort-Hashes auf einen öffentlichen Server hoch (oder entferne `admin/`
-> vor dem Deploy). Alternativ: Hashes leer lassen und Inhalte direkt in
-> `data/site.json` bearbeiten.
+- `sitemap.xml`, `robots.txt`, `llms.txt` werden per `.htaccess`/Router aus
+  `sitemap.php`, `robots.php`, `llms.php` dynamisch aus `site.json` erzeugt
+  (Site-URL, Leistungen, Einzugsgebiet, Kontakt) – immer synchron zum Inhalt.
+- `robots.txt` erlaubt ausdrücklich relevante KI-/LLM-Crawler.
+- JSON-LD (`LocalBusiness`, `Carpenter`, `Organization`, `WebSite`, `WebPage`,
+  `BreadcrumbList`, `FAQPage`, `OfferCatalog`) wird serverseitig eingebettet.
 
 ---
 
 ## Deployment
 
-Deploybar ist **komplett der Projekt-Root** – reines statisches Hosting. Kein Node,
-kein PHP, keine Datenbank, kein Build auf dem Server.
+Lade den **Projekt-Root** auf einen PHP-Webspace (Apache mit mod_rewrite):
 
-| | Nötig? | Warum |
-|---|---|---|
-| Statisches Hosting (HTTPS) | **ja** | liefert die Root-Dateien aus (Beliebiges: Cloudflare Pages, GitHub Pages, Vercel, nginx/Apache, Webspace …) |
-| Node/Build auf dem Server | nein | es gibt keinen Build |
-| Formular-Dienst | ja, sobald das Kontaktformular live soll | statisches Hosting kann keine Mails senden – siehe unten |
+1. Inhalte in `data/site.json` pflegen (oder im Admin `/frank-adm/`).
+2. `data/admin.local.json` mit echten Passwort-Hashes anlegen (siehe oben).
+3. Domain in `site.json` (`meta.siteUrl`) prüfen – Sitemap/Robots/llms ziehen sie
+   automatisch.
+4. **Search Console** Property + Sitemap; **Google-Unternehmensprofil**
+   verknüpfen; Rich-Results-Test: <https://search.google.com/test/rich-results>.
 
-1. Inhalte in `data/site.json` anpassen.
-2. Den Projekt-Root auf das statische Hosting hochladen – den `dev/`-Ordner
-   **weglassen** (nur lokale Tools, nicht für den Live-Betrieb).
-3. Domain in `site.json` (`meta.siteUrl`) sowie `sitemap.xml`, `robots.txt`,
-   `llms.txt` prüfen (aktuell `https://www.schreinerei-frank.de`).
-4. **Search Console** Property + Sitemap; **Google-Unternehmensprofil** verknüpfen;
-   Rich-Results-Test: <https://search.google.com/test/rich-results>.
-
-### Empfohlene Header (Hoster / nginx / Apache)
-
-- `Cache-Control: public, max-age=31536000, immutable` für `assets/**`
-- `Cache-Control: public, max-age=3600` für `index.html` und `data/site.json`
-- `text/plain; charset=utf-8` für `llms.txt`
-- Brotli/Gzip aktivieren
+**Nicht deployen:** `dev/`, `data/admin.json` mit echten Hashes, `.env`.
 
 ---
 
 ## Kontaktformular anbinden
 
-| Dienst | Kostenlos | Hinweis |
-|---|---|---|
-| **Web3Forms** | ✔ | `access_key` als hidden-field, kein Account |
-| **Formspree** | ✔ (50/Monat) | `formAction` = `https://formspree.io/f/xxxx` |
-| **Cloudflare Pages Functions** | ✔ | `functions/api/kontakt.js`, Mail über MailChannels/Resend |
-
-Setze `contact.formAction` in `data/site.json` entsprechend. Der Fetch-Zweig
-(JSON-Antwort → Erfolg/Fehler) ist in `js/main.js` unten auskommentiert vorbereitet;
-das Honeypot-Feld (`website`) ist vorhanden.
+Das Formular (in `php/home.php`) postet normal an `action="/api/kontakt"`.
+Für den Versand einen Formulardienst eintragen (Web3Forms, Formspree, …) oder
+ein kleines PHP-Skript `api/kontakt.php` anlegen (Honeypot ist vorhanden:
+Feld `website`).
 
 ---
 
-## Qualitäts-Checkliste
+## Qualitäts-Checkliste (aktueller Stand)
 
-- [x] genau eine `<h1>`, saubere `h2`-Hierarchie, Landmarks (`header/nav/main/footer`)
-- [x] JSON-LD (aus `site.json` generiert): `LocalBusiness`/`Carpenter`, `Organization`, `WebSite`, `WebPage`, `BreadcrumbList`, `FAQPage`, `OfferCatalog`
+- [x] eine `<h1>`, saubere `h2`-Hierarchie, Landmarks (`header/nav/main/footer`)
+- [x] JSON-LD serverseitig eingebettet (LocalBusiness/Carpenter, Organization, WebSite, WebPage, BreadcrumbList, FAQPage, OfferCatalog)
 - [x] Meta-Title + Description, Open Graph, Twitter Card, `canonical`, `lang="de"`
-- [x] `robots.txt` (+ KI-Bots), `sitemap.xml`, `llms.txt`
+- [x] `robots.txt` (+ KI-Bots) / `sitemap.xml` / `llms.txt` dynamisch aus `site.json`
+- [x] No-JS-Fallback: Inhalte serverseitig vorhanden (kein Client-Rendering mehr)
 - [x] alle Bilder mit `alt`, `width`/`height`, Lazy-Load unter dem Fold
-- [x] Fokus sichtbar, Skip-Link, Tastaturbedienung, `prefers-reduced-motion`
-- [ ] **No-JS-Fallback** – bei reinem Client-Rendering leer. Für maximale SEO optional in statisches HTML vorrendern.
-- [ ] echte Bilder + OG-/Icon-Assets
-- [ ] Fonts self-hosted
-- [ ] Formular-Backend
+- [x] Admin (PHP) mit Bild-Upload + WebP, schreibt direkt in `site.json`
+- [ ] echte Bilder + OG-/Icon-Assets prüfen
+- [ ] Fonts self-hosten (aktuell Google Fonts CDN)
+- [ ] Formular-Backend anbinden
 - [ ] Impressum-/Datenschutz-Texte final prüfen

@@ -257,6 +257,7 @@
     var nextBtn = lb.querySelector('[data-lightbox-next]');
     var closeBtn = lb.querySelector('[data-lightbox-close]');
     var open = document.querySelector('.gallery__track');
+    var thumbsBox = lb.querySelector('[data-lightbox-thumbs]');
 
     var catIndex = 0;
     var imgIndex = 0;
@@ -269,10 +270,43 @@
       var item = imgs[Math.min(imgIndex, imgs.length - 1)];
       img.src = item.src;
       img.alt = item.alt || '';
-      caption.textContent = categories[catIndex].category;
+      caption.textContent = item.alt || '';
       counter.textContent = (imgIndex + 1) + ' / ' + imgs.length;
       prevBtn.disabled = false;
       nextBtn.disabled = false;
+      syncThumbs();
+    }
+
+    function buildThumbs() {
+      if (!thumbsBox) return;
+      thumbsBox.innerHTML = '';
+      for (var i = 0; i < categories.length; i++) {
+        var btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'lightbox__thumb-btn';
+        btn.setAttribute('aria-label', categories[i].category || ('Kategorie ' + (i + 1)));
+        var t = document.createElement('img');
+        t.loading = 'lazy';
+        t.decoding = 'async';
+        t.alt = '';
+        t.src = categories[i].mainImage || '';
+        btn.appendChild(t);
+        (function (idx) {
+          btn.addEventListener('click', function () {
+            openAt(idx);
+          });
+        }(i));
+        thumbsBox.appendChild(btn);
+      }
+    }
+
+    function syncThumbs() {
+      if (!thumbsBox) return;
+      var btns = thumbsBox.querySelectorAll('button');
+      for (var i = 0; i < btns.length; i++) {
+        btns[i].setAttribute('aria-current', i === catIndex ? 'true' : 'false');
+        if (btns[i].classList) btns[i].classList.toggle('is-active', i === catIndex);
+      }
     }
 
     function openAt(idx) {
@@ -299,8 +333,11 @@
     if (root) {
       openers = root.querySelectorAll('[data-gallery-open]');
       for (var i = 0; i < openers.length; i++) {
-        (function (i) {
-          openers[i].addEventListener('click', function () { openAt(i); });
+        (function (idx) {
+          openers[idx].addEventListener('click', function () {
+            var cat = parseInt(this.getAttribute('data-gallery-open'), 10);
+            openAt(cat);
+          });
         }(i));
       }
     }
@@ -314,6 +351,8 @@
       if (e.key === 'ArrowRight') { e.preventDefault(); step(1); }
       if (e.key === 'ArrowLeft') { e.preventDefault(); step(-1); }
     });
+
+    buildThumbs();
   })();
 
   /* -------- Rezensionen-Slider -------- */
@@ -418,7 +457,7 @@
     }
 
     var fields = {
-      name: { input: form.elements.name, required: true, validate: function (v) { return v.trim().length >= 2; }, msg: 'Bitte geben Sie Ihren Namen ein.' },
+      name: { input: form.elements.name, required: true, validate: function (v) { return v.trim().length >= 2 && !/\d/.test(v); }, msg: 'Bitte geben Sie einen gültigen Namen ohne Zahlen ein.' },
       email: { input: form.elements.email, required: true, validate: validEmail, msg: 'Bitte geben Sie eine gültige E-Mail-Adresse ein.' },
       phone: { input: form.elements.phone, required: false, validate: function (v) { return v.trim() === '' || validPhone(v); }, msg: 'Bitte geben Sie eine gültige Telefonnummer ein.' },
       message: { input: form.elements.message, required: true, validate: function (v) { return v.trim().length >= 5; }, msg: 'Bitte beschreiben Sie Ihr Vorhaben kurz.' }
@@ -510,11 +549,16 @@
     });
   })();
 
-  /* -------- Sticky-Bar E-Mail: Betreff + Datum/Uhrzeit im Body -------- */
+  /* -------- E-Mail-Links: Betreff + Datum/Uhrzeit im Body -------- */
   (function stickyMail() {
-    var links = document.querySelectorAll('[data-sticky-mail]');
+    var links = document.querySelectorAll('a[href^="mailto:"]');
     if (!links.length) return;
     var base = (links[0].getAttribute('href') || 'mailto:').replace(/[?#].*$/, '');
+    var hrefs = {};
+    var i, j;
+    for (j = 0; j < links.length; j++) {
+      hrefs[j] = (links[j].getAttribute('href') || 'mailto:').replace(/[?#].*$/, '');
+    }
 
     function pad(n) { return n < 10 ? '0' + n : '' + n; }
     function deutschDate(d) {
@@ -522,7 +566,7 @@
       var mo = ['Jan', 'Feb', 'Mär', 'Apr', 'Mai', 'Jun', 'Jul', 'Aug', 'Sep', 'Okt', 'Nov', 'Dez'][d.getMonth()];
       return wd + ', ' + d.getDate() + '. ' + mo + ' ' + d.getFullYear();
     }
-    function build() {
+    function build(base) {
       var now = new Date();
       var date = deutschDate(now);
       var time = pad(now.getHours()) + ':' + pad(now.getMinutes());
@@ -535,12 +579,12 @@
       return base + '?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(body);
     }
 
-    for (var i = 0; i < links.length; i++) {
-      (function (link) {
+    for (i = 0; i < links.length; i++) {
+      (function (link, base) {
         link.addEventListener('click', function () {
-          link.setAttribute('href', build());
+          link.setAttribute('href', build(base));
         });
-      }(links[i]));
+      }(links[i], hrefs[i]));
     }
   })();
 

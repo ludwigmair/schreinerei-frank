@@ -1,0 +1,11 @@
+{
+    "name": "schreinerei-frank-meisterbetrieb-root",
+    "version": "2.0.0",
+    "private": true,
+    "description": "Schreinerei Frank - Meisterbetrieb – PHP-Site. 'npm run serve' startet den lokalen PHP-Dev-Server (Home + Admin).",
+    "scripts": {
+        "serve": "bash dev/serve.sh",
+        "start": "bash dev/serve.sh",
+        "dev": "bash dev/serve.sh"
+    }
+}
