@@ -14,8 +14,4 @@ dev/.env
 dev/server.log
 dev/srv_t.log
 
-PROJECT.md
-README.md
-package.json
-package-lock.json
-DESIGN.md
+
