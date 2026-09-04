@@ -1,4 +1,4 @@
-# Schreinerei Frank – PHP-Website
+# PHP-Website
 
 SEO-/KI-optimierte Single-Page-Website für die Schreinerei Frank, Seeon (Chiemgau).
 Design: **Konzept C „Meisterhand"** – Details in [`DESIGN.md`](DESIGN.md).
@@ -118,9 +118,11 @@ echo -n "neuespasswort" | shasum -a 256
   in einer **nicht versionierten** Datei `data/admin.local.json` (dieses Schema
   wird automatisch bevorzugt gelesen und ist per `.gitignore`/`.htaccess`
   geschützt). Beispiel-Inhalt:
+
   ```json
   { "admin": "<sha256-hash>" }
   ```
+
 - `.htaccess` blockiert den direkten Zugriff auf `data/*.json`, `.env`,
   `/php/*.php` und `/frank-adm/includes/*.php`.
 - In `data/admin.json` können die Hashes leer bleiben bzw. nur der
