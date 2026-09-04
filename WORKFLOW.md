@@ -1,9 +1,9 @@
-# WORKFLOW – Deploy per GitHub Actions (SFTP)
+# WORKFLOW – Deploy per GitHub Actions (FTPS)
 
 Diese Datei beschreibt den **exakten Deployment-Ablauf** der Website auf den
 Hoster-Server. Ziel ist ein **vollautomatischer, nachvollziehbarer** Vorgang:
 
-> **Merge `develop` → `staging` ⇒ automatischer SFTP-Upload zum Hoster.**
+> **Merge `develop` → `staging` ⇒ automatischer FTPS-Upload zum Hoster.**
 
 Nichts wird manuell auf den Server kopiert – der Git-Workflow ist die einzige
 Quelle. Alle Zugangsdaten sind als **GitHub-Secrets** hinterlegt und liegen
@@ -18,12 +18,12 @@ Initial muss die site einmal via ftp deployed werden, damit spaeter die backup.p
 [develop] --merge--> [staging] --push--> GitHub
                                           │
                                           ▼
-                       GitHub Actions: "Deploy staging per SFTP"
+                       GitHub Actions: "Deploy staging per FTPS"
                           │  (nur wenn entwickel→staging-Merge)
                           ▼
                     1) Sicherung anlegen (backup.php → backup/backup_<Datum>.zip)
                           ▼
-                    2) SFTP-Upload zum Hoster (Port 22) – OHNE Löschen von
+                    2) FTPS-Upload zum Hoster (Port 21) – OHNE Löschen von
                        serverseitigen Uploads und OHNE .env zu berühren
 ```
 
@@ -45,7 +45,7 @@ Kein weiterer manueller Schritt nötig.
 | `push` auf `staging` | Startet den Workflow |
 | Commit ist **kein** Merge | **Abbruch** – wird nicht deployed |
 | Commit **ist** ein Merge, Elternteil **nicht** `origin/develop` | **Abbruch** – wird nicht deployed |
-| Commit **ist** ein Merge mit Elternteil `origin/develop` | **SFTP-Deploy** wird ausgeführt |
+| Commit **ist** ein Merge mit Elternteil `origin/develop` | **FTPS-Deploy** wird ausgeführt |
 
 D.h. nur ein echter **`develop → staging`-Merge** löst den Upload aus; lose
 Staging-Commits oder ein Merge aus einem anderen Branch werden ignoriert.
@@ -79,7 +79,13 @@ und keinerlei Geheimnisse.
 
 Der Upload nutzt die etablierte Action
 [`SamKirkland/FTP-Deploy-Action`@v4.3.5](https://github.com/SamKirkland/FTP-Deploy-Action)
-mit `protocol: sftp` und `port: 22`.
+mit `protocol: ftps`, `port: 21` und `security: loose`.
+
+> **Wichtig:** Diese Action unterstützt **kein SFTP** (nur `ftp`, `ftps`,
+> `ftps-legacy`). Da typopublic FTPS auf Port 21 anbietet, wird `ftps` genutzt.
+> Sollte der Hoster später nur SSH/SFTP anbieten, ist
+> [`SamKirkland/web-deploy`](https://github.com/SamKirkland/web-deploy)
+> (rsync über SSH) die Alternative.
 
 ---
 
@@ -91,18 +97,18 @@ Ohne diese Geheimnisse schlägt der Deploy-Schritt fehl. Einrichtungsort:
 
 | Secret-Name | Bedeutung | Beispiel |
 | --- | --- | --- |
-| `FTP_SERVER` | SFTP-Host des Hosters (ohne Protokoll, ohne Pfad) | `ftp.typopublic.com` |
-| `FTP_USERNAME` | SFTP-Benutzer | `schreinerei` |
-| `FTP_PASSWORD` | SFTP-Passwort | (geheim) |
-| `FTP_TARGET_DIR` | **Optional** – Zielverzeichnis auf dem Server; Default ist `public_html` | `public_html` oder `htdocs` |
+| `FTP_SERVER` | FTP/FTPS-Host des Hosters (ohne Protokoll, ohne Pfad) | `ftp.typopublic.com` |
+| `FTP_USERNAME` | FTP-Benutzer | `schreinerei` |
+| `FTP_PASSWORD` | FTP-Passwort | (geheim) |
+| `FTP_TARGET_DIR` | **Optional** – Zielverzeichnis auf dem Server; Default ist `schreinerei-frank` | `schreinerei-frank` |
 | `BACKUP_TOKEN` | **Neu** – Secret-Token der `backup.php`, das den Sicherungs-Aufruf absichert (muss dem `BACKUP_TOKEN` in `backup.php` entsprechen) | (geheim, selbst gewählt) |
-| `BACKUP_URL` | **Neu** – vollständige HTTPS-URL der `backup.php` auf dem Server, **inkl. Subdomain/Unterordner**. Wichtig, weil die Site im Unterordner liegt (`https://FTP_SERVER/backup.php` wäre falsch) | `https://staging.typopublic.com/schreinerei-frank/backup.php` |
+| `BACKUP_URL` | **Neu** – vollständige HTTPS-URL der `backup.php` auf dem Server, **inkl. Subdomain/Unterordner**. Wichtig, weil die Site im Unterordner liegt (`https://FTP_SERVER/backup.php` wäre falsch) | `https://schreinerei-frank.typopublic.com/backup.php` |
 
 > **Hinweise:**
 >
-> - Der Wert von `FTP_TARGET_DIR` wird im Workflow mit `'public_html'` als
->   Default belegt: `${{ secrets.FTP_TARGET_DIR || 'public_html' }}`.
-> - Falls dein Hoster andere Zugangsdaten (z. B. separates SFTP-Konto pro
+> - Der Wert von `FTP_TARGET_DIR` wird im Workflow mit `'schreinerei-frank'` als
+>   Default belegt: `${{ secrets.FTP_TARGET_DIR || 'schreinerei-frank' }}`.
+> - Falls dein Hoster andere Zugangsdaten (z. B. separates FTP-Konto pro
 >   Verzeichnis) liefert, einfach die Secrets entsprechend auffüllen.
 > - Secrets lassen sich nach dem Anlegen **nicht mehr anzeigen** – nur neu
 >   setzen. Sie sind beim Workflow-Run nur für berechtigte Ausführende
@@ -121,7 +127,7 @@ env:
   FTP_SERVER:     ${{ secrets.FTP_SERVER }}
   FTP_USERNAME:   ${{ secrets.FTP_USERNAME }}
   FTP_PASSWORD:   ${{ secrets.FTP_PASSWORD }}
-  FTP_TARGET_DIR: ${{ secrets.FTP_TARGET_DIR || 'public_html' }}
+  FTP_TARGET_DIR: ${{ secrets.FTP_TARGET_DIR || 'schreinerei-frank' }}
 ```
 
 ```yaml
@@ -129,8 +135,9 @@ with:
   server:      ${{ env.FTP_SERVER }}
   username:    ${{ env.FTP_USERNAME }}
   password:    ${{ env.FTP_PASSWORD }}
-  protocol:    sftp
-  port:        22
+  protocol:    ftps
+  port:        21
+  security:    loose
   server-dir:  ${{ env.FTP_TARGET_DIR }}/
 ```
 
@@ -161,13 +168,13 @@ git push origin staging
 ```
 
 Nach Schritt 3 startet GitHub die Action. Sie prüft, ob es sich um einen
-`develop → staging`-Merge handelt, und lädt dann per SFTP hoch.
+`develop → staging`-Merge handelt, und lädt dann per FTPS hoch.
 
 ### Ergebnis prüfen
 
-- **GitHub:** Repo → **Actions** → Workflow „Deploy staging per SFTP" → letzter
+- **GitHub:** Repo → **Actions** → Workflow „Deploy staging per FTPS" → letzter
   Run sollte `success` zeigen.
-- **Server:** Dateien per FTP-Client/SFTP prüfen oder die Website aufrufen.
+- **Server:** Dateien per FTP-Client prüfen oder die Website aufrufen.
 - Status-Fehler beseitigen: Siehe §8.
 
 ---
@@ -191,10 +198,10 @@ Nach Schritt 3 startet GitHub die Action. Sie prüft, ob es sich um einen
 
 ### Manuelles Rollback (bei fehlerhaftem Deploy)
 
-1. Per SFTP (Port 22) die gewünschte Zip `backup/backup_<Datum>.zip`
+1. Per FTPS (Port 21) die gewünschte Zip `backup/backup_<Datum>.zip`
    herunterladen.
-2. Lokal entpacken und den Inhalt **bis auf `.env`** per SFTP zurück auf den
-   Server kopieren (`public_html/` bzw. `FTP_TARGET_DIR`).
+2. Lokal entpacken und den Inhalt **bis auf `.env`** per FTPS zurück auf den
+   Server kopieren (`schreinerei-frank/` bzw. `FTP_TARGET_DIR`).
    **`.env` wird dabei niemals überschrieben** – sie bleibt unangetastet.
 3. Optional: Die fehlerhafte Version per neuem `develop → staging`-Merge
    korrigieren und erneut deployen.
@@ -230,7 +237,8 @@ Falls die Action startet, aber nichts hochlädt, ist das in der Regel gewollt:
 | „Login/Connection failed" | `FTP_SERVER` falsch oder Hoster blockt unbekannte IP | Server-/Host-Anmeldedaten prüfen; ggf. FTP-Server/Firewall |
 | Forget „permission denied" | `FTP_TARGET_DIR` existiert nicht | Server-Verzeichnis prüfen, korrekten Zielpfad setzen |
 | Workflow läuft, aber deployt nicht | Kein Merge-Commit bzw. falsche Basis | §7 lesen |
-| SFTP-Port 22 blockiert | Hoster unterstützt nur FTPS | Workflow auf `protocol: ftps` umstellen |
+| `protocol: invalid parameter – "sftp"` | Action unterstützt kein SFTP | `protocol: ftps` + `port: 21` nutzen (siehe §2) |
+| FTPS-Zertifikat wird abgelehnt | Hoster-Zertifikat passt nicht zur Domain | `security: loose` setzen |
 
 > **Sicherheit:** Zugangsdaten gehören **ausschließlich** in Secrets. Niemals
 > in `site.json`, `PROJECT.md`, Commit-Messages oder Workflow-Dateien ablegen.
@@ -243,5 +251,5 @@ Falls die Action startet, aber nichts hochlädt, ist das in der Regel gewollt:
 - Secrets: `FTP_SERVER`, `FTP_USERNAME`, `FTP_PASSWORD`, `FTP_TARGET_DIR` (opt.), `BACKUP_TOKEN`, `BACKUP_URL`
 - Backup: vor jedem Deploy automatisch `backup.php`, Ziel `backup/`, Retention letzte 5
 - Wahrer Auslöser: **Merge `develop` → `staging`** und Push
-- Protokoll: **SFTP, Port 22**
-- Zielverzeichnis: Default **`public_html`**
+- Protokoll: **FTPS, Port 21** (`security: loose`)
+- Zielverzeichnis: Default **`schreinerei-frank`**
