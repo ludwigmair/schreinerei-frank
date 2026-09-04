@@ -207,7 +207,12 @@ function site_asset(array $s, string $path): string
         return $path;
     }
     $base = rtrim(site_config($s, 'project.assetsBase', '/assets'), '/');
-    $full = $base . '/' . ltrim($path, '/');
+    // Pfad enthält die Asset-Basis bereits (z. B. "/assets/content/...")?
+    if ($base !== '' && ($path === $base || strpos($path, $base . '/') === 0)) {
+        $full = $path;
+    } else {
+        $full = $base . '/' . ltrim($path, '/');
+    }
     return rtrim(site_base(), '/') . '/' . ltrim($full, '/');
 }
 
