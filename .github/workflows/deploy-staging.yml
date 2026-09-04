@@ -61,6 +61,8 @@ jobs:
           set -e
           : "${BACKUP_URL:?BACKUP_URL-Secret fehlt oder ist leer}"
           : "${BACKUP_TOKEN:?BACKUP_TOKEN-Secret fehlt oder ist leer}"
+          BACKUP_URL="$(printf '%s' "$BACKUP_URL" | tr -d '[:space:]')"
+          BACKUP_TOKEN="$(printf '%s' "$BACKUP_TOKEN" | tr -d '[:space:]')"
           if RESPONSE="$(curl -fsSL --connect-timeout 30 --max-time 120 -X POST \
                 "$BACKUP_URL" \
                 --data-urlencode "token=$BACKUP_TOKEN" \
