@@ -18,6 +18,7 @@ jobs:
       FTP_USERNAME: ${{ secrets.FTP_USERNAME }}
       FTP_PASSWORD: ${{ secrets.FTP_PASSWORD }}
       FTP_TARGET_DIR: ${{ secrets.FTP_TARGET_DIR || 'public_html' }}
+      BACKUP_URL: ${{ secrets.BACKUP_URL }}
 
     steps:
       - name: Checkout staging
@@ -58,7 +59,7 @@ jobs:
         if: steps.check-merge.outputs.deployed == 'true'
         run: |
           curl -fsS --max-time 120 -X POST \
-            "https://${{ env.FTP_SERVER }}/backup.php" \
+            "${{ env.BACKUP_URL }}" \
             -H "Authorization: Bearer ${{ secrets.BACKUP_TOKEN }}"
         shell: bash
 
