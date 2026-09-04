@@ -1,7 +1,7 @@
 <?php
 
 /**
- * was auch immer – Router (Startseite + optionale Seiten).
+ * was auch immer XXXX – Router (Startseite + optionale Seiten).
  *
  * Ist lediglich ein Router: alle Templates liegen als .php-Partials in /php/
  * und werden hier nur eingebunden. Die URL bestimmt, welches Partial gerendert
