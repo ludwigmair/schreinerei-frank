@@ -61,12 +61,17 @@ jobs:
           set -e
           : "${BACKUP_URL:?BACKUP_URL-Secret fehlt oder ist leer}"
           : "${BACKUP_TOKEN:?BACKUP_TOKEN-Secret fehlt oder ist leer}"
-          curl -fsSL --max-time 120 -X POST \
-            "$BACKUP_URL" \
-            --data-urlencode "token=$BACKUP_TOKEN" \
-            -H "Authorization: Bearer $BACKUP_TOKEN" \
-            --write-out "\nHTTP %{http_code}\n" \
-            || { echo "→ Backup-Aufruf fehlgeschlagen (siehe oben)"; exit 3; }
+          if RESPONSE="$(curl -fsSL --connect-timeout 30 --max-time 120 -X POST \
+                "$BACKUP_URL" \
+                --data-urlencode "token=$BACKUP_TOKEN" \
+                -H "Authorization: Bearer $BACKUP_TOKEN" \
+                --write-out "\nHTTP %{http_code}\n" 2>&1)"; then
+            echo "Backup ok. Antwort: ${RESPONSE}"
+          else
+            RESPONSE="${RESPONSE:-<keine Antwort>}"
+            echo "::error::Backup-Aufruf fehlgeschlagen. Antwort: ${RESPONSE}"
+            exit 3
+          fi
         shell: bash
 
       - name: SFTP-Deploy (nur bei develop→staging-Merge)
