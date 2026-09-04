@@ -97,7 +97,7 @@ function project_config(): array
             'faxSchema'   => config_site_value('config.faxSchema', ''),
             'themeColor'  => config_site_value('config.themeColor', '#3D6490'),
             'assetsBase'  => config_site_value('config.assetsBase', '/assets'),
-            'logo'        => config_site_value('config.logo', 'site/logo-schreinerei-frank.png'),
+            'logo'        => config_site_value('config.logo', 'site/logo.png'),
             'port'        => config_site_value('config.port', '9999'),
             'adminPath'   => config_site_value('config.adminPath', '/admin'),
         ],
