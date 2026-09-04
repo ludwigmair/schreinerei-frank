@@ -58,9 +58,15 @@ jobs:
       - name: Sicherung auf dem Server anlegen (vor dem Deploy)
         if: steps.check-merge.outputs.deployed == 'true'
         run: |
-          curl -fsS --max-time 120 -X POST \
-            "${{ env.BACKUP_URL }}" \
-            -H "Authorization: Bearer ${{ secrets.BACKUP_TOKEN }}"
+          set -e
+          : "${BACKUP_URL:?BACKUP_URL-Secret fehlt oder ist leer}"
+          : "${BACKUP_TOKEN:?BACKUP_TOKEN-Secret fehlt oder ist leer}"
+          curl -fsSL --max-time 120 -X POST \
+            "$BACKUP_URL" \
+            --data-urlencode "token=$BACKUP_TOKEN" \
+            -H "Authorization: Bearer $BACKUP_TOKEN" \
+            --write-out "\nHTTP %{http_code}\n" \
+            || { echo "→ Backup-Aufruf fehlgeschlagen (siehe oben)"; exit 3; }
         shell: bash
 
       - name: SFTP-Deploy (nur bei develop→staging-Merge)
