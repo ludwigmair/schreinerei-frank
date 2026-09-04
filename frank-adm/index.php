@@ -45,6 +45,10 @@ $isLoggedIn = adm_is_logged_in();
         <h1>Inhalte pflegen</h1>
         <div class="sub">Speichern schreibt direkt in <code>data/site.json</code> – sofort auf der Seite sichtbar.</div>
       </div>
+      <div class="search-wrap">
+        <input type="text" id="search-input" placeholder="Volltext suchen …" autocomplete="off">
+        <ul id="search-results" class="search-results" hidden></ul>
+      </div>
       <button class="btn secondary" id="logout-btn" type="button">Abmelden</button>
     </header>
 

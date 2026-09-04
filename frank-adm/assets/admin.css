@@ -106,3 +106,22 @@ header.top code{background:#ecebe6;padding:1px 5px;border-radius:5px}
 
 /* Nicht-editierbare Felder (aus zentralem config-Block in site.json) */
 .ro-field{background:#f0eee8;color:var(--muted);cursor:not-allowed}
+
+/* Volltextsuche im Header */
+.search-wrap{position:relative;flex:1 1 260px;max-width:340px}
+.search-wrap input{width:100%;padding:10px 14px;font-size:14px;border:1px solid var(--line);
+  border-radius:8px;background:#fff;color:var(--ink)}
+.search-wrap input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(44,81,56,.12)}
+.search-wrapper:hover{border-color:#c9c5bc}
+.search-results{position:absolute;top:calc(100% + 6px);left:0;right:0;z-index:400;margin:0;padding:6px;
+  list-style:none;background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  box-shadow:0 10px 30px rgba(0,0,0,.14);max-height:340px;overflow:auto}
+.search-results li{cursor:pointer;padding:8px 10px;border-radius:7px;display:flex;flex-direction:column;gap:1px}
+.search-results li:hover{background:#f0efe9}
+.search-results .sr-top{font-size:12px;font-weight:700;color:var(--accent-2)}
+.search-results .sr-val{font-size:12px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.search-results .sr-none{cursor:default;color:var(--muted);font-size:13px}
+
+/* Hervorhebung des Sprung-Ziels */
+@keyframes searchPulse{0%,100%{box-shadow:0 0 0 3px rgba(197,138,61,.35)}50%{box-shadow:0 0 0 3px rgba(197,138,61,.05)}}
+.field.search-focus{animation:searchPulse 1.2s ease-in-out 2;border-radius:7px}

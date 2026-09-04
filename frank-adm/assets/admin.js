@@ -16,6 +16,7 @@
   var CONFIG = {};   // zentrale config-Werte für die Anzeige
   var images = [];   // Bild-Bibliothek
   var uploads = {};  // path -> {blob}
+  var focusTarget = null; // { path: [...] } – Ziel der Such-Sprünge
 
   /* ---------- Sektionen ---------- */
   var SECTIONS = [
@@ -237,12 +238,40 @@
     return m.map(function (s) { return 'config.' + s.replace(/\}|\{/g, '').replace('config.', ''); });
   }
 
-  function makeField(holder, key, value) {
+  function pathIsTarget(path) {
+    if (!focusTarget) return false;
+    var t = focusTarget.path || [];
+    if (t.length !== path.length) return false;
+    for (var i = 0; i < t.length; i++) if (String(t[i]) !== String(path[i])) return false;
+    return true;
+  }
+
+  function isPrefixPath(prefix, path) {
+    if (!prefix || prefix.length > path.length) return false;
+    for (var i = 0; i < prefix.length; i++) if (String(prefix[i]) !== String(path[i])) return false;
+    return true;
+  }
+
+  function resolveValue(obj, path) {
+    return path.reduce(function (o, k) { return o == null ? undefined : o[k]; }, obj);
+  }
+
+  function searchLabel(holderKey, path) {
+    var val = resolveValue(work, path);
+    if (path.length === 1 && SECTIONS.some(function (s) { return s.key === path[0]; })) {
+      var sec = SECTIONS.find(function (s) { return s.key === path[0]; });
+      return sec ? sec.label : friendly(holderKey);
+    }
+    return friendly(holderKey);
+  }
+
+  function makeField(holder, key, value, path) {
     var vars = configVars(value);
     if (vars.length) {
       // Config-gebundene Felder: keine Eingabe, nur Anzeige. Der Wert stammt
       // zentral aus dem config-Block - NUR als Text dargestellt, niemals editierbar.
       var rw = el('div', 'field');
+      if (path) rw.setAttribute('data-path', path.join('.'));
       rw.appendChild(el('label', null, friendly(key)));
       var resolved = String(value).replace(/\{config\.([a-zA-Z0-9_]+)\}/g, function (m, k) {
         return (CONFIG[k] != null ? CONFIG[k] : m);
@@ -256,6 +285,8 @@
       return rw;
     }
     var wrap = el('div', 'field');
+    if (path) wrap.setAttribute('data-path', path.join('.'));
+    if (path && pathIsTarget(path)) wrap.classList.add('search-focus');
     wrap.appendChild(el('label', null, friendly(key)));
     var type = typeof value;
     if (type === 'boolean') {
@@ -296,7 +327,7 @@
     return wrap;
   }
 
-  function renderInto(container, holder, value, holderKey) {
+  function renderInto(container, holder, value, holderKey, path) {
     if (Array.isArray(value)) {
       var allPrim = value.every(function (v) { return !isObj(v) && !Array.isArray(v); });
       if (allPrim) { container.appendChild(makePrimArrayField(holder, holderKey, value)); return; }
@@ -469,12 +500,13 @@
 
         var body = el('div', 'list-item-body');
         if (isObj(itemObj)) {
-          Object.keys(itemObj).forEach(function (k) { renderInto(body, itemObj, itemObj[k], k); });
+          Object.keys(itemObj).forEach(function (k) { renderInto(body, itemObj, itemObj[k], k, (path || []).concat(holderKey, index)); });
         }
         box.appendChild(body);
 
         // Auf-/Zuklappen des Eintrags über den Titel
-        var collapsed = true;
+        var itemPath = (path || []).concat(holderKey, index);
+        var collapsed = !(focusTarget && focusTarget.path && isPrefixPath(focusTarget.path, itemPath));
         function applyCollapse() {
           body.hidden = collapsed;
           toggler.classList.toggle('collapsed', collapsed);
@@ -512,12 +544,12 @@
     if (isObj(value)) {
       var sub = el('div', 'sub-card');
       sub.appendChild(el('h4', null, friendly(holderKey)));
-      Object.keys(value).forEach(function (k) { renderInto(sub, value, value[k], k); });
+      Object.keys(value).forEach(function (k) { renderInto(sub, value, value[k], k, (path || []).concat(holderKey)); });
       container.appendChild(sub);
       return;
     }
 
-    container.appendChild(makeField(holder, holderKey, value));
+    container.appendChild(makeField(holder, holderKey, value, path));
   }
 
   /* ---------- Sektionen renderen ---------- */
@@ -531,12 +563,89 @@
     if (!(key in work)) {
       card.appendChild(el('p', 'hint', 'Dieser Abschnitt ist noch nicht vorhanden.'));
     } else {
-      renderInto(card, work, work[key], key);
+      renderInto(card, work, work[key], key, [key]);
     }
     root.innerHTML = '';
     root.classList.remove('load-screen');
     root.appendChild(card);
     setStatus('Abschnitt geöffnet');
+
+    // Beim Such-Sprung zum Zielfeld scrollen + hervorheben
+    if (focusTarget && focusTarget.path && focusTarget.path[0] === key) {
+      var t = document.querySelector('[data-path="' + focusTarget.path.join('.') + '"]');
+      if (t) {
+        t.scrollIntoView({ block: 'center', behavior: 'smooth' });
+        t.classList.add('search-focus');
+        setTimeout(function () { t.classList.remove('search-focus'); }, 2400);
+      }
+    }
+  }
+
+  /* ---------- Volltextsuche ---------- */
+  function collectSearchables(holder, path, out) {
+    if (isObj(holder)) {
+      Object.keys(holder).forEach(function (k) {
+        collectSearchables(holder[k], (path || []).concat(k), out);
+      });
+      return;
+    }
+    if (Array.isArray(holder)) {
+      holder.forEach(function (it, i) {
+        if (it != null && typeof it === 'object') collectSearchables(it, (path || []).concat(i), out);
+      });
+      return;
+    }
+    if (typeof holder === 'string' || typeof holder === 'number') {
+      var label = friendly(path[path.length - 1]);
+      var secKey = path[0];
+      var sec = SECTIONS.find(function (s) { return s.key === secKey; });
+      out.push({ path: path.slice(), label: label, section: sec ? sec.label : friendly(secKey), value: String(holder) });
+    }
+  }
+
+  function runSearch(query) {
+    var list = document.getElementById('search-results');
+    list.innerHTML = '';
+    list.hidden = true;
+    if (!query) return;
+    var q = query.toLowerCase();
+    var hits = [];
+    collectSearchables(work, [], hits);
+    var text = hits.filter(function (h) {
+      return h.value.toLowerCase().indexOf(q) > -1 || h.label.toLowerCase().indexOf(q) > -1;
+    });
+    var uid = 0;
+    text.slice(0, 30).forEach(function (h) {
+      var li = el('li');
+      li.setAttribute('data-hpath', h.path.join('.'));
+      var top = el('span', 'sr-top', h.section + ' › ' + h.label);
+      var bot = el('span', 'sr-val', h.value.length > 60 ? h.value.slice(0, 60) + '…' : h.value);
+      li.appendChild(top);
+      li.appendChild(bot);
+      li.addEventListener('click', function () { jumpTo(h.path); });
+      list.appendChild(li);
+    });
+    if (text.length === 0) {
+      var none = el('li', 'sr-none', 'Keine Treffer');
+      list.appendChild(none);
+    }
+    list.hidden = false;
+    void uid;
+  }
+
+  function jumpTo(path) {
+    focusTarget = { path: path };
+    document.getElementById('search-input').value = '';
+    document.getElementById('search-results').hidden = true;
+    var navBtns = document.querySelectorAll('#nav-cards button');
+    navBtns.forEach(function (b) { b.classList.remove('active'); });
+    var targets = Array.prototype.slice.call(navBtns).filter(function (b) { return b.textContent.trim() === sectionLabel(path[0]); });
+    if (targets[0]) targets[0].classList.add('active');
+    showSection(path[0]);
+  }
+  function sectionLabel(key) {
+    var sec = SECTIONS.find(function (s) { return s.key === key; });
+    return sec ? sec.label : friendly(key);
   }
 
   function buildNav() {
@@ -690,6 +799,22 @@
     });
     document.getElementById('reload-btn').addEventListener('click', loadAll);
     document.getElementById('save-btn').addEventListener('click', save);
+
+    var searchInp = document.getElementById('search-input');
+    searchInp.addEventListener('input', function () { runSearch(searchInp.value.trim()); });
+    searchInp.addEventListener('focus', function () { if (searchInp.value.trim()) runSearch(searchInp.value.trim()); });
+    searchInp.addEventListener('keydown', function (e) {
+      var list = document.getElementById('search-results');
+      if (e.key === 'Escape') { list.hidden = true; searchInp.blur(); return; }
+      if (e.key === 'Enter') {
+        var first = list.querySelector('li[data-hpath]');
+        if (first) jumpTo(first.getAttribute('data-hpath').split('.'));
+      }
+    });
+    document.addEventListener('click', function (e) {
+      var w = document.querySelector('.search-wrap');
+      if (w && !w.contains(e.target)) document.getElementById('search-results').hidden = true;
+    });
 
     if (window.SF_ADMIN && window.SF_ADMIN.loggedIn) {
       document.getElementById('login-view').hidden = true;
