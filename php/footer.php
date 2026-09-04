@@ -10,7 +10,7 @@ declare(strict_types=1);
 $b = $s['business'] ?? [];
 $footer = $s['footer'] ?? [];
 $ui = $s['ui'] ?? [];
-$baseHref = $baseHref ?? './';
+$baseHref = site_set_base($baseHref ?? './');
 ?>
 </main>
 
@@ -59,7 +59,7 @@ $baseHref = $baseHref ?? './';
   </button>
 </nav>
 
-<script src="/js/main.js?ver=2.3.0"></script>
+<script src="<?php echo site_abs('/js/main.js'); ?>?ver=2.3.0"></script>
 </body>
 
 </html>

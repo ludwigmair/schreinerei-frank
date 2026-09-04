@@ -36,6 +36,32 @@ function site_resolve_config(array &$node, array $cfg): void
     unset($v);
 }
 
+/**
+ * Liest eine JSON-Datei tolerant ein: entfernt einen führenden
+ * Kommentarblock (/* ... *\/ bzw. // ) und Fehlerquellen, damit auch
+ * dateien mit dokumentierendem Kopf sicher gelesen werden.
+ */
+function sf_read_json_file(string $path): ?array
+{
+    if (!is_file($path)) {
+        return null;
+    }
+    $raw = file_get_contents($path);
+    if ($raw === false) {
+        return null;
+    }
+    $src = ltrim($raw);
+    // Führenden /* ... */ Kommentarblock entfernen (falls vorhanden).
+    if (strpos($src, '/*') === 0) {
+        $end = strpos($src, '*/');
+        if ($end !== false) {
+            $src = ltrim(substr($src, $end + 2));
+        }
+    }
+    $decoded = json_decode($src, true);
+    return is_array($decoded) ? $decoded : null;
+}
+
 function site_load(): array
 {
     static $data = null;
@@ -43,14 +69,7 @@ function site_load(): array
         return $data;
     }
     $path = site_content_path();
-    $data = [];
-    if (is_file($path)) {
-        $raw = file_get_contents($path);
-        $decoded = $raw !== false ? json_decode($raw, true) : null;
-        if (is_array($decoded)) {
-            $data = $decoded;
-        }
-    }
+    $data = sf_read_json_file($path) ?? [];
 
     // Projekt-Konfiguration aus php/config.php (Single Source of Truth)
     // einblenden, damit PHP-Zugriffe über site_config() funktionieren und die
@@ -134,14 +153,41 @@ function site_esc(?string $value): string
     return htmlspecialchars((string) $value, ENT_QUOTES, 'UTF-8');
 }
 
-/** Make absolute URL from siteUrl + path (falls nötig). */
-function site_abs(array $s, string $path): string
+/** Liefert den relativen Pfad vom aktuellen Verzeichnis zur App-Wurzel. */
+function site_rel_root(): string
 {
-    if ($path === '' || strpos($path, 'http') === 0) {
+    return $GLOBALS['SF_BASE_HREF'] ?? './';
+}
+
+/** Setzt die relative App-Basis (zugleich lokale $baseHref) global. */
+function site_set_base(string $baseHref): string
+{
+    $GLOBALS['SF_BASE_HREF'] = $baseHref;
+    return $baseHref;
+}
+
+/** Relative Basis der App (domainfrei, abgeleitet aus der Seiten-Basis). */
+function site_base(): string
+{
+    return rtrim(site_rel_root(), '/');
+}
+
+/**
+ * Interne URL: macht einen (root-absoluten) Pfad seitenrelativ und domainfrei.
+ * Externe URLs (http, //) bleiben unverändert.
+ */
+function site_abs(string $path): string
+{
+    if ($path === '' || strpos($path, 'http') === 0 || strpos($path, '//') === 0) {
         return $path;
     }
-    $base = rtrim(site_get_str($s, 'meta.siteUrl', ''), '/');
-    return $base . '/' . ltrim($path, '/');
+    return rtrim(site_base(), '/') . '/' . ltrim($path, '/');
+}
+
+/** Anker-/ID-Pfad für interne Referenzen (z. B. "#organization") – domainfrei. */
+function site_anchor(string $fragment): string
+{
+    return rtrim(site_base(), '/') . '/#' . ltrim($fragment, '#');
 }
 
 /** Projekt-Konfiguration aus dem zentralen config.block lesen. */
@@ -150,22 +196,19 @@ function site_config(array $s, string $path, string $default = ''): string
     return site_get_str($s, 'config.' . $path, $default);
 }
 
-/** Zentrale Asset-Basis (z. B. /assets) mit Pfad kombinieren. */
+/**
+ * Zentrale Asset-Basis (z. B. /assets) mit Pfad kombinieren.
+ * Domainfrei UND seitenrelativ, damit Bilder/Styles auch in einem
+ * Unterordner-Deploy funktionieren (./assets/... bzw. ../assets/...).
+ */
 function site_asset(array $s, string $path): string
 {
-    if ($path === '' || strpos($path, 'http') === 0) {
+    if ($path === '' || strpos($path, 'http') === 0 || strpos($path, '//') === 0) {
         return $path;
     }
     $base = rtrim(site_config($s, 'project.assetsBase', '/assets'), '/');
-    if ($base !== '' && strpos($path, $base . '/') === 0) {
-        return $path;
-    }
-    return $base . '/' . ltrim($path, '/');
-}
-
-function site_base(array $s): string
-{
-    return rtrim(site_get_str($s, 'meta.siteUrl', ''), '/');
+    $full = $base . '/' . ltrim($path, '/');
+    return rtrim(site_base(), '/') . '/' . ltrim($full, '/');
 }
 
 /**

@@ -9,6 +9,7 @@ Nichts wird manuell auf den Server kopiert – der Git-Workflow ist die einzige
 Quelle. Alle Zugangsdaten sind als **GitHub-Secrets** hinterlegt und liegen
 **nie** im Repository.
 
+Initial muss die site einmal via ftp deployed werden, damit spaeter die backup.php gefunden wird
 ---
 
 ## 1. Überblick über den Ablauf
@@ -40,7 +41,7 @@ Kein weiterer manueller Schritt nötig.
 **Datei:** `.github/workflows/deploy-staging.yml`
 
 | Trigger | Verhalten |
-|---|---|
+| --- | --- |
 | `push` auf `staging` | Startet den Workflow |
 | Commit ist **kein** Merge | **Abbruch** – wird nicht deployed |
 | Commit **ist** ein Merge, Elternteil **nicht** `origin/develop` | **Abbruch** – wird nicht deployed |
@@ -50,11 +51,13 @@ D.h. nur ein echter **`develop → staging`-Merge** löst den Upload aus; lose
 Staging-Commits oder ein Merge aus einem anderen Branch werden ignoriert.
 
 **Deployed wird:**
+
 - `index.php`, `php/`, `frank-adm/`, `data/`, `assets/`, `datenschutz/`,
   `impressum/`, `.htaccess`, `favicon.ico`, `robots.php`, `sitemap.php`,
   `webmanifest.php`, `llms.php` … (alle Web-Dateien)
 
 **Ausgeschlossen (nicht hochgeladen):**
+
 - `.git` (Repository-Interna)
 - `dev/` (lokale Dev-Tools: `serve.sh`, `router.php`, Logs)
 - `node_modules/`, `.DS_Store`, `server.log`, `srv_t.log`
@@ -73,6 +76,7 @@ und keinerlei Geheimnisse.
 > Server-Daten ist damit ausgeschlossen.
 
 ### Werkzeug
+
 Der Upload nutzt die etablierte Action
 [`SamKirkland/FTP-Deploy-Action`@v4.3.5](https://github.com/SamKirkland/FTP-Deploy-Action)
 mit `protocol: sftp` und `port: 22`.
@@ -86,7 +90,7 @@ Ohne diese Geheimnisse schlägt der Deploy-Schritt fehl. Einrichtungsort:
 > **Repo → Settings → Secrets and variables → Actions → New repository secret**
 
 | Secret-Name | Bedeutung | Beispiel |
-|---|---|---|
+| --- | --- | --- |
 | `FTP_SERVER` | SFTP-Host des Hosters (ohne Protokoll, ohne Pfad) | `ftp.typopublic.com` |
 | `FTP_USERNAME` | SFTP-Benutzer | `schreinerei` |
 | `FTP_PASSWORD` | SFTP-Passwort | (geheim) |
@@ -94,6 +98,7 @@ Ohne diese Geheimnisse schlägt der Deploy-Schritt fehl. Einrichtungsort:
 | `BACKUP_TOKEN` | **Neu** – Secret-Token der `backup.php`, das den Sicherungs-Aufruf absichert (muss dem `BACKUP_TOKEN` in `backup.php` entsprechen) | (geheim, selbst gewählt) |
 
 > **Hinweise:**
+>
 > - Der Wert von `FTP_TARGET_DIR` wird im Workflow mit `'public_html'` als
 >   Default belegt: `${{ secrets.FTP_TARGET_DIR || 'public_html' }}`.
 > - Falls dein Hoster andere Zugangsdaten (z. B. separates SFTP-Konto pro
@@ -133,11 +138,13 @@ with:
 ## 5. Freigabe-Workflow (so führst du den Deploy aus)
 
 ### Voraussetzungen
+
 - Aktueller `develop`-Stand ist lokal vorhanden, gepusht und die Änderungen sind
   in einem Commit auf `develop` enthalten.
 - Die **Secrets** sind gesetzt (siehe §3).
 
 ### Schritt für Schritt
+
 ```bash
 # 1) (optional) sicherstellen, dass develop aktuell ist
 git checkout develop
@@ -156,6 +163,7 @@ Nach Schritt 3 startet GitHub die Action. Sie prüft, ob es sich um einen
 `develop → staging`-Merge handelt, und lädt dann per SFTP hoch.
 
 ### Ergebnis prüfen
+
 - **GitHub:** Repo → **Actions** → Workflow „Deploy staging per SFTP" → letzter
   Run sollte `success` zeigen.
 - **Server:** Dateien per FTP-Client/SFTP prüfen oder die Website aufrufen.
@@ -166,6 +174,7 @@ Nach Schritt 3 startet GitHub die Action. Sie prüft, ob es sich um einen
 ## 6. Backups & Rollback
 
 ### Wo liegen die Sicherungen?
+
 - Auf dem **Server** unter `backup/backup_<JJJJMMTT_HHMMSS>.zip`.
 - Der Ordner `backup/` ist per `.htaccess` gegen öffentlichen Zugriff
   geschützt (nur die Zip-Dateien sind gesperrt). Er wird vom Deploy **nie**
@@ -174,11 +183,13 @@ Nach Schritt 3 startet GitHub die Action. Sie prüft, ob es sich um einen
   `node_modules/`, Logs und ohne `backup/` selbst.
 
 ### Retention
+
 - Es werden die **letzten 5** datierten Zips aufbewahrt; ältere werden beim
   nächsten Backup automatisch entfernt.
 - Das steht über `BACKUP_KEEP` in `backup.php`.
 
 ### Manuelles Rollback (bei fehlerhaftem Deploy)
+
 1. Per SFTP (Port 22) die gewünschte Zip `backup/backup_<Datum>.zip`
    herunterladen.
 2. Lokal entpacken und den Inhalt **bis auf `.env`** per SFTP zurück auf den
@@ -213,7 +224,7 @@ Falls die Action startet, aber nichts hochlädt, ist das in der Regel gewollt:
 ## 8. Fehlerbehebung
 
 | Symptom | Mögliche Ursache | Gegenmaßnahme |
-|---|---|---|
+| --- | --- | --- |
 | „Secrets nicht gefunden" / Auth-Fehler | Secrets fehlen oder falsch benannt | §3 prüfen, Secrets neu setzen |
 | „Login/Connection failed" | `FTP_SERVER` falsch oder Hoster blockt unbekannte IP | Server-/Host-Anmeldedaten prüfen; ggf. FTP-Server/Firewall |
 | Forget „permission denied" | `FTP_TARGET_DIR` existiert nicht | Server-Verzeichnis prüfen, korrekten Zielpfad setzen |

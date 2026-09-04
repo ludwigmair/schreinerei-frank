@@ -12,26 +12,24 @@ declare(strict_types=1);
 
 function seo_structured_data(array $s): array
 {
-    $base = site_base($s);
     $b = $s['business'] ?? [];
     $meta = $s['meta'] ?? [];
 
-    $abs = function (string $p) use ($base, $meta): string {
-        if ($p === '' || strpos($p, 'http') === 0) {
+    $abs = static function (string $p): string {
+        if ($p === '' || strpos($p, 'http') === 0 || strpos($p, '//') === 0) {
             return $p;
         }
-        // Bei Angabe von ogImage absolute machen
-        return $base . '/' . ltrim($p, '/');
+        return site_abs($p);
     };
 
     $graph = [];
 
     $graph[] = [
         '@type' => 'Organization',
-        '@id' => $base . '/#organization',
+        '@id' => site_anchor('organization'),
         'name' => $b['name'] ?? '',
-        'url' => $base . '/',
-        'logo' => $base . site_asset($s, site_config($s, 'project.logo', 'site/logo-schreinerei-frank.png')),
+        'url' => site_abs('/'),
+        'logo' => site_asset($s, site_config($s, 'project.logo', 'site/logo-schreinerei-frank.png')),
         'email' => $b['email'] ?? '',
         'telephone' => $b['phoneSchema'] ?? '',
         'founder' => ['@type' => 'Person', 'name' => $b['owner'] ?? ''],
@@ -47,11 +45,11 @@ function seo_structured_data(array $s): array
 
     $graph[] = [
         '@type' => 'WebSite',
-        '@id' => $base . '/#website',
-        'url' => $base . '/',
+        '@id' => site_anchor('website'),
+        'url' => site_abs('/'),
         'name' => $b['name'] ?? '',
         'inLanguage' => 'de-DE',
-        'publisher' => ['@id' => $base . '/#organization'],
+        'publisher' => ['@id' => site_anchor('organization')],
     ];
 
     $areaServed = [];
@@ -84,15 +82,15 @@ function seo_structured_data(array $s): array
     $geo = $b['geo'] ?? [];
     $graph[] = [
         '@type' => ['LocalBusiness', 'Carpenter', 'HomeAndConstructionBusiness'],
-        '@id' => $base . '/#business',
+        '@id' => site_anchor('business'),
         'name' => $b['name'] ?? '',
         'image' => $abs($meta['ogImage'] ?? ''),
-        'url' => $base . '/',
+        'url' => site_abs('/'),
         'telephone' => $b['phoneSchema'] ?? '',
         'faxNumber' => $b['faxSchema'] ?? '',
         'email' => $b['email'] ?? '',
         'priceRange' => $b['priceRange'] ?? '',
-        'parentOrganization' => ['@id' => $base . '/#organization'],
+        'parentOrganization' => ['@id' => site_anchor('organization')],
         'address' => [
             '@type' => 'PostalAddress',
             'streetAddress' => $b['street'] ?? '',
@@ -118,20 +116,20 @@ function seo_structured_data(array $s): array
 
     $graph[] = [
         '@type' => 'WebPage',
-        '@id' => $base . '/#webpage',
-        'url' => $base . '/',
+        '@id' => site_anchor('webpage'),
+        'url' => site_abs('/'),
         'name' => $meta['title'] ?? '',
-        'isPartOf' => ['@id' => $base . '/#website'],
-        'about' => ['@id' => $base . '/#business'],
+        'isPartOf' => ['@id' => site_anchor('website')],
+        'about' => ['@id' => site_anchor('business')],
         'inLanguage' => 'de-DE',
         'primaryImageOfPage' => $abs($meta['ogImage'] ?? ''),
     ];
 
     $graph[] = [
         '@type' => 'BreadcrumbList',
-        '@id' => $base . '/#breadcrumb',
+        '@id' => site_anchor('breadcrumb'),
         'itemListElement' => [
-            ['@type' => 'ListItem', 'position' => 1, 'name' => 'Start', 'item' => $base . '/'],
+            ['@type' => 'ListItem', 'position' => 1, 'name' => 'Start', 'item' => site_abs('/')],
         ],
     ];
 
@@ -146,7 +144,7 @@ function seo_structured_data(array $s): array
     if ($faq) {
         $graph[] = [
             '@type' => 'FAQPage',
-            '@id' => $base . '/#faq',
+            '@id' => site_anchor('faq'),
             'mainEntity' => $faq,
         ];
     }
@@ -171,11 +169,10 @@ function seo_head(array $s, string $page = ''): string
         ? site_get_str($s, 'legal.' . $page . '.metaDescription', $meta['description'] ?? '')
         : site_get_str($s, 'meta.description', '');
 
-    $base = site_base($s);
-    $canonical = $base . ($page === '' ? '/' : '/' . $page . '/');
+    $canonical = site_abs($page === '' ? '/' : '/' . $page . '/');
     $ogTitle = site_get_str($s, 'meta.ogTitle', $title);
     $ogDesc = site_get_str($s, 'meta.ogDescription', $description);
-    $ogImage = site_abs($s, site_get_str($s, 'meta.ogImage', ''));
+    $ogImage = site_abs(site_get_str($s, 'meta.ogImage', ''));
     $lcp = site_get_str($s, 'meta.lcpImage', site_asset($s, 'content/kuechen/projekt-kueche.jpg'));
 
     $h = '';
@@ -201,9 +198,9 @@ function seo_head(array $s, string $page = ''): string
     $h .= '  <meta name="twitter:description" content="' . site_esc($ogDesc) . "\">\n";
     $h .= '  <meta name="twitter:image" content="' . site_esc($ogImage) . "\">\n";
     $h .= "\n";
-    $h .= '  <link rel="icon" href="/favicon.ico">' . "\n";
+    $h .= '  <link rel="icon" href="' . site_esc(site_abs('/favicon.ico')) . '">' . "\n";
     $h .= '  <link rel="apple-touch-icon" href="' . site_asset($s, 'site/apple-touch-icon.png') . "\">\n";
-    $h .= '  <link rel="manifest" href="/site.webmanifest">' . "\n";
+    $h .= '  <link rel="manifest" href="' . site_esc(site_abs('/site.webmanifest')) . '">' . "\n";
     $h .= "\n";
     $h .= '  <link rel="preconnect" href="https://fonts.googleapis.com">' . "\n";
     $h .= '  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>' . "\n";

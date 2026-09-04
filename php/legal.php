@@ -9,7 +9,7 @@ declare(strict_types=1);
 
 $legal = $s['legal'][$page] ?? [];
 $business = $s['business'] ?? [];
-$baseHref = $baseHref ?? './';
+$baseHref = site_set_base($baseHref ?? './');
 
 function legal_block_dl(array $legal, string $key, string $label): void
 {
