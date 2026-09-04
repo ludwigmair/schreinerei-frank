@@ -25,7 +25,7 @@ if (isset($_GET['page'])) {
 }
 
 $page = $page ?? '';
-$baseHref = './';
+$baseHref = site_set_base('./');
 include __DIR__ . '/php/header.php';
 
 if ($page === 'impressum' || $page === 'datenschutz') {

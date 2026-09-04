@@ -29,6 +29,31 @@
 
 declare(strict_types=1);
 
+// Fallback-Definition: data.php bindet uns ein und liefert den robusten Leser,
+// aber im CLI-Direktaufruf (php php/config.php --gen) existiert er hier evtl.
+// noch nicht – dann definieren wir eine lokale, identische Variante.
+if (!function_exists('sf_read_json_file')) {
+    function sf_read_json_file(string $path): ?array
+    {
+        if (!is_file($path)) {
+            return null;
+        }
+        $raw = file_get_contents($path);
+        if ($raw === false) {
+            return null;
+        }
+        $src = ltrim($raw);
+        if (strpos($src, '/*') === 0) {
+            $end = strpos($src, '*/');
+            if ($end !== false) {
+                $src = ltrim(substr($src, $end + 2));
+            }
+        }
+        $decoded = json_decode($src, true);
+        return is_array($decoded) ? $decoded : null;
+    }
+}
+
 /**
  * Liest einen Wert aus data/site.json (direkt, ohne data.php, um
  * Zirkularität zu vermeiden). Liefert $default, wenn nicht vorhanden.
@@ -38,14 +63,7 @@ function config_site_value(string $path, string $default = ''): string
     static $data = null;
     if ($data === null) {
         $file = dirname(__DIR__) . '/data/site.json';
-        $data = [];
-        if (is_file($file)) {
-            $raw = file_get_contents($file);
-            $decoded = $raw !== false ? json_decode($raw, true) : null;
-            if (is_array($decoded)) {
-                $data = $decoded;
-            }
-        }
+        $data = is_file($file) ? (sf_read_json_file($file) ?? []) : [];
     }
     $cur = $data;
     foreach (explode('.', $path) as $key) {

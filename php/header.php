@@ -10,7 +10,7 @@ declare(strict_types=1);
 $b = $s['business'] ?? [];
 $nav = $s['nav'] ?? [];
 $ui = $s['ui'] ?? [];
-$baseHref = $baseHref ?? './';
+$baseHref = site_set_base($baseHref ?? './');
 ?>
 <!doctype html>
 <html lang="de" class="no-js">
