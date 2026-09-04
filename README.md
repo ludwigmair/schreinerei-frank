@@ -1,4 +1,4 @@
-# PHP-Website
+# PHP-Website neuer test
 
 SEO-/KI-optimierte Single-Page-Website für die Schreinerei Frank, Seeon (Chiemgau).
 Design: **Konzept C „Meisterhand"** – Details in [`DESIGN.md`](DESIGN.md).
