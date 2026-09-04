@@ -17,7 +17,7 @@
 declare(strict_types=1);
 
 /** Token – muss identisch mit dem GitHub-Secret BACKUP_TOKEN sein. */
-const BACKUP_TOKEN = 'CHANGE_ME_backup_token';
+const BACKUP_TOKEN = '4563';
 
 /** Anzahl zu behaltender Sicherungen (Retention). */
 const BACKUP_KEEP = 5;
