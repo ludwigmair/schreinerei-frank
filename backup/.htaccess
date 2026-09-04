@@ -1,0 +1,5 @@
+# Verhindert öffentlichen Zugriff auf den Sicherungsordner backup/.
+# Ausgenommen ist die .htaccess selbst (damit sie deployed werden kann).
+<FilesMatch "\.(zip|log|bak|txt)$">
+    Require all denied
+</FilesMatch>

@@ -1,0 +1,94 @@
+name: Deploy staging per SFTP
+
+# Wird NUR getriggert, wenn eine Änderung auf den staging-Branch kommt.
+# Der Workflow prüft anschließend, ob dieser Push ein Merge von develop
+# in staging ist – nur dann wird per SFTP zum Host deployed.
+on:
+  push:
+    branches:
+      - staging
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    # Keine Credentials irgendwo im Repo: alles kommt aus GitHub-Secrets
+    # (einstellbar unter Settings → Secrets and variables → Actions).
+    env:
+      FTP_SERVER: ${{ secrets.FTP_SERVER }}
+      FTP_USERNAME: ${{ secrets.FTP_USERNAME }}
+      FTP_PASSWORD: ${{ secrets.FTP_PASSWORD }}
+      FTP_TARGET_DIR: ${{ secrets.FTP_TARGET_DIR || 'public_html' }}
+
+    steps:
+      - name: Checkout staging
+        uses: actions/checkout@v4
+        with:
+          ref: staging
+          # Komplette History, damit wir Merge-Eltern prüfen können
+          fetch-depth: 0
+
+      - name: Nur bei develop→staging-Merge deployen
+        id: check-merge
+        run: |
+          PARENTS="$(git log --format=%P -1 "$GITHUB_SHA")"
+          PARENT_COUNT="$(echo "$PARENTS" | wc -w | tr -d ' ')"
+
+          if [ "$PARENT_COUNT" -lt 2 ]; then
+            echo "Kein Merge-Commit (${PARENT_COUNT} Eltern) – Abbruch."
+            echo "deployed=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          # Ist einer der beiden Eltern der develop-Branch?
+          DEVELOP="$(
+            git rev-parse origin/develop 2>/dev/null \
+              || git rev-parse refs/remotes/origin/develop 2>/dev/null \
+              || echo ""
+          )"
+
+          if [ -n "$DEVELOP" ] && echo "$PARENTS" | grep -q "$DEVELOP"; then
+            echo "Merge von develop in staging erkannt – deploye per SFTP."
+            echo "deployed=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "Merge, aber NICHT von develop (oder develop unbekannt) – Abbruch."
+            echo "deployed=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Sicherung auf dem Server anlegen (vor dem Deploy)
+        if: steps.check-merge.outputs.deployed == 'true'
+        run: |
+          curl -fsS --max-time 120 -X POST \
+            "https://${{ env.FTP_SERVER }}/backup.php" \
+            -H "Authorization: Bearer ${{ secrets.BACKUP_TOKEN }}"
+        shell: bash
+
+      - name: SFTP-Deploy (nur bei develop→staging-Merge)
+        if: steps.check-merge.outputs.deployed == 'true'
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: ${{ env.FTP_SERVER }}
+          username: ${{ env.FTP_USERNAME }}
+          password: ${{ env.FTP_PASSWORD }}
+          protocol: sftp
+          port: 22
+          server-dir: ${{ env.FTP_TARGET_DIR }}/
+          # Web-Verzeichnis deployen, Dev-Tools/Ausland/Repository-Interna ausschließen.
+          # WICHTIG: KEIN delete-remote – serverseitige Uploads (Bilder) und .env
+          # bleiben unangetastet. .env, backup/ und admin.local.json nie hochladen.
+          exclude: |
+            **/.git*
+            **/.git*/**
+            **/dev/**
+            **/node_modules/**
+            **/.DS_Store
+            **/dev/serve.sh
+            **/dev/serve.log
+            **/dev/srv_t.log
+            **/dev/router.php
+            **/.env
+            **/.env.*
+            **/backup/*.zip
+            **/backup/*.log
+            **/data/admin.local.json
+            server.log
+            srv_t.log

@@ -1,6 +1,7 @@
 node_modules/
 .DS_Store
 .env
+.env.local
 
 # Lokale/Produktions-Admin-Zugangsdaten (NIE versionieren)
 data/admin.local.json
@@ -11,3 +12,5 @@ dev/.env
 # Lokale Dev-Server-Logs (NIE versionieren)
 dev/server.log
 dev/srv_t.log
+
+

@@ -278,7 +278,8 @@
         },
         {
             "q": "Planen Sie barrierefreie Lösungen?",
-            "a": "Ja, barrierefreies Wohnen berücksichtigen wir auf Wunsch von Anfang an – etwa bei unterfahrbaren Küchen, Bädern und schwellenlosen Übergängen."
+            "a": "Ja, barrierefreies Wohnen berücksichtigen wir auf Wunsch von Anfang an – etwa bei unterfahrbaren Küchen, Bädern und schwellenlosen Übergängen.",
+            "active": true
         }
     ],
     "trust": [
