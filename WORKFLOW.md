@@ -20,12 +20,18 @@ Quelle. Alle Zugangsdaten sind als **GitHub-Secrets** hinterlegt und liegen
                        GitHub Actions: "Deploy staging per SFTP"
                           │  (nur wenn entwickel→staging-Merge)
                           ▼
-                       SFTP-Update auf dem Hoster (Port 22)
+                    1) Sicherung anlegen (backup.php → backup/backup_<Datum>.zip)
+                          ▼
+                    2) SFTP-Upload zum Hoster (Port 22) – OHNE Löschen von
+                       serverseitigen Uploads und OHNE .env zu berühren
 ```
 
 Beim regelmäßigen Freigabe-Zyklus entsteht der Deploy also **zwangsläufig**:
 Sobald `staging` per `git merge develop` aktualisiert und gepusht wird, lädt die
-Action den aktuellen Stand hoch. Kein weiterer Schritt nötig.
+Action den aktuellen Stand hoch. **Vor jedem Upload wird der aktuelle
+Server-Stand als datierte Zip unter `backup/` gesichert** – so kann bei einem
+fehlerhaften Deploy jederzeit der vorherige Zustand zurückgeholt werden.
+Kein weiterer manueller Schritt nötig.
 
 ---
 
@@ -52,8 +58,19 @@ Staging-Commits oder ein Merge aus einem anderen Branch werden ignoriert.
 - `.git` (Repository-Interna)
 - `dev/` (lokale Dev-Tools: `serve.sh`, `router.php`, Logs)
 - `node_modules/`, `.DS_Store`, `server.log`, `srv_t.log`
+- **`.env`** (niemals hochladen/überschreiben)
+- **`backup/`** (der Sicherungsordner mit den Zips)
+- `data/admin.local.json` (lokale Admin-Zugangsdaten)
 
-Damit landen nur Dateien auf dem Server, die für den Live-Betrieb nötig sind.
+Damit landen nur Dateien auf dem Server, die für den Live-Betrieb nötig sind –
+und keinerlei Geheimnisse.
+
+> **Sicherheits-Grundsatz (wichtig für Admin-Uploads):**
+> Der Workflow verwendet **bewusst KEIN `delete-remote`**. Dadurch werden
+> **serverseitig hochgeladene Bilder** (z. B. über den Frank-Adm-Upload nach
+> `assets/`) sowie `.env` **niemals gelöscht** – es werden nur neue/geänderte
+> Dateien aus dem Repo hochgeladen. Ein versehentliches Löschen von
+> Server-Daten ist damit ausgeschlossen.
 
 ### Werkzeug
 Der Upload nutzt die etablierte Action
@@ -74,6 +91,7 @@ Ohne diese Geheimnisse schlägt der Deploy-Schritt fehl. Einrichtungsort:
 | `FTP_USERNAME` | SFTP-Benutzer | `schreinerei` |
 | `FTP_PASSWORD` | SFTP-Passwort | (geheim) |
 | `FTP_TARGET_DIR` | **Optional** – Zielverzeichnis auf dem Server; Default ist `public_html` | `public_html` oder `htdocs` |
+| `BACKUP_TOKEN` | **Neu** – Secret-Token der `backup.php`, das den Sicherungs-Aufruf absichert (muss dem `BACKUP_TOKEN` in `backup.php` entsprechen) | (geheim, selbst gewählt) |
 
 > **Hinweise:**
 > - Der Wert von `FTP_TARGET_DIR` wird im Workflow mit `'public_html'` als
@@ -141,11 +159,42 @@ Nach Schritt 3 startet GitHub die Action. Sie prüft, ob es sich um einen
 - **GitHub:** Repo → **Actions** → Workflow „Deploy staging per SFTP" → letzter
   Run sollte `success` zeigen.
 - **Server:** Dateien per FTP-Client/SFTP prüfen oder die Website aufrufen.
-- Status-Fehler beseitigen: Siehe §7.
+- Status-Fehler beseitigen: Siehe §8.
 
 ---
 
-## 6. Was passiert, wenn der Workflow NICHT deployed
+## 6. Backups & Rollback
+
+### Wo liegen die Sicherungen?
+- Auf dem **Server** unter `backup/backup_<JJJJMMTT_HHMMSS>.zip`.
+- Der Ordner `backup/` ist per `.htaccess` gegen öffentlichen Zugriff
+  geschützt (nur die Zip-Dateien sind gesperrt). Er wird vom Deploy **nie**
+  gelöscht und **nie** überschrieben.
+- Enthalten ist der komplette Web-Root **ohne** `.env`, `.git`, `dev/`,
+  `node_modules/`, Logs und ohne `backup/` selbst.
+
+### Retention
+- Es werden die **letzten 5** datierten Zips aufbewahrt; ältere werden beim
+  nächsten Backup automatisch entfernt.
+- Das steht über `BACKUP_KEEP` in `backup.php`.
+
+### Manuelles Rollback (bei fehlerhaftem Deploy)
+1. Per SFTP (Port 22) die gewünschte Zip `backup/backup_<Datum>.zip`
+   herunterladen.
+2. Lokal entpacken und den Inhalt **bis auf `.env`** per SFTP zurück auf den
+   Server kopieren (`public_html/` bzw. `FTP_TARGET_DIR`).
+   **`.env` wird dabei niemals überschrieben** – sie bleibt unangetastet.
+3. Optional: Die fehlerhafte Version per neuem `develop → staging`-Merge
+   korrigieren und erneut deployen.
+
+> **Hinweis:** Da jede Deploy-Version zusätzlich im Git (Staging-Branch)
+> versioniert ist, ist auch `git revert` + erneutes Deployen ein sauberer
+> Rollback-Weg – die Zip-Sicherung ist das zusätzliche Safety-Net für
+> serverseitige (nicht-Repo-)Daten.
+
+---
+
+## 7. Was passiert, wenn der Workflow NICHT deployed
 
 Falls die Action startet, aber nichts hochlädt, ist das in der Regel gewollt:
 
@@ -161,14 +210,14 @@ Falls die Action startet, aber nichts hochlädt, ist das in der Regel gewollt:
 
 ---
 
-## 7. Fehlerbehebung
+## 8. Fehlerbehebung
 
 | Symptom | Mögliche Ursache | Gegenmaßnahme |
 |---|---|---|
 | „Secrets nicht gefunden" / Auth-Fehler | Secrets fehlen oder falsch benannt | §3 prüfen, Secrets neu setzen |
 | „Login/Connection failed" | `FTP_SERVER` falsch oder Hoster blockt unbekannte IP | Server-/Host-Anmeldedaten prüfen; ggf. FTP-Server/Firewall |
 | Forget „permission denied" | `FTP_TARGET_DIR` existiert nicht | Server-Verzeichnis prüfen, korrekten Zielpfad setzen |
-| Workflow läuft, aber deployt nicht | Kein Merge-Commit bzw. falsche Basis | §6 lesen |
+| Workflow läuft, aber deployt nicht | Kein Merge-Commit bzw. falsche Basis | §7 lesen |
 | SFTP-Port 22 blockiert | Hoster unterstützt nur FTPS | Workflow auf `protocol: ftps` umstellen |
 
 > **Sicherheit:** Zugangsdaten gehören **ausschließlich** in Secrets. Niemals
@@ -176,10 +225,11 @@ Falls die Action startet, aber nichts hochlädt, ist das in der Regel gewollt:
 
 ---
 
-## 8. Kurzreferenz
+## 9. Kurzreferenz
 
 - Workflow-Datei: `.github/workflows/deploy-staging.yml`
-- Secrets: `FTP_SERVER`, `FTP_USERNAME`, `FTP_PASSWORD`, `FTP_TARGET_DIR` (opt.)
+- Secrets: `FTP_SERVER`, `FTP_USERNAME`, `FTP_PASSWORD`, `FTP_TARGET_DIR` (opt.), `BACKUP_TOKEN`
+- Backup: vor jedem Deploy automatisch `backup.php`, Ziel `backup/`, Retention letzte 5
 - Wahrer Auslöser: **Merge `develop` → `staging`** und Push
 - Protokoll: **SFTP, Port 22**
 - Zielverzeichnis: Default **`public_html`**

@@ -54,6 +54,14 @@ jobs:
             echo "deployed=false" >> "$GITHUB_OUTPUT"
           fi
 
+      - name: Sicherung auf dem Server anlegen (vor dem Deploy)
+        if: steps.check-merge.outputs.deployed == 'true'
+        run: |
+          curl -fsS --max-time 120 -X POST \
+            "https://${{ env.FTP_SERVER }}/backup.php" \
+            -H "Authorization: Bearer ${{ secrets.BACKUP_TOKEN }}"
+        shell: bash
+
       - name: SFTP-Deploy (nur bei develop→staging-Merge)
         if: steps.check-merge.outputs.deployed == 'true'
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
@@ -64,7 +72,9 @@ jobs:
           protocol: sftp
           port: 22
           server-dir: ${{ env.FTP_TARGET_DIR }}/
-          # Web-Verzeichnis deployen, Dev-Tools/Ausland/Repository-Interna ausschließen
+          # Web-Verzeichnis deployen, Dev-Tools/Ausland/Repository-Interna ausschließen.
+          # WICHTIG: KEIN delete-remote – serverseitige Uploads (Bilder) und .env
+          # bleiben unangetastet. .env, backup/ und admin.local.json nie hochladen.
           exclude: |
             **/.git*
             **/.git*/**
@@ -75,5 +85,10 @@ jobs:
             **/dev/serve.log
             **/dev/srv_t.log
             **/dev/router.php
+            **/.env
+            **/.env.*
+            **/backup/*.zip
+            **/backup/*.log
+            **/data/admin.local.json
             server.log
             srv_t.log
