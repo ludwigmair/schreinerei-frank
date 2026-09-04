@@ -96,6 +96,7 @@ Ohne diese Geheimnisse schlägt der Deploy-Schritt fehl. Einrichtungsort:
 | `FTP_PASSWORD` | SFTP-Passwort | (geheim) |
 | `FTP_TARGET_DIR` | **Optional** – Zielverzeichnis auf dem Server; Default ist `public_html` | `public_html` oder `htdocs` |
 | `BACKUP_TOKEN` | **Neu** – Secret-Token der `backup.php`, das den Sicherungs-Aufruf absichert (muss dem `BACKUP_TOKEN` in `backup.php` entsprechen) | (geheim, selbst gewählt) |
+| `BACKUP_URL` | **Neu** – vollständige HTTPS-URL der `backup.php` auf dem Server, **inkl. Subdomain/Unterordner**. Wichtig, weil die Site im Unterordner liegt (`https://FTP_SERVER/backup.php` wäre falsch) | `https://staging.typopublic.com/schreinerei-frank/backup.php` |
 
 > **Hinweise:**
 >
@@ -239,7 +240,7 @@ Falls die Action startet, aber nichts hochlädt, ist das in der Regel gewollt:
 ## 9. Kurzreferenz
 
 - Workflow-Datei: `.github/workflows/deploy-staging.yml`
-- Secrets: `FTP_SERVER`, `FTP_USERNAME`, `FTP_PASSWORD`, `FTP_TARGET_DIR` (opt.), `BACKUP_TOKEN`
+- Secrets: `FTP_SERVER`, `FTP_USERNAME`, `FTP_PASSWORD`, `FTP_TARGET_DIR` (opt.), `BACKUP_TOKEN`, `BACKUP_URL`
 - Backup: vor jedem Deploy automatisch `backup.php`, Ziel `backup/`, Retention letzte 5
 - Wahrer Auslöser: **Merge `develop` → `staging`** und Push
 - Protokoll: **SFTP, Port 22**
