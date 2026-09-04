@@ -1,3 +1,6 @@
+/**
+ * main config file beside site.json
+ **/
 {
     "config": {
         "name": "Schreinerei Frank - Meisterbetrieb",
