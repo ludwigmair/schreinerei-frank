@@ -270,6 +270,7 @@ $testimonials = $s['testimonials'] ?? [];
     </div>
     <div class="contact">
       <form data-contact method="post" action="<?php echo site_esc(site_get_str($contact, 'formAction', '/api/kontakt')); ?>" novalidate>
+        <p class="form-status" role="status" aria-live="polite" data-contact-status></p>
         <div class="field">
           <label for="f-name"><?php echo site_esc(site_get_str($ui, 'formNameLabel', 'Name')); ?></label>
           <input id="f-name" name="name" type="text" autocomplete="name" required aria-describedby="f-name-error">
@@ -296,7 +297,6 @@ $testimonials = $s['testimonials'] ?? [];
         </div>
         <button class="btn btn--block" type="submit"><?php echo site_esc(site_get_str($ui, 'formSubmit', 'Anfrage senden')); ?></button>
         <p class="form-note"><?php echo site_esc(site_get_str($contact, 'consent')); ?> <?php echo site_esc(site_get_str($ui, 'formConsentIntro', 'Details in der')); ?> <a href="<?php echo $baseHref ?? './'; ?><?php echo site_esc(site_get_str($ui, 'formConsentLinkHref', 'datenschutz')); ?>/"><?php echo site_esc(site_get_str($ui, 'formConsentLink', 'Datenschutzerklärung')); ?></a>.</p>
-        <p class="form-status" role="status" aria-live="polite" data-contact-status></p>
       </form>
 
       <div class="info-card">

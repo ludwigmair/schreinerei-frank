@@ -187,12 +187,40 @@ Manuell wären folgende Schritte ohnehin nötig (vom Workflow übernommen):
 
 ---
 
-## Kontaktformular anbinden
+## Kontaktformular
 
-Das Formular (in `php/home.php`) postet normal an `action="/api/kontakt"`.
-Für den Versand einen Formulardienst eintragen (Web3Forms, Formspree, …) oder
-ein kleines PHP-Skript `api/kontakt.php` anlegen (Honeypot ist vorhanden:
-Feld `website`).
+Das Formular (`php/home.php`) wird per `fetch()` **ohne Seiten-Reload** an
+`api/kontakt.php` gesendet (Erfolg-/Fehlermeldung erscheinen oberhalb des
+Formulars). Serverseitig liest `api/kontakt.php` die `site.json`-Config und
+versendet die Anfrage per E-Mail.
+
+- **Empfänger:** `config.email` – überschreibbar pro Umgebung über
+  `contact.mailTo` (bzw. `data/kontakt.local.json` lokal, siehe unten).
+- **Versandweg:** PHP `mail()` (Server-Postfix). Optional vorbereitet: SMTP
+  unter `contact.mailer` (Host/Port/User/Passwort/Encryption) – sobald `host`
+  gesetzt ist, geht der Versand über dieses Konto statt `mail()`.
+- **Schutzmechanismen:** Honeypot-Feld `website` (client- + serverseitig),
+  serverseitige Validierung aller Felder (Name, E-Mail, Telefon, Nachricht),
+  422 + Feld-Fehler bei ungültigen Eingaben, nur `POST` erlaubt.
+
+### Lokal testen (ohne eigenes Postfach)
+
+Für lokale Tests wird der Empfänger über die **nicht versionierte** Datei
+`data/kontakt.local.json` auf das lokale Postfix-Postfach umgebogen:
+
+```json
+{ "to": "ludwigmair@localhost" }
+```
+
+Die eintreffenden Mails landen dann in der Spool-Datei `/var/mail/<user>`:
+
+```bash
+tail -20 /var/mail/ludwigmair          # letzte Mail ansehen
+mail -f /var/mail/ludwigmair           # interaktiv (q zum Beenden)
+```
+
+`data/kontakt.local.json` ist per `.gitignore` und Workflow-`exclude`
+geschützt und wird nie committed/deployed.
 
 ---
 

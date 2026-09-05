@@ -549,6 +549,7 @@
         .then(function () {
           if (form._ok) {
             form.reset();
+            Object.keys(fields).forEach(function (name) { setError(name, ''); });
             status.dataset.state = 'ok';
             status.textContent = 'Vielen Dank – wir melden uns in Kürze bei Ihnen.';
           } else if (!form._errors) {
