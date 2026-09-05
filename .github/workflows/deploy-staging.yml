@@ -110,7 +110,6 @@ jobs:
             backup/*.log,
             data/admin.local.json,
             package.json,
-            testfile.txt,
             *.log,
             server.log,
             srv_t.log
