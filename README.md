@@ -30,16 +30,18 @@ Datei – Änderungen sind **sofort nach dem Speichern live**, ganz ohne Build.
 ## Schnellstart (lokal)
 
 ```bash
-cd schreinerei-frank/dev
 npm run serve        # nutzt PHP: http://localhost:9999 · Admin: /frank-adm/
 ```
 
 Ohne npm:
 
 ```bash
-cd schreinerei-frank/dev
-bash serve.sh
+bash dev/serve.sh    # startet php -S + Router, öffnet Site+Admin in Chrome
 ```
+
+Beide Befehle werden **aus dem Projekt-Root** (Verzeichnis dieser README)
+ausgeführt – `package.json` (Root) bzw. `dev/serve.sh` setzen den Projekt-Root
+selbst.
 
 ---
 
@@ -48,9 +50,10 @@ bash serve.sh
 ```
 schreinerei-frank/
 ├── dev/                        # nur LOKALE Dev-Tools (werden NICHT deployed)
-│   ├── package.json            # "npm run serve" -> ruft PHP-Dev-Server
 │   ├── serve.sh                # startet `php -S` + Router
-│   └── router.php              # bildet die .htaccess-Regeln lokal nach
+│   ├── router.php              # bildet die .htaccess-Regeln lokal nach
+│   └── users.php               # lokales CLI-Tool für Admin-Zugänge (unversioniert)
+├── package.json                # generiert aus site.json-config; „npm run serve"
 ├── index.php                   # Router (Home) – bindet Partial-Templates ein
 ├── impressum/index.php         # nutzt gemeinsame Partials aus /php/
 ├── datenschutz/index.php       # nutzt gemeinsame Partials aus /php/
@@ -71,13 +74,14 @@ schreinerei-frank/
 │   └── assets/                 # admin.css / admin.js
 ├── data/
 │   ├── site.json               # ALLE Inhalte – die Quelle (Single Source)
-│   └── admin.json              # Admin-Benutzer-Hashes (Standard-Login)
+│   └── admin.json              # Admin-Benutzer-Hashes (dev-Zugänge)
 ├── js/main.js                  # Interaktion (Slider, FAQ, Formular, …)
 ├── assets/css/styles.css
-├── assets/img/*                # Bilder (inkl. WebP-Varianten)
-├── sitemap.php  robots.php  llms.php   # dynamisch aus site.json
+├── assets/img/*
+├── assets/content/*            # Bilder (inkl. WebP-Varianten)
+├── sitemap.php  robots.php  llms.php  webmanifest.php   # dynamisch aus site.json
 ├── .htaccess                   # saubere URLs + Caching + Zugriffsschutz
-└── DESIGN.md  README.md  PROJECT.md
+└── DESIGN.md  README.md  PROJECT.md  WORKFLOW.md
 ```
 
 ---
@@ -100,13 +104,16 @@ Der Admin ist eine **PHP-App**, die direkt auf `data/site.json` arbeitet:
 
 ### Zugangsdaten
 
-Standard-Login aus `data/admin.json`:
+Admins stehen als SHA-256-Hash-Map in `data/admin.json` (versioniert, wird
+gedeployed). Mit dem lokalen Tool `dev/users.php` lassen sie sich anlegen bzw.
+ändern (siehe `WORKFLOW.md` §9). Aktuelle Entwicklungs-Zugänge:
 
 | Benutzer | Passwort |
 |---|---|
-| `admin` | `frank-adm` |
+| `lmair` | siehe `dev/users.php` bzw. `.env` (lokal hinterlegt) |
+| `stefan` | `demo123` (nur Test/Entwicklung) |
 
-**Dieses Standard-Passwort bitte vor dem Live-Gang ändern** – Hash erzeugen:
+**Echte Passwörter vor dem Live-Gang ändern** – Hash erzeugen:
 
 ```bash
 echo -n "neuespasswort" | shasum -a 256
@@ -154,25 +161,66 @@ echo -n "neuespasswort" | shasum -a 256
 
 ## Deployment
 
-Lade den **Projekt-Root** auf einen PHP-Webspace (Apache mit mod_rewrite):
+Der Live-Gang läuft **vollautomatisch über GitHub Actions** per SFTP zum Hoster
+(Backup vor jedem Upload, Retension der letzten 5 Zips). Auslöser ist immer ein
+`develop → staging`-Merge. **Alle Details: [WORKFLOW.md](WORKFLOW.md)**.
+
+> **Erster Deploy auf einen frischen Server:**
+> Damit die Pipeline überhaupt funktioniert, müssen anfangs **nur** der
+> `backup.php` und der Ordner `backup/` (inkl. `.htaccess` gegen öffentlichen
+> Zugriff) auf dem Server liegen – alles andere übernimmt der Workflow beim
+> ersten Merge. Der `BACKUP_URL` sollte danach sofort lieferbar sein
+> (`https://<subdomain>/backup.php`).
+
+Manuell wären folgende Schritte ohnehin nötig (vom Workflow übernommen):
 
 1. Inhalte in `data/site.json` pflegen (oder im Admin `/frank-adm/`).
-2. `data/admin.local.json` mit echten Passwort-Hashes anlegen (siehe oben).
-3. Domain in `site.json` (`meta.siteUrl`) prüfen – Sitemap/Robots/llms ziehen sie
-   automatisch.
+2. `data/admin.local.json` mit echten Passwort-Hashes für Produktion anlegen
+   (siehe oben; nie committen – wird bewusst nicht deployed).
+3. Domain in `site.json` (`config.domain` bzw. Meta `siteUrl`) prüfen – Sitemap,
+   Robots und llms ziehen sie automatisch.
 4. **Search Console** Property + Sitemap; **Google-Unternehmensprofil**
    verknüpfen; Rich-Results-Test: <https://search.google.com/test/rich-results>.
 
-**Nicht deployen:** `dev/`, `data/admin.json` mit echten Hashes, `.env`.
+**Nicht deployen:** `.env`, `dev/`, `*.md`-Dokumentation, `package.json`,
+`.github/`, `data/admin.local.json` (alles in der Workflow-`exclude`-Liste).
 
 ---
 
-## Kontaktformular anbinden
+## Kontaktformular
 
-Das Formular (in `php/home.php`) postet normal an `action="/api/kontakt"`.
-Für den Versand einen Formulardienst eintragen (Web3Forms, Formspree, …) oder
-ein kleines PHP-Skript `api/kontakt.php` anlegen (Honeypot ist vorhanden:
-Feld `website`).
+Das Formular (`php/home.php`) wird per `fetch()` **ohne Seiten-Reload** an
+`api/kontakt.php` gesendet (Erfolg-/Fehlermeldung erscheinen oberhalb des
+Formulars). Serverseitig liest `api/kontakt.php` die `site.json`-Config und
+versendet die Anfrage per E-Mail.
+
+- **Empfänger:** `config.email` – überschreibbar pro Umgebung über
+  `contact.mailTo` (bzw. `data/kontakt.local.json` lokal, siehe unten).
+- **Versandweg:** PHP `mail()` (Server-Postfix). Optional vorbereitet: SMTP
+  unter `contact.mailer` (Host/Port/User/Passwort/Encryption) – sobald `host`
+  gesetzt ist, geht der Versand über dieses Konto statt `mail()`.
+- **Schutzmechanismen:** Honeypot-Feld `website` (client- + serverseitig),
+  serverseitige Validierung aller Felder (Name, E-Mail, Telefon, Nachricht),
+  422 + Feld-Fehler bei ungültigen Eingaben, nur `POST` erlaubt.
+
+### Lokal testen (ohne eigenes Postfach)
+
+Für lokale Tests wird der Empfänger über die **nicht versionierte** Datei
+`data/kontakt.local.json` auf das lokale Postfix-Postfach umgebogen:
+
+```json
+{ "to": "ludwigmair@localhost" }
+```
+
+Die eintreffenden Mails landen dann in der Spool-Datei `/var/mail/<user>`:
+
+```bash
+tail -20 /var/mail/ludwigmair          # letzte Mail ansehen
+mail -f /var/mail/ludwigmair           # interaktiv (q zum Beenden)
+```
+
+`data/kontakt.local.json` ist per `.gitignore` und Workflow-`exclude`
+geschützt und wird nie committed/deployed.
 
 ---
 

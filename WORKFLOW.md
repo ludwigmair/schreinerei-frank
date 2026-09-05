@@ -9,7 +9,16 @@ Nichts wird manuell auf den Server kopiert – der Git-Workflow ist die einzige
 Quelle. Alle Zugangsdaten sind als **GitHub-Secrets** hinterlegt und liegen
 **nie** im Repository.
 
-Initial muss die site einmal via ftp deployed werden, damit spaeter die backup.php gefunden wird
+> **Erster Deploy auf einen frischen Server:** Es genügt, einmalig die
+> `backup.php` und den Ordner `backup/` (inkl. `.htaccess`) auf den Server zu
+> legen – damit die automatische Sicherung vor dem ersten Upload greift. Alles
+> Weitere übernimmt der Workflow beim ersten `develop → staging`-Merge.
+>
+> **Wichtig (Zielpfad):** Das SFTP-Login landet nicht im Web-Root, sondern im
+> TYPO3-SSH-Home (`sshroot`). Der echte Web-Root ist der per DCP gemappte
+> Zielordner der Subdomain – dieser absolute Pfad steht im Secret
+> `FTP_TARGET_DIR` (z. B. `/home/www/doc/28707/typopublic.com/schreinerei-frank`),
+> sonst wird in den falschen Ordner geschrieben.
 ---
 
 ## 1. Überblick über den Ablauf
@@ -78,13 +87,15 @@ und keinerlei Geheimnisse.
 ### Werkzeug
 
 Der Upload nutzt die SFTP-fähige Action
-[`Dylan700/sftp-upload-action`@v1.2.5](https://github.com/Dylan700/sftp-upload-action)
-(Passwort-Login, `ignore`-Patterns, Upload-Zuordnung `./ → schreinerei-frank/`).
+[`wangyucode/sftp-upload-action`@v3](https://github.com/wangyucode/sftp-upload-action)
+(Passwort-Login, `exclude`-Patterns, inkrementelle Uploads via Hash-Datei).
 
 > **Wichtig:** Diese Action deployt über **SFTP (SSH, Port 22)** – wie es
 > typopublic anbietet und FileZilla nutzt. Sie lädt nur **hinzu/aktualisiert**
-> (kein `delete`), sodass serverseitige Uploads und `.env` nie angetastet
-> werden.
+> unveränderte Dateien nicht erneut (kein `delete`), sodass serverseitige
+> Uploads und `.env` nie angetastet werden. Seit der Umstellung auf
+> `forceUpload: false` werden nur geänderte Dateien übertragen; der
+> Vergleichs-Hash bleibt in `.sftp_upload_action_hashes` auf dem Server.
 
 ---
 
@@ -106,14 +117,15 @@ FTP_TARGET_DIR  /home/www/doc/28707/typopublic.com/schreinerei-frank
 | `FTP_SERVER` | SFTP-Host des Hosters (ohne Protokoll, ohne Pfad) | `ftp.typopublic.com` |
 | `FTP_USERNAME` | FTP-Benutzer | `schreinerei` |
 | `FTP_PASSWORD` | FTP-Passwort | (geheim) |
-| `FTP_TARGET_DIR` | **Optional** – Zielverzeichnis auf dem Server; Default ist `schreinerei-frank` | `schreinerei-frank` |
+| `FTP_TARGET_DIR` | **Absoluter Zielpfad** auf dem Server (das SFTP-Login landet NICHTS im Web-Root, sondern im TYPO3-SSH-Home `sshroot` – der Web-Root der Subdomain ist dieser DCP-gemappte Ordner) | `/home/www/doc/28707/typopublic.com/schreinerei-frank` |
 | `BACKUP_TOKEN` | **Neu** – Secret-Token der `backup.php`, das den Sicherungs-Aufruf absichert (muss dem `BACKUP_TOKEN` in `backup.php` entsprechen) | (geheim, selbst gewählt) |
 | `BACKUP_URL` | **Neu** – vollständige HTTPS-URL der `backup.php` auf dem Server, **inkl. Subdomain/Unterordner**. Wichtig, weil die Site im Unterordner liegt (`https://FTP_SERVER/backup.php` wäre falsch) | `https://schreinerei-frank.typopublic.com/backup.php` |
 
 > **Hinweise:**
 >
-> - Der Wert von `FTP_TARGET_DIR` wird im Workflow mit `'schreinerei-frank'` als
->   Default belegt: `${{ secrets.FTP_TARGET_DIR || 'schreinerei-frank' }}`.
+> - `FTP_TARGET_DIR` ist **verpflichtend** auf den absoluten Web-Root-Pfad zu
+>   setzen (siehe §1/Tabelle oben) – ohne ihn würde der Deploy im SFTP-Login-
+>   Home (`sshroot`) landen und die Site bliebe unverändert.
 > - Falls dein Hoster andere Zugangsdaten (z. B. separates FTP-Konto pro
 >   Verzeichnis) liefert, einfach die Secrets entsprechend auffüllen.
 > - Secrets lassen sich nach dem Anlegen **nicht mehr anzeigen** – nur neu
@@ -133,17 +145,25 @@ env:
   FTP_SERVER:     ${{ secrets.FTP_SERVER }}
   FTP_USERNAME:   ${{ secrets.FTP_USERNAME }}
   FTP_PASSWORD:   ${{ secrets.FTP_PASSWORD }}
-  FTP_TARGET_DIR: ${{ secrets.FTP_TARGET_DIR || 'schreinerei-frank' }}
+  FTP_TARGET_DIR: ${{ secrets.FTP_TARGET_DIR }}
+  BACKUP_URL:     ${{ secrets.BACKUP_URL }}
+  BACKUP_TOKEN:   ${{ secrets.BACKUP_TOKEN }}
 ```
 
 ```yaml
-with:
-  server:   ${{ env.FTP_SERVER }}
-  username: ${{ env.FTP_USERNAME }}
-  password: ${{ env.FTP_PASSWORD }}
-  port:     22
-  uploads: |
-    ./ => ./${{ env.FTP_TARGET_DIR }}/
+- uses: wangyucode/sftp-upload-action@v3
+  with:
+    host: ${{ env.FTP_SERVER }}
+    username: ${{ env.FTP_USERNAME }}
+    password: ${{ env.FTP_PASSWORD }}
+    port: 22
+    localDir: '.'
+    remoteDir: ${{ env.FTP_TARGET_DIR }}   # absoluter Web-Root-Pfad
+    forceUpload: false                     # inkrementelle Uploads
+    concurrency: 4
+    exclude: |
+      .git, .github/**, *.md, node_modules/**, .env, dev/**,
+      backup/*.zip, data/admin.local.json, package.json, *.log
 ```
 
 ---
@@ -242,7 +262,7 @@ Falls die Action startet, aber nichts hochlädt, ist das in der Regel gewollt:
 | „Login/Connection failed" | `FTP_SERVER` falsch oder Hoster blockt unbekannte IP | Server-/Host-Anmeldedaten prüfen; ggf. FTP-Server/Firewall |
 | Forget „permission denied" | `FTP_TARGET_DIR` existiert nicht | Server-Verzeichnis prüfen, korrekten Zielpfad setzen |
 | Workflow läuft, aber deployt nicht | Kein Merge-Commit bzw. falsche Basis | §7 lesen |
-| „protocol: invalid parameter – sftp" bei FTPS-Action | Action unterstützt nur FTP/FTPS | SFTP-fähige Action nutzen (`Dylan700/sftp-upload-action`, siehe §2) |
+| „protocol: invalid parameter – sftp" bei FTPS-Action | Action unterstützt nur FTP/FTPS | SFTP-fähige Action nutzen (`wangyucode/sftp-upload-action`, siehe §2) |
 
 > **Sicherheit:** Zugangsdaten gehören **ausschließlich** in Secrets. Niemals
 > in `site.json`, `PROJECT.md`, Commit-Messages oder Workflow-Dateien ablegen.
@@ -289,8 +309,10 @@ php dev/users.php --json data/admin.local.json add frank geheim  # alternative D
 ## 10. Kurzreferenz
 
 - Workflow-Datei: `.github/workflows/deploy-staging.yml`
-- Secrets: `FTP_SERVER`, `FTP_USERNAME`, `FTP_PASSWORD`, `FTP_TARGET_DIR` (opt.), `BACKUP_TOKEN`, `BACKUP_URL`
+- Secrets: `FTP_SERVER`, `FTP_USERNAME`, `FTP_PASSWORD`, `FTP_TARGET_DIR` (absoluter Web-Root, Pflicht), `BACKUP_TOKEN`, `BACKUP_URL`
 - Backup: vor jedem Deploy automatisch `backup.php`, Ziel `backup/`, Retention letzte 5
 - Wahrer Auslöser: **Merge `develop` → `staging`** und Push
 - Protokoll: **SFTP, Port 22**
-- Zielverzeichnis: Default **`schreinerei-frank`** (nach SFTP-Login sichtbar)
+- Zielverzeichnis: **absoluter Web-Root-Pfad** aus `FTP_TARGET_DIR`
+  (z. B. `/home/www/doc/28707/typopublic.com/schreinerei-frank`) – das
+  SFTP-Login landet sonst im SSH-Home

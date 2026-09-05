@@ -19,6 +19,7 @@ RewriteRule ^admin(/.*)?$ %1/ [R=301,L]
 # <<< PROJECT ADMIN (generiert aus php/config.php) <<<
 
 # Direkter Zugriff auf .php-Endpunkte erlaubt – zusätzlich saubere URLs:
+RewriteRule ^api/kontakt$      api/kontakt.php  [L]
 RewriteRule ^sitemap\.xml$     sitemap.php     [L]
 RewriteRule ^robots\.txt$      robots.php      [L]
 RewriteRule ^llms\.txt$        llms.php        [L]

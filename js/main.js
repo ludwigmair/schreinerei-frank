@@ -531,21 +531,35 @@
 
       status.dataset.state = '';
       status.textContent = '';
-      /* --- Ohne Backend: hier greift der normale POST an action="/api/kontakt".
-             Für eine reine Static-Site einen Formular-Dienst eintragen
-             (Web3Forms, Formspree, Cloudflare Pages Functions …)
-             oder das folgende fetch() aktivieren und action anpassen. --- */
-      // e.preventDefault();
-      // fetch(form.action, { method:'POST', body:new FormData(form), headers:{Accept:'application/json'} })
-      //   .then(function(r){ if(!r.ok) throw 0;
-      //     form.reset();
-      //     status.dataset.state='ok';
-      //     status.textContent='Vielen Dank – wir melden uns in Kürze bei Ihnen.';
-      //   })
-      //   .catch(function(){
-      //     status.dataset.state='error';
-      //     status.textContent='Senden fehlgeschlagen. Bitte rufen Sie uns an: 08624 1260.';
-      //   });
+      e.preventDefault();
+      fetch(form.action, { method: 'POST', body: new FormData(form), headers: { Accept: 'application/json' } })
+        .then(function (r) {
+          return r.json().then(function (body) {
+            form._ok = r.ok && body && body.ok;
+            form._errors = body && body.errors ? body.errors : null;
+            if (!form._ok && form._errors) {
+              Object.keys(form._errors).forEach(function (name) {
+                if (fields[name]) {
+                  setError(name, form._errors[name]);
+                }
+              });
+            }
+          });
+        })
+        .then(function () {
+          if (form._ok) {
+            form.reset();
+            Object.keys(fields).forEach(function (name) { setError(name, ''); });
+            status.dataset.state = 'ok';
+            status.textContent = 'Vielen Dank – wir melden uns in Kürze bei Ihnen.';
+          } else if (!form._errors) {
+            throw new Error('not-ok');
+          }
+        })
+        .catch(function () {
+          status.dataset.state = 'error';
+          status.textContent = 'Senden fehlgeschlagen. Bitte rufen Sie uns an: 08624 1260.';
+        });
     });
   })();
 

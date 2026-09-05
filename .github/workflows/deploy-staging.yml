@@ -110,6 +110,7 @@ jobs:
             backup/*.zip,
             backup/*.log,
             data/admin.local.json,
+            data/kontakt.local.json,
             package.json,
             *.log,
             server.log,
