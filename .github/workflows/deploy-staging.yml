@@ -77,27 +77,31 @@ jobs:
 
       - name: SFTP-Deploy (nur bei develop→staging-Merge)
         if: steps.check-merge.outputs.deployed == 'true'
-        uses: Dylan700/sftp-upload-action@v1.2.5
+        uses: wangyucode/sftp-upload-action@v3
         with:
-          server: ${{ env.FTP_SERVER }}
+          host: ${{ env.FTP_SERVER }}
           username: ${{ env.FTP_USERNAME }}
           password: ${{ env.FTP_PASSWORD }}
           port: 22
-          uploads: |
-            ./ => ./
+          # Der SFTP-Login ländet per Zielpfad direkt im Web-Root
+          # (typopublic.com/schreinerei-frank) – alle Dateien gehören dorthin.
+          localDir: '.'
+          remoteDir: '.'
+          # Kein Hash-Skop: beim ersten Hochladen alles erzwingen.
+          forceUpload: true
+          concurrency: 4
           # Git-Interna, Dev-Tools, .env und serverseitige Backups ausschließen.
-          # KEIN delete – serverseitige Uploads (Bilder) und .env bleiben unangetastet.
-          ignore: |
-            .git
-            .git/**
-            node_modules/**
-            .DS_Store
-            dev/**
-            .env
-            .env.*
-            backup/*.zip
-            backup/*.log
-            data/admin.local.json
-            *.log
-            server.log
+          exclude: |
+            .git,
+            .git/**,
+            node_modules/**,
+            .DS_Store,
+            dev/**,
+            .env,
+            .env.*,
+            backup/*.zip,
+            backup/*.log,
+            data/admin.local.json,
+            *.log,
+            server.log,
             srv_t.log
