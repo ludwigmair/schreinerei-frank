@@ -89,8 +89,9 @@ jobs:
           # Pfad aus Secret FTP_TARGET_DIR; per Marker-Datei HTTP-verifiziert.
           localDir: '.'
           remoteDir: ${{ env.FTP_TARGET_DIR }}
-          # Kein Hash-Skop: beim ersten Hochladen alles erzwingen.
-          forceUpload: true
+          # Inkremental: nur geänderte Dateien übertragen (die Action
+          # verwaltet dazu .sftp_upload_action_hashes auf dem Server).
+          forceUpload: false
           concurrency: 4
           # Nur Website-Dateien übertragen: Repo-Metadaten, Docs und
           # Dev-Tools NICHT mit hochladen (liegen sonst im Web-Root).
