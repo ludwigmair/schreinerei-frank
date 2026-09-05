@@ -117,9 +117,66 @@ der Publish-Workflow ist der neue Content-Flow. `github/workflows/publish.yml`
 wird erst nach dem Merge von `feature/astro` auf den Standard-Branch aktiviert
 (repository_dispatch greift nur auf den Standard-Branch).
 
-### Testen
+### Lokal testen (alles ohne Server/GitHub)
 
-- Lokal: `php -S 127.0.0.1:8000 -t .` → `frank-adm/api.php?action=sitejson&token=…`
+Der Publish-Flow besteht aus drei Etappen – die ersten ZWEI sind lokal
+vollständig abbildbar, die dritte erst mit Server+GitHub-Secrets:
+
+| Etappe | Lokal testbar? |
+|---|---|
+| A) Admin bearbeiten + speichern | ✅ ja (`php -S` + Admin) |
+| B) site.json abholen + build + `_deploy/` bauen | ✅ ja (identische Schritte des Workflows) |
+| C) Backup + SFTP (+ GitHub-Dispatch) | ❌ erst mit Secrets/Server |
+
+#### A) Admin lokal starten (Bearbeiten + Speichern)
+
+```bash
+php -S 127.0.0.1:8000 -t .       # Admin: http://127.0.0.1:8000/frank-adm/
+```
+
+Einloggen (Entwicklungs-Zugang aus `data/admin.json` bzw. `dev/users.php`),
+inhalte ändern → **Speichern** schreibt `data/site.json`. Im Astro-Modus hat
+das noch keine öffentliche Wirkung – die Seite wird ja beim Build erzeugt.
+
+#### B) Publish-Simulation (die eigentlichen Workflow-Schritte)
+
+```bash
+# 1) „Aktuelle“ site.json abholen – genauso wie publish.yml:
+curl -fsSL "http://127.0.0.1:8000/frank-adm/api.php?action=sitejson&token=<TOKEN>" -o data/site.json
+#    (<TOKEN> = SITEJSON_TOKEN aus .env; ohne .env-Eintrag antwortet 401)
+
+# 2) Build – identisch zum Workflow:
+npm run build
+
+# 3) Deploy-Inhalt zusammenstellen (_deploy) – identisch zum Workflow:
+rm -rf _deploy && mkdir _deploy
+cp -r dist/. _deploy/
+cp -r frank-adm _deploy/frank-adm
+mkdir -p _deploy/api && cp api/kontakt.php _deploy/api/
+cp backup.php _deploy/ && cp .htaccess _deploy/ && rm -rf _deploy/data
+
+# 4) Ergebnis ansehen (simuliert den Web-Root):
+npm run preview -- --port 4322
+```
+
+Damit verifiziertst du den kompletten Build-Pfad mit einer serverseitig
+gespeicherten site.json, inkl. SEO-Dateien und `_deploy`-Zusammensetzung —
+der einzige Unterschied zum echten Publish sind Backup-Call und SFTP-Upload.
+
+#### C) Was erst mit Zugangsdaten geht
+
+- **`action=publish`** (GitHub-`repository_dispatch`): lokal liefert er
+  sinnvollerweise 500 („PUBLISH_TOKEN nicht konfiguriert“) – das ist der
+  Beweis, dass der Endpoint erreicht wird.
+- **Senderichtung „Soft-live“**: der Admin-Button ruft den Endpoint korrekt auf;
+  erst mit echten Secrets triggert er den GitHub-Workflow.
+- Backup-Aufruf + SFTP-Deploy laufen ausschließlich auf dem Runner.
+
+#### Test der Endpoints
+
+- `frank-adm/api.php?action=sitejson&token=…` → liefert die site.json (401 bei
+  fehlendem/falschem Token).
+- `POST admin …action=publish` → 500 ohne PAT (wird bei echdem Setup 200).
 - `workflow_dispatch` in der GitHub-UI startet den Publish ohne Server-Dispatch
   (praktisch für den Test auf `schreinerei-frank-astro.typopublic.com`).
 

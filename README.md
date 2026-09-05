@@ -37,6 +37,8 @@ gespielt (~1–2 min). Der Doku- und Rebranding-Überblick steht in
 nvm use            # Node 22 laden (siehe .nvmrc)
 npm install        # einmalig
 npm run dev        # Astro-Dev-Server: http://localhost:4321 (Hot-Reload)
+                   # Bei belegtem Port: npm run dev -- --port 4322
+                   # (letzter lokaler Lauf der Astro-Site: http://localhost:4322)
 npm run build      # statische Site nach dist/
 npm run preview    # gebaute Site lokal ansehen
 ```
