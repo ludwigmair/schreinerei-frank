@@ -72,6 +72,12 @@ PUBLISH_TOKEN=<GitHub-PAT mit repo-Schreibrecht>
 - Auf EXISTIERENDE KEYs achten: `.env` enthält schon `ADMIN_USERS` – nicht
   überschreiben, nur zwei Zeilen ergänzen.
 
+> **Fehlerbild:** „PUBLISH_TOKEN ist nicht konfiguriert.“ = Zeile fehlt noch.
+> „GitHub-Dispatch … HTTP 401 Bad credentials“ = Token ungültig/unvollständig
+> (kopieren! Fine-grained `github_pat_…` ≈ 90 Zeichen, Classic `ghp_…`). Wie der
+> PAT angelegt wird (Fine-grained „Contents: Read and write“ / Classic `repo`):
+> `TEMPLATE.md` → „GitHub-PAT anlegen“.
+
 ### b) GitHub Actions Secrets (Settings → Secrets and variables → Actions)
 
 | Secret           | Wert                                                        | Aufwand |

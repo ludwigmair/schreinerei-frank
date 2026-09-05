@@ -91,6 +91,54 @@ Ablauf: Admin-Speichern → `frank-adm/api.php?action=publish` → GitHub
 | `SITE_BASE`       | Basis-URL des Hosts, z. B. `https://schreinerei-frank.typopublic.com` |
 | `SITEJSON_TOKEN`  | Token für `?action=sitejson&token=…` (siehe unten)|
 
+### GitHub-PAT anlegen (für `PUBLISH_TOKEN`)
+
+Der `PUBLISH_TOKEN` ist ein **Personal Access Token** mit Repo-Schreibrecht auf
+das Publish-Repo.
+
+> **Empfehlung:** Für den `repository_dispatch`-Klick ist ein **Classic-Token
+> mit `repo`-Scope** der zuverlässige Weg. Fine-grained-Token (auch mit
+> Contents/„Actions: Read and write“) bekommen bei
+> `POST /repos/…/dispatches` in der Praxis **weiterhin HTTP 403 „Resource not
+> accessible“** (siehe Troubleshooting). Classisches `repo` deckt alle
+> nötigen Rechte ab.
+
+#### Weg B – Classic-Token (empfohlen, zuverlässig)
+
+1. Settings → **Developer settings** → **Personal access tokens** →
+   **Tokens (classic)**.
+2. **„Generate new token (classic)"**.
+3. *Expiration* setzen; Häkchen bei **`repo`** (komplette Repo-Berechtigung,
+   inkl. Contents- und Actions-Write → deckt den `repository_dispatch` ab).
+4. **„Generate token"** → kopieren (Prefix `ghp_`).
+
+#### Weg A – Fine-grained-Token (optional, repo-genau)
+
+1. GitHub → Avatar → **Settings** → ganz unten in der Seitenleiste
+   **Developer settings** → **Personal access tokens** → **Fine-grained tokens**
+   (direkt: `github.com/settings/personal-access-tokens`).
+2. **„Generate new token"**.
+3. Felder:
+   - *Token name*: z. B. `schreinerei-publish`
+   - *Expiration*: z. B. 90 Tage
+   - *Repository access*: **„Only select repositories"** → `schreinerei-frank`
+   - *Permissions → Repository permissions*: **Contents → Read and write**
+     („Read-only" erscheint nur, wenn die Repo-Auswahl auf „All repositories"
+     oder „Public repositories" steht – dann Auswahl korrigieren).
+4. **„Generate token"** klicken → der Token erscheint **einmalig** in einem
+   blauen Kasten → **„Copy"** → vollständig kopieren (Prefix `github_pat_`).
+
+**Update geben:** Werte in der Liste sind maskiert; den vollen Wert gibt es nur
+direkt nach dem Generieren (sonst **„Regenerate"** → neuen Wert nehmen).
+
+**Troubleshooting Token:**
+- „Bad credentials“ (HTTP 401 beim Dispatch) = Token unvollständig/abgeschnitten
+  oder nicht mehr gültig. Vollständig kopieren (Fine-grained ≈ 90+ Zeichen,
+  wird nur direkt nach dem Generieren vollständig angezeigt).
+- Check zur schnellen Prüfung (Wert nicht ins Repo, nur lokal):
+  `curl -H "Authorization: Bearer <token>" https://api.github.com/user`
+  → HTTP 200 + `login` = gültig, HTTP 401 = ungültig.
+
 ### `.env` auf dem Server (NIE versionieren)
 
 | Key              | Zweck                                                        |
