@@ -18,6 +18,7 @@ jobs:
       FTP_SERVER: ${{ secrets.FTP_SERVER }}
       FTP_USERNAME: ${{ secrets.FTP_USERNAME }}
       FTP_PASSWORD: ${{ secrets.FTP_PASSWORD }}
+      FTP_TARGET_DIR: ${{ secrets.FTP_TARGET_DIR }}
       BACKUP_URL: ${{ secrets.BACKUP_URL }}
       BACKUP_TOKEN: ${{ secrets.BACKUP_TOKEN }}
     steps:
@@ -84,18 +85,22 @@ jobs:
           username: ${{ env.FTP_USERNAME }}
           password: ${{ env.FTP_PASSWORD }}
           port: 22
-          # Der SFTP-Login startet im SSH-Home (/home/www/doc/28707/sshroot),
-          # der eigentliche Web-Root der Subdomain ist typopublic.com/schreinerei-frank
-          # unter /home/www/doc/28707/ (per Artfiles-DCP Zielordner; per Marker-Datei HTTP-verifiziert 200).
+          # Web-Root der Subdomain (per DCP gemappter Zielordner), absuluter
+          # Pfad aus Secret FTP_TARGET_DIR; per Marker-Datei HTTP-verifiziert.
           localDir: '.'
-          remoteDir: '/home/www/doc/28707/typopublic.com/schreinerei-frank'
+          remoteDir: ${{ env.FTP_TARGET_DIR }}
           # Kein Hash-Skop: beim ersten Hochladen alles erzwingen.
           forceUpload: true
           concurrency: 4
-          # Git-Interna, Dev-Tools, .env und serverseitige Backups ausschließen.
+          # Nur Website-Dateien übertragen: Repo-Metadaten, Docs und
+          # Dev-Tools NICHT mit hochladen (liegen sonst im Web-Root).
           exclude: |
             .git,
             .git/**,
+            .github/**,
+            .gitignore,
+            .nvmrc,
+            *.md,
             node_modules/**,
             .DS_Store,
             dev/**,
@@ -104,6 +109,8 @@ jobs:
             backup/*.zip,
             backup/*.log,
             data/admin.local.json,
+            package.json,
+            testfile.txt,
             *.log,
             server.log,
             srv_t.log
