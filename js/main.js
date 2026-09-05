@@ -505,7 +505,8 @@
       if (!f.input) return;
       var t;
       f.input.addEventListener('blur', function () { validateField(name); });
-      f.input.addEventListener('input', function () {
+      f.input.addEventListener('input', function (e) {
+        if (!e || e.isTrusted === false) return;
         clearTimeout(t);
         t = setTimeout(function () { validateField(name); }, 300);
       });
