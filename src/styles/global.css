@@ -60,7 +60,6 @@ h2{font-size:var(--step-3);color:var(--primary)}
 /* ---------- Layout helpers ---------- */
 .wrap{max-width:var(--maxw);margin-inline:auto;padding-inline:var(--pad-x)}
 .section{padding-block:clamp(48px,8vw,74px)}
-.section--secondary{background:var(--secondary)}
 .section__head{max-width:62ch;margin-bottom:clamp(28px,4vw,38px)}
 .section__head p{color:var(--text-muted);margin-top:10px}
 [id]{scroll-margin-top:96px}
@@ -382,17 +381,6 @@ h2{font-size:var(--step-3);color:var(--primary)}
 }
 .testi__dots button[aria-current="true"]{background:var(--primary)}
 
-/* ---------- Google-Rezensionen ---------- */
-.google-review{
-  display:inline-flex;align-items:center;flex-wrap:wrap;gap:10px;
-  background:#fff;border:1px solid var(--border);border-radius:var(--radius);
-  padding:14px 18px;margin-bottom:22px;font-size:.9375rem;
-}
-.google-review__stars{color:var(--accent);font-size:1.15rem;letter-spacing:2px}
-.google-review__score{font-weight:700;color:var(--primary)}
-.google-review__count{color:var(--text-muted)}
-.google-review__link{font-weight:600;text-decoration:none;margin-left:auto}
-
 /* ---------- Contact ---------- */
 .contact{display:grid;grid-template-columns:1fr 1fr;gap:clamp(28px,5vw,44px)}
 .field{margin-bottom:16px}
@@ -431,7 +419,6 @@ h2{font-size:var(--step-3);color:var(--primary)}
   box-shadow:0 4px 14px rgba(0,0,0,.25);pointer-events:none;
 }
 .map__badge svg{width:18px;height:18px;stroke:currentColor;stroke-width:2;fill:none}
-.map__btn:hover .map__badge{background:var(--primary-dark)}
 .map__btn:focus-visible{outline:2px solid var(--primary);outline-offset:-2px}
 
 /* ---------- Map-Confirm-Dialog ---------- */

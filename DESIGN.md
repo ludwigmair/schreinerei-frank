@@ -5,7 +5,7 @@ Design-System des Onepagers. Umgesetzt aus **Konzept C „Meisterhand"**
 bewusst *nicht* nach KI-Baukasten aussehend).
 
 Alle Werte leben als CSS Custom Properties in
-[`assets/css/styles.css`](assets/css/styles.css) (`:root`). Diese Datei ist die
+[`src/styles/global.css`](src/styles/global.css) (`:root`). Diese Datei ist die
 Referenz dazu.
 
 ---

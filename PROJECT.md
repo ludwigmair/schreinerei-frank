@@ -176,7 +176,7 @@ schreibgeschützt und werden zur Laufzeit aus `config` gespiegelt.
 ### Farben & Design
 | Wozu | Wo |
 |---|---|
-| Primär-/Akzent-Farben (CSS-Variablen) | `assets/css/styles.css` (`--primary`, `--accent` …) |
+| Primär-/Akzent-Farben (CSS-Variablen) | `src/styles/global.css` (`--primary`, `--accent` …) |
 | Browser-Tab-Farbe (`theme-color`) | `php/config.php` → `themeColor` |
 | Design-Grundlagen | `DESIGN.md` |
 
@@ -217,7 +217,7 @@ site_esc($s, $text)                          // HTML-escaped
 2. **Technische Werte (themeColor/assetsBase/adminPath)** → `php/config.php`.
 3. **`.htaccess` synchronisieren** (nach Änderung von `adminPath`) → `php php/config.php --gen-htaccess`.
 4. **Texte/Bilder/SEO ändern** → `data/site.json` (oder Admin `/frank-adm/`).
-5. **Design/Farben ändern** → `assets/css/styles.css` (+ `config.themeColor`).
+5. **Design/Farben ändern** → `src/styles/global.css` (+ `config.themeColor`).
 
 Nach jeder Konfig-Änderung: `php -l php/config.php` und Seiten-Test –
 Details siehe `README.md`.

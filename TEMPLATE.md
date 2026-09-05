@@ -31,7 +31,8 @@ wie auf dem Server, ohne diesen zu brauchen.
    `themeColor`, `logo`, E-Mail, Öffnungszeiten, Einzugsgebiet …). Alle
    `{config.X}`-Platzhalter werden beim Bauen durch diese Werte ersetzt.
 2. **`public/assets/` austauschen** (Logo `site/logo.png`, `site/og.jpg`,
-   `content/`-Bilder, ggf. `css/styles.css`).
+   `content/`-Bilder); Design-Farben im CSS `src/styles/global.css`
+   (`--primary`, `--accent`, … `:root`).
 3. **SEO/Legal-Texte** (`meta`, `legal`, alle Textsektionen) anpassen.
 4. `nvm use && npm run build`, dann normaler Git-/CI-Flow.
 
