@@ -66,7 +66,7 @@ function kontakt_expects_json(): bool
     return strpos($accept, 'application/json') !== false;
 }
 
-function kontakt_redirect(string $fragment): never
+function kontakt_redirect(string $query): never
 {
     $target = '';
     $referer = $_SERVER['HTTP_REFERER'] ?? '';
@@ -78,7 +78,7 @@ function kontakt_redirect(string $fragment): never
         $host = $_SERVER['HTTP_HOST'] ?? '';
         $target = ($host !== '') ? $scheme . '://' . $host . '/' : '/';
     }
-    header('Location: ' . $target . ltrim($fragment, '/'), true, 303);
+    header('Location: ' . $target . $query, true, 303);
     exit;
 }
 
@@ -153,7 +153,7 @@ if (kontakt_value('website') !== '') {
     if (kontakt_expects_json()) {
         kontakt_respond_json(200, ['ok' => true, 'status' => 'sent']);
     }
-    kontakt_redirect('#kontakt');
+    kontakt_redirect('?kontakt=ok#kontakt');
 }
 
 $config = kontakt_config();
@@ -161,7 +161,7 @@ if ($config['to'] === '') {
     if (kontakt_expects_json()) {
         kontakt_respond_json(500, ['ok' => false, 'status' => 'error', 'error' => 'Empfänger nicht konfiguriert.']);
     }
-    kontakt_redirect('#kontakt');
+    kontakt_redirect('?kontakt=fehler#kontakt');
 }
 
 $values = [];
@@ -174,7 +174,7 @@ if ($errors !== []) {
     if (kontakt_expects_json()) {
         kontakt_respond_json(422, ['ok' => false, 'status' => 'validation', 'errors' => $errors]);
     }
-    kontakt_redirect('#kontakt');
+    kontakt_redirect('?kontakt=fehler#kontakt');
 }
 
 $name = $values['name'];
@@ -206,10 +206,10 @@ if ($sent) {
     if (kontakt_expects_json()) {
         kontakt_respond_json(200, ['ok' => true, 'status' => 'sent']);
     }
-    kontakt_redirect('#kontakt');
+    kontakt_redirect('?kontakt=ok#kontakt');
 }
 
 if (kontakt_expects_json()) {
     kontakt_respond_json(500, ['ok' => false, 'status' => 'error', 'error' => 'Senden fehlgeschlagen.']);
 }
-kontakt_redirect('#kontakt');
+kontakt_redirect('?kontakt=fehler#kontakt');
