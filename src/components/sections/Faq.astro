@@ -1,0 +1,33 @@
+---
+/**
+ * FAQ-Sektion (Port von home.php).
+ */
+import { type SiteData, siteActiveFilter, siteGetStr } from '../../lib/data.ts';
+
+interface Props {
+    s: SiteData;
+}
+
+const { s } = Astro.props;
+const faqIntro = (s['faqIntro'] ?? {}) as Record<string, unknown>;
+const faq = siteActiveFilter<Record<string, unknown>>((s['faq'] ?? []) as Record<string, unknown>[]);
+---
+
+<section class="section section--band" id="faq">
+  <div class="wrap">
+    <div class="section__head">
+      <span class="kicker">{siteGetStr(faqIntro, 'kicker')}</span>
+      <h2>{siteGetStr(faqIntro, 'heading')}</h2>
+    </div>
+    <div class="faq" data-faq>
+      {
+        faq.map((item) => (
+          <details>
+            <summary>{siteGetStr(item, 'q')}</summary>
+            <p>{siteGetStr(item, 'a')}</p>
+          </details>
+        ))
+      }
+    </div>
+  </div>
+</section>

@@ -9,6 +9,8 @@
  *   POST api.php?action=upload       multipart image (geschützt)
  *   GET  api.php?action=images       -> Liste assets/img (geschützt)
  *   GET  api.php?action=session      -> {loggedIn}
+ *   GET  api.php?action=sitejson&token=…   -> aktuelle site.json (Build-Workflow)
+ *   POST api.php?action=publish&token=…    -> triggert GitHub repository_dispatch
  */
 declare(strict_types=1);
 
@@ -22,8 +24,73 @@ function api_json(array $payload, int $status = 200): void {
     exit;
 }
 
+/**
+ * Token aus Query-Parameter oder Authorization-Header (Bearer) extrahieren und
+ * gegen die Publish-Tokens konstant-zeitvergleichen. Gültig für sitejson/publish.
+ */
+function api_has_valid_token(): bool {
+    $given = (string) ($_GET['token'] ?? '');
+    if ($given === '') {
+        $auth = $_SERVER['HTTP_AUTHORIZATION'] ?? '';
+        if (preg_match('/^Bearer\s+(.+)$/i', $auth, $m)) {
+            $given = trim($m[1]);
+        }
+    }
+    if ($given === '') {
+        return false;
+    }
+    foreach ([adm_sitejson_token(), adm_publish_token()] as $expected) {
+        if ($expected !== '' && hash_equals($expected, $given)) {
+            return true;
+        }
+    }
+    return false;
+}
+
 $method = $_SERVER['REQUEST_METHOD'] ?? 'GET';
 $action = $_GET['action'] ?? '';
+
+// Token-geschützte Publish-Endpunkte – nutzbar ohne Admin-Session (Build-Workflow).
+if ($action === 'sitejson' || $action === 'publish') {
+    if (!api_has_valid_token()) {
+        api_json(['ok' => false, 'error' => 'Ungültiger Token.'], 401);
+    }
+    if ($action === 'sitejson' && $method === 'GET') {
+        header('Content-Type: application/json; charset=utf-8');
+        echo json_encode(adm_load_content(), JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) . "\n";
+        exit;
+    }
+    if ($action === 'publish' && $method === 'POST') {
+        $pat = adm_publish_token();
+        if ($pat === '') {
+            api_json(['ok' => false, 'error' => 'PUBLISH_TOKEN ist nicht konfiguriert.'], 500);
+        }
+        $repo = 'ludwigmair/schreinerei-frank';
+        $payload = json_encode(['event_type' => 'publish']);
+        $ch = curl_init('https://api.github.com/repos/' . $repo . '/dispatches');
+        curl_setopt_array($ch, [
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_POST           => true,
+            CURLOPT_POSTFIELDS     => $payload,
+            CURLOPT_HTTPHEADER     => [
+                'Authorization: Bearer ' . $pat,
+                'Accept: application/vnd.github+json',
+                'Content-Type: application/json',
+                'User-Agent: frank-adm-publish',
+            ],
+            CURLOPT_TIMEOUT        => 30,
+        ]);
+        $resp = curl_exec($ch);
+        $code = (int) curl_getinfo($ch, CURLINFO_RESPONSE_CODE);
+        $err  = curl_error($ch);
+        curl_close($ch);
+        if ($code >= 200 && $code < 300) {
+            api_json(['ok' => true]);
+        }
+        api_json(['ok' => false, 'error' => 'GitHub-Dispatch fehlgeschlagen (HTTP ' . $code . ($err !== '' ? ', CURL: ' . $err : '') . '): ' . $resp], 502);
+    }
+    api_json(['ok' => false, 'error' => 'Unbekannte Aktion.'], 404);
+}
 
 if ($method === 'POST' && $action === 'login') {
     $body = json_decode(file_get_contents('php://input'), true);

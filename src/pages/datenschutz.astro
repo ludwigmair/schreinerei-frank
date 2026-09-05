@@ -1,0 +1,39 @@
+---
+/**
+ * Datenschutz (Port von php/legal.php, Seite 'datenschutz').
+ */
+import { siteLoad, siteGetStr, siteEsc } from '../lib/data.ts';
+import Base from '../layouts/Base.astro';
+
+const s = siteLoad();
+const page = 'datenschutz';
+const legal = (s['legal']?.[page] ?? {}) as Record<string, unknown>;
+const ui = (s['ui'] ?? {}) as Record<string, unknown>;
+const options = ['controller', 'processing', 'serverLogs', 'cookies', 'contactForm', 'googleMaps', 'hosting', 'rights', 'supervisoryAuthority'] as const;
+const blocks = options
+    .map((key) => {
+        const block = (legal[key] ?? null) as Record<string, unknown> | null;
+        if (!block) return null;
+        return { cls: key === 'controller' ? ' legal__pre' : '', kicker: siteGetStr(block, 'kicker', ''), text: siteEsc(siteGetStr(block, 'text', '')).replace(/\n/g, '<br>') };
+    })
+    .filter((b): b is { cls: string; kicker: string; text: string } => b !== null);
+---
+
+<Base s={s} page={page}>
+  <div class="legal wrap">
+    <header class="legal__head">
+      <p class="kicker"><a href="/">{siteGetStr(ui, 'legalBack', '← Zurück')}</a></p>
+      <h1>{siteGetStr(legal, 'heading', '')}</h1>
+      <p class="legal__intro">{siteGetStr(legal, 'intro', '')}</p>
+    </header>
+
+    {
+      blocks.map((b) => (
+        <section class="legal__block">
+          <h2>{b.kicker}</h2>
+          <p class={b.cls} set:html={b.text} />
+        </section>
+      ))
+    }
+  </div>
+</Base>

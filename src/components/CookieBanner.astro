@@ -1,0 +1,32 @@
+---
+/**
+ * Cookie-Banner (Port von php/header.php).
+ * Erwartet: s (SiteData).
+ */
+import { type SiteData, siteGetStr } from '../lib/data.ts';
+
+interface Props {
+    s: SiteData;
+}
+
+const { s } = Astro.props;
+const ui = (s['ui'] ?? {}) as Record<string, unknown>;
+---
+
+<div
+  class="cookie-banner"
+  data-cookie-banner
+  role="dialog"
+  aria-modal="false"
+  aria-label={siteGetStr(ui, 'cookieAria', 'Cookie-Hinweis')}
+  hidden
+>
+  <div class="cookie-banner__inner">
+    <p class="cookie-banner__text">{siteGetStr(ui, 'cookieText', 'Wir verwenden Cookies, um unsere Website nutzerfreundlicher zu gestalten.')}</p>
+    <div class="cookie-banner__actions">
+      <button class="btn btn--block" type="button" data-cookie-accept>{siteGetStr(ui, 'cookieAccept', 'Alle akzeptieren')}</button>
+      <button class="btn btn--ghost btn--block" type="button" data-cookie-decline>{siteGetStr(ui, 'cookieDecline', 'Nur notwendige')}</button>
+    </div>
+    <a class="cookie-banner__link" href="/datenschutz/">{siteGetStr(ui, 'cookieLink', 'Datenschutzerklärung')}</a>
+  </div>
+</div>

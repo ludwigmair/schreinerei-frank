@@ -1,0 +1,58 @@
+---
+/**
+ * Base-Layout (Port von php/header.php + php/footer.php).
+ *
+ * Erwartet Props: s (SiteData), page ('' Start, 'impressum', 'datenschutz').
+ * Body: no-js → js-Klasse, Skip-Link, Cookie-Banner, Header, Main, Footer.
+ */
+import { type SiteData, siteLoad } from '../lib/data.ts';
+import Seo from '../components/seo/Seo.astro';
+import SiteHeader from '../components/SiteHeader.astro';
+import SiteFooter from '../components/SiteFooter.astro';
+import CookieBanner from '../components/CookieBanner.astro';
+
+interface Props {
+    s?: SiteData;
+    page?: string;
+}
+
+const { page = '' } = Astro.props;
+const s = Astro.props.s ?? siteLoad();
+const ui = (s['ui'] ?? {}) as Record<string, unknown>;
+const skipLink = (ui['skipLink'] as string) ?? 'Zum Inhalt springen';
+
+// Aktives Script-Bundling: main.js als Modul einbinden (Astro hasht/minifies).
+---
+
+<!doctype html>
+<html lang="de" class="no-js">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <script>
+      document.documentElement.className = document.documentElement.className.replace('no-js', 'js');
+    </script>
+    <Seo s={s} page={page} />
+  </head>
+
+  <body data-page={page}>
+    <a class="skip-link" href="#inhalt">{skipLink}</a>
+
+    <CookieBanner s={s} />
+    <SiteHeader s={s} />
+
+    <p id="render-error" hidden style="background:#a03020;color:#fff;padding:12px;text-align:center">
+      Inhalte konnten nicht geladen werden. Bitte Seite neu laden.
+    </p>
+
+    <main id="inhalt">
+      <slot />
+    </main>
+
+    <SiteFooter s={s} />
+
+    <script>
+      import '../scripts/main.js';
+    </script>
+  </body>
+</html>

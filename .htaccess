@@ -1,5 +1,5 @@
-# Schreinerei Frank – Apache-Konfiguration
-# Liefert SEO/KI-Dateien dynamisch aus site.json (immer aktuell).
+# Schreinerei Frank – Apache-Konfiguration (Astro-Template)
+# Statische Site aus dist/; verbleibende PHP-Endpunkte: Admin + Kontakt + Backup.
 
 RewriteEngine On
 
@@ -12,22 +12,20 @@ RewriteRule ^admin(/.*)?$ %1/ [R=301,L]
 
 # Admin-includes nie direkt aufrufen
 <IfModule mod_rewrite.c>
-  RewriteRule ^php/.*\.php$ - [F]
   RewriteCond %{ENV:ADMIN_PATH} ^(/[^/]+)$
   RewriteRule ^%1/includes/.*\.php$ - [F]
 </IfModule>
 # <<< PROJECT ADMIN (generiert aus php/config.php) <<<
 
-# Direkter Zugriff auf .php-Endpunkte erlaubt – zusätzlich saubere URLs:
+# Verbleibende dynamische PHP-Endpunkte
 RewriteRule ^api/kontakt$      api/kontakt.php  [L]
-RewriteRule ^sitemap\.xml$     sitemap.php     [L]
-RewriteRule ^robots\.txt$      robots.php      [L]
-RewriteRule ^llms\.txt$        llms.php        [L]
-RewriteRule ^site\.webmanifest$ webmanifest.php [L]
 
-# Verzeichnisse ohne Datei -> index.php (z. B. /impressum/ , /datenschutz/)
+# Statische SEO-/KI-Dateien liegen als Build-Output im Web-Root.
+
+# Verzeichnisse ohne Datei -> index.html (Astro: /impressum/ => impressum/index.html)
 RewriteCond %{REQUEST_FILENAME} !-f
-RewriteRule ^([^\.]+)/?$ $1/index.php [L]
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^([^\.]+?)/?$ $1/index.html [L]
 
 # Caching für Assets (Bilder, CSS, JS) – 1 Jahr immutable
 <IfModule mod_expires.c>

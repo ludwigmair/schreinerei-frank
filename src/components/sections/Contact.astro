@@ -1,0 +1,134 @@
+---
+/**
+ * Kontakt-Sektion mit Formular + Info-Card + Karten-Dialog (Port von home.php).
+ * Hinweis (static): Die PRG-Statusbox wird aus ?kontakt=ok|fehler per Inline-Script
+ * befüllt (kein Server-Side-Build-Parameter möglich).
+ */
+import { type SiteData, siteAsset, siteGetStr } from '../../lib/data.ts';
+
+interface Props {
+    s: SiteData;
+}
+
+const { s } = Astro.props;
+const contact = (s['contact'] ?? {}) as Record<string, unknown>;
+const business = (s['business'] ?? {}) as Record<string, unknown>;
+const ui = (s['ui'] ?? {}) as Record<string, unknown>;
+---
+
+<section class="section section--band" id="kontakt">
+  <div class="wrap">
+    <div class="section__head">
+      <span class="kicker">{siteGetStr(contact, 'kicker')}</span>
+      <h2>{siteGetStr(contact, 'heading')}</h2>
+    </div>
+    <div class="contact">
+      <form data-contact method="post" action={siteGetStr(contact, 'formAction', '/api/kontakt')} novalidate>
+        <p class="form-status" role="status" aria-live="polite" data-contact-status></p>
+        <div class="field">
+          <label for="f-name">{siteGetStr(ui, 'formNameLabel', 'Name')}</label>
+          <input id="f-name" name="name" type="text" autocomplete="name" required aria-describedby="f-name-error" />
+          <p class="field-error" id="f-name-error" hidden></p>
+        </div>
+        <div class="field">
+          <label for="f-email">{siteGetStr(ui, 'formEmailLabel', 'E-Mail')}</label>
+          <input id="f-email" name="email" type="email" autocomplete="email" required aria-describedby="f-email-error" />
+          <p class="field-error" id="f-email-error" hidden></p>
+        </div>
+        <div class="field">
+          <label for="f-phone">{siteGetStr(ui, 'formPhoneLabel', 'Telefon')}</label>
+          <input id="f-phone" name="phone" type="tel" autocomplete="tel" aria-describedby="f-phone-error" />
+          <p class="field-error" id="f-phone-error" hidden></p>
+        </div>
+        <div class="field">
+          <label for="f-msg">{siteGetStr(ui, 'formMessageLabel', 'Ihr Vorhaben')}</label>
+          <textarea id="f-msg" name="message" required placeholder={siteGetStr(ui, 'formMessagePlaceholder', 'Küche, Treppe, Innenausbau …')} aria-describedby="f-msg-error"></textarea>
+          <p class="field-error" id="f-msg-error" hidden></p>
+        </div>
+        <div class="field field--hp" aria-hidden="true">
+          <label for="f-website">{siteGetStr(ui, 'formWebsiteLabel', 'Website (bitte frei lassen)')}</label>
+          <input id="f-website" name="website" type="text" tabindex="-1" autocomplete="off" />
+        </div>
+        <button class="btn btn--block" type="submit">{siteGetStr(ui, 'formSubmit', 'Anfrage senden')}</button>
+        <p class="form-note">
+          {siteGetStr(contact, 'consent')} {siteGetStr(ui, 'formConsentIntro', 'Details in der')}{' '}
+          <a href={'/' + siteGetStr(ui, 'formConsentLinkHref', 'datenschutz').replace(/^\//, '') + '/'}>{siteGetStr(ui, 'formConsentLink', 'Datenschutzerklärung')}</a>.
+        </p>
+      </form>
+
+      <div class="info-card">
+        <dl>
+          <dt>{siteGetStr(ui, 'contactAddressLabel', 'Adresse')}</dt>
+          <dd>
+            {siteGetStr(business, 'street')}
+            <br />
+            <span>{siteGetStr(business, 'postalCode')}</span> <span>{siteGetStr(business, 'city')}</span>
+          </dd>
+          <dt>{siteGetStr(ui, 'contactPhoneLabel', 'Telefon')}</dt>
+          <dd><a href={siteGetStr(business, 'phoneHref', 'tel:')}>{siteGetStr(business, 'phone')}</a></dd>
+          <dt>{siteGetStr(ui, 'contactFaxLabel', 'Telefax')}</dt>
+          <dd>{siteGetStr(business, 'fax')}</dd>
+          <dt>{siteGetStr(ui, 'contactEmailLabel', 'E-Mail')}</dt>
+          <dd><a href={'mailto:' + siteGetStr(business, 'email')}>{siteGetStr(business, 'email')}</a></dd>
+          <dt>{siteGetStr(ui, 'contactHoursLabel', 'Öffnungszeiten')}</dt>
+          <dd>{siteGetStr(business, 'openingHoursText')}</dd>
+        </dl>
+        <div class="map">
+          <button
+            class="map__btn"
+            type="button"
+            data-map-open
+            data-map-url={siteGetStr(business, 'mapUrl')}
+            aria-haspopup="dialog"
+            aria-label={siteGetStr(ui, 'mapOpenAria', 'Karte von Google Maps öffnen')}
+          >
+            <img
+              src={siteAsset(s, 'content/kontakt/karte-seeon.svg')}
+              width="800"
+              height="480"
+              loading="lazy"
+              decoding="async"
+              alt={siteGetStr(ui, 'mapImageAlt', 'Kartenausschnitt Schreinerei Frank')}
+            />
+            <span class="map__badge">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M12 20s-7-4.6-7-10a7 7 0 0 1 14 0c0 5.4-7 10-7 10Z" />
+                <circle cx="12" cy="10" r="2.5" />
+              </svg>
+              {siteGetStr(ui, 'mapBadge', 'Karte öffnen')}
+            </span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="map-dialog" data-map-dialog role="dialog" aria-modal="true" aria-labelledby="map-dialog-title" hidden>
+  <div class="map-dialog__box">
+    <h3 id="map-dialog-title">{siteGetStr(ui, 'mapDialogTitle', 'Google Maps öffnen?')}</h3>
+    <p>{siteGetStr(contact, 'mapNotice')}</p>
+    <div class="map-dialog__actions">
+      <button class="btn" type="button" data-map-confirm>{siteGetStr(ui, 'mapDialogConfirm', 'Öffnen')}</button>
+      <button class="btn btn--ghost" type="button" data-map-cancel>{siteGetStr(ui, 'mapDialogCancel', 'Abbrechen')}</button>
+    </div>
+    <a class="map-dialog__link" href={'/' + siteGetStr(ui, 'mapDialogLinkHref', 'datenschutz').replace(/^\//, '') + '/'}>{siteGetStr(ui, 'mapDialogLink', 'Datenschutzerklärung')}</a>
+  </div>
+</div>
+
+<script is:inline>
+  // PRG-Statusbox (Fallback ohne JS-fetch): ?kontakt=ok|fehler → Meldung anzeigen.
+  (function () {
+    var p = new URLSearchParams(window.location.search);
+    var st = p.get('kontakt');
+    var box = document.querySelector('[data-contact-status]');
+    if (!box) return;
+    if (st === 'ok') {
+      box.setAttribute('data-state', 'ok');
+      box.textContent = 'Vielen Dank für Ihre Nachricht! Wir melden uns in Kürze bei Ihnen.';
+    } else if (st === 'fehler') {
+      box.setAttribute('data-state', 'error');
+      box.textContent = 'Beim Senden ist ein Fehler aufgetreten. Bitte rufen Sie uns an oder schreiben Sie uns eine E-Mail.';
+    }
+  })();
+</script>

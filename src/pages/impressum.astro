@@ -1,0 +1,68 @@
+---
+/**
+ * Impressum (Port von php/legal.php, Seite 'impressum').
+ */
+import { siteLoad, siteGetStr, siteEsc } from '../lib/data.ts';
+import Base from '../layouts/Base.astro';
+
+const s = siteLoad();
+const page = 'impressum';
+const legal = (s['legal']?.[page] ?? {}) as Record<string, unknown>;
+const business = (s['business'] ?? {}) as Record<string, unknown>;
+const ui = (s['ui'] ?? {}) as Record<string, unknown>;
+const options = ['vat', 'responsible', 'dispute', 'contentLiability', 'linkLiability', 'copyright'] as const;
+const labels: Record<string, string> = {
+    vat: 'Umsatzsteuer-ID',
+    responsible: 'Redaktionell verantwortlich',
+    dispute: 'EU-Streitschlichtung',
+    contentLiability: 'Haftung für Inhalte',
+    linkLiability: 'Haftung für Links',
+    copyright: 'Urheberrecht',
+};
+const blocks = options
+    .map((key) => {
+        const block = (legal[key] ?? null) as Record<string, unknown> | null;
+        if (!block) return null;
+        return { kicker: siteGetStr(block, 'kicker', labels[key]), text: siteEsc(siteGetStr(block, 'text', '')).replace(/\n/g, '<br>') };
+    })
+    .filter((b): b is { kicker: string; text: string } => b !== null);
+---
+
+<Base s={s} page={page}>
+  <div class="legal wrap">
+    <header class="legal__head">
+      <p class="kicker"><a href="/">{siteGetStr(ui, 'legalBack', '← Zurück')}</a></p>
+      <h1>{siteGetStr(legal, 'heading', '')}</h1>
+      <p>{siteGetStr(legal, 'intro', '')}</p>
+    </header>
+
+    <section class="legal__block">
+      <h2>{siteGetStr(legal, 'companyName', '')}</h2>
+      <p>
+        {siteGetStr(legal, 'ownerName', '')}
+        <br />
+        <span>{siteGetStr(legal, 'address', '')}</span>
+      </p>
+      <p>
+        {siteGetStr(ui, 'legalPhoneLabel', 'Telefon:')}{' '}
+        <a href={siteGetStr(business, 'phoneHref', 'tel:')}>{siteGetStr(business, 'phone', '')}</a>
+        <br />
+        {siteGetStr(ui, 'legalFaxLabel', 'Telefax:')} <span>{siteGetStr(business, 'fax', '')}</span>
+        <br />
+        {siteGetStr(ui, 'legalEmailLabel', 'E-Mail:')}{' '}
+        <a href={'mailto:' + siteGetStr(legal, 'contact.emailHref', '')}>{siteGetStr(legal, 'contact.emailHref', '')}</a>
+        <br />
+        {siteGetStr(ui, 'legalInternetLabel', 'Internet:')} <a href={siteGetStr(legal, 'contact.url', '')}>{siteGetStr(legal, 'contact.url', '')}</a>
+      </p>
+    </section>
+
+    {
+      blocks.map((b) => (
+        <section class="legal__block">
+          <h2>{b.kicker}</h2>
+          <p set:html={b.text} />
+        </section>
+      ))
+    }
+  </div>
+</Base>

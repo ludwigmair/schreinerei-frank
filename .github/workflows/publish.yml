@@ -1,0 +1,118 @@
+name: Astro publish (Build + Deploy)
+
+# Content-Publish per Klick:
+#   Admin „Veröffentlichen" -> frank-adm/api.php?action=publish -> GitHub
+#   repository_dispatch (event_type: publish).
+# Der Workflow lädt die AKTUELLE site.json vom Server, baut die statische
+# Site mit Astro und deployed build + PHP-Reste per SFTP.
+#
+# Manuell testbar via workflow_dispatch (z. B. auf der Astro-Subdomain).
+on:
+  repository_dispatch:
+    types: [publish]
+  workflow_dispatch:
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    # Keine Credentials im Repo: alles kommt aus GitHub-Secrets
+    # (Settings -> Secrets and variables -> Actions).
+    env:
+      FTP_SERVER: ${{ secrets.FTP_SERVER }}
+      FTP_USERNAME: ${{ secrets.FTP_USERNAME }}
+      FTP_PASSWORD: ${{ secrets.FTP_PASSWORD }}
+      FTP_TARGET_DIR: ${{ secrets.FTP_TARGET_DIR }}
+      BACKUP_URL: ${{ secrets.BACKUP_URL }}
+      BACKUP_TOKEN: ${{ secrets.BACKUP_TOKEN }}
+      # Basis-URL des Hosts, von dem wir die site.json abholen
+      # (Test: https://schreinerei-frank-astro.typopublic.com)
+      SITE_BASE: ${{ secrets.SITE_BASE }}
+      # Token für den geschützten Endpoint (darf NUR Github<->Server gelten,
+      # nicht mit dem GitHub-PAT verwechseln).
+      SITEJSON_TOKEN: ${{ secrets.SITEJSON_TOKEN }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Node 22 einrichten + Cache
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Aktuelle site.json vom Server abholen
+        run: |
+          set -e
+          : "${SITE_BASE:?SITE_BASE-Secret fehlt}"
+          : "${SITEJSON_TOKEN:?SITEJSON_TOKEN-Secret fehlt}"
+          URL="$(printf '%s' "$SITE_BASE" | tr -d '[:space:]')/frank-adm/api.php?action=sitejson&token=$(printf '%s' "$SITEJSON_TOKEN" | tr -d '[:space:]')"
+          curl -fsSL --connect-timeout 30 --max-time 60 "$URL" -o data/site.json
+          # Plausibilitätsprüfung: muss ein gültiges JSON mit content sein
+          if ! jq -e '.config and .business' data/site.json >/dev/null 2>&1; then
+            echo "::error::Abgerufene site.json ist kein gültiger Inhalt (config/business fehlen)."
+            head -c 400 data/site.json
+            exit 1
+          fi
+          echo "site.json ok ($(wc -c < data/site.json) Bytes)"
+
+      - name: Dependencies installieren
+        run: npm ci
+
+      - name: Astro-Build
+        run: npm run build
+
+      - name: Deploy-Inhalt zusammenstellen (dist + PHP-Reste)
+        run: |
+          set -e
+          rm -rf _deploy
+          mkdir -p _deploy
+          # statische Astro-Site (enthält public/assets, favicon, SEO-Dateien)
+          cp -r dist/. _deploy/
+          # verbleibende PHP-Reste
+          cp -r frank-adm _deploy/frank-adm
+          mkdir -p _deploy/api
+          cp api/kontakt.php _deploy/api/
+          cp backup.php _deploy/
+          cp .htaccess _deploy/
+          # sensible Daten-Dateien gehören NICHT in den Web-Root
+          rm -rf _deploy/data
+          du -sh _deploy
+          find _deploy -type f | wc -l
+
+      - name: Sicherung auf dem Server anlegen (vor dem Deploy)
+        run: |
+          set -e
+          : "${BACKUP_URL:?BACKUP_URL-Secret fehlt oder ist leer}"
+          : "${BACKUP_TOKEN:?BACKUP_TOKEN-Secret fehlt oder ist leer}"
+          BACKUP_URL="$(printf '%s' "$BACKUP_URL" | tr -d '[:space:]')"
+          BACKUP_TOKEN="$(printf '%s' "$BACKUP_TOKEN" | tr -d '[:space:]')"
+          if RESPONSE="$(curl -fsSL --connect-timeout 30 --max-time 120 -X POST \
+                "$BACKUP_URL" \
+                --data-urlencode "token=$BACKUP_TOKEN" \
+                -H "Authorization: Bearer $BACKUP_TOKEN" \
+                --write-out "\nHTTP %{http_code}\n" 2>&1)"; then
+            echo "Backup ok. Antwort: ${RESPONSE}"
+          else
+            RESPONSE="${RESPONSE:-<keine Antwort>}"
+            echo "::error::Backup-Aufruf fehlgeschlagen. Antwort: ${RESPONSE}"
+            exit 3
+          fi
+        shell: bash
+
+      - name: SFTP-Deploy
+        uses: wangyucode/sftp-upload-action@v3
+        with:
+          host: ${{ env.FTP_SERVER }}
+          username: ${{ env.FTP_USERNAME }}
+          password: ${{ env.FTP_PASSWORD }}
+          port: 22
+          # Statische Site + PHP-Reste aus dem zusammengestellten Ordner
+          # (Web-Root des Hosts per DCP gemappt, absoluter Pfad aus Secret).
+          localDir: _deploy
+          remoteDir: ${{ env.FTP_TARGET_DIR }}
+          # Inkremental: nur geänderte Dateien übertragen (Hash-basiert).
+          forceUpload: false
+          concurrency: 4
+          exclude: |
+            .DS_Store,
+            *.log

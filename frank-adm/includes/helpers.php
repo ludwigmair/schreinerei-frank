@@ -20,6 +20,46 @@ function adm_root(): string {
     return dirname(__DIR__, 2);
 }
 
+/**
+ * Liest einen geheimen Wert aus der (nicht versionierten) .env-Datei im Root.
+ * Format: NAME=wert – eine Zeile je Eintrag, '#'-Zeilen sind Kommentare.
+ */
+function adm_env(string $name): string {
+    static $vars = null;
+    if ($vars === null) {
+        $vars = [];
+        $path = adm_root() . '/.env';
+        $raw = is_file($path) ? file_get_contents($path) : false;
+        if ($raw !== false) {
+            foreach (explode("\n", $raw) as $line) {
+                $line = trim($line);
+                if ($line === '' || $line[0] === '#') {
+                    continue;
+                }
+                [$key, $value] = array_pad(explode('=', $line, 2), 2, '');
+                $vars[trim($key)] = trim($value);
+            }
+        }
+    }
+    return (string) ($vars[$name] ?? '');
+}
+
+/**
+ * Token, mit dem der Build-Workflow die aktuelle site.json abrufen darf
+ * (siehe .github/workflows/publish.yml). Konfiguriert via SITEJSON_TOKEN in .env.
+ */
+function adm_sitejson_token(): string {
+    return adm_env('SITEJSON_TOKEN');
+}
+
+/**
+ * Personal Access Token (Repo-Schreibrecht) zum Triggern des Publish-Workflows
+ * über die GitHub repository_dispatch-API. Konfiguriert via PUBLISH_TOKEN in .env.
+ */
+function adm_publish_token(): string {
+    return adm_env('PUBLISH_TOKEN');
+}
+
 function adm_users_file(): string {
     // Produktions-Zugangsdaten in einer NICHT versionierten Datei ablegen.
     $local = adm_root() . '/data/admin.local.json';

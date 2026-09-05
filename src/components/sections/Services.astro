@@ -1,0 +1,39 @@
+---
+/**
+ * Leistungen-Sektion (Port von home.php).
+ */
+import { type SiteData, siteGetStr } from '../../lib/data.ts';
+
+interface Props {
+    s: SiteData;
+}
+
+const { s } = Astro.props;
+const servicesIntro = (s['servicesIntro'] ?? {}) as Record<string, unknown>;
+const services = (s['services'] ?? []) as Record<string, unknown>[];
+---
+
+<section class="section" id="leistungen">
+  <div class="wrap">
+    <div class="section__head">
+      <span class="kicker">{siteGetStr(servicesIntro, 'kicker')}</span>
+      <h2>{siteGetStr(servicesIntro, 'heading')}</h2>
+      <p>{siteGetStr(servicesIntro, 'text')}</p>
+    </div>
+    <div class="cards">
+      {
+        services.map((item) => (
+          <article class="card">
+            <div class="card__icon">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d={siteGetStr(item, 'icon')}></path>
+              </svg>
+            </div>
+            <h3>{siteGetStr(item, 'title')}</h3>
+            <p>{siteGetStr(item, 'text')}</p>
+          </article>
+        ))
+      }
+    </div>
+  </div>
+</section>

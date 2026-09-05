@@ -1,11 +1,17 @@
 {
-    "name": "schreinerei-frank-meisterbetrieb-root",
+    "name": "schreinerei-frank-astro",
     "version": "2.0.0",
     "private": true,
-    "description": "Schreinerei Frank - Meisterbetrieb – PHP-Site. 'npm run serve' startet den lokalen PHP-Dev-Server (Home + Admin).",
+    "description": "Schreinerei Frank – Astro-Template-Site. 'npm run dev' startet den lokalen Astro-Dev-Server.",
+    "type": "module",
     "scripts": {
-        "serve": "bash dev/serve.sh",
-        "start": "bash dev/serve.sh",
-        "dev": "bash dev/serve.sh"
+        "dev": "astro dev",
+        "start": "astro dev",
+        "build": "astro build",
+        "preview": "astro preview",
+        "astro": "astro"
+    },
+    "devDependencies": {
+        "astro": "^6.0.5"
     }
 }

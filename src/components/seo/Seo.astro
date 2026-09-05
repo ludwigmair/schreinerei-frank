@@ -1,0 +1,61 @@
+---
+/**
+ * SEO-Head-Komponente (Port von php/seo.php).
+ * Erzeugt die kompletten <head>-Inhalte ab <title>.
+ */
+import { type SiteData, siteAbs, siteAsset, siteConfig, siteGetStr } from '../../lib/data.ts';
+import { seoHeadInfo, seoStructuredDataJson, seoLcpImage } from '../../lib/seo.ts';
+
+interface Props {
+    s: SiteData;
+    page?: string; // '' (Start), 'impressum', 'datenschutz'
+}
+
+const { s, page = '' } = Astro.props;
+const business = (s['business'] ?? {}) as Record<string, unknown>;
+const { title, description, canonical } = seoHeadInfo(s, page);
+
+const ogTitle = siteGetStr(s, 'meta.ogTitle', title);
+const ogDesc = siteGetStr(s, 'meta.ogDescription', description);
+const ogImage = siteAbs(siteGetStr(s, 'meta.ogImage', ''));
+const lcp = seoLcpImage(s);
+const themeColor = siteConfig(s, 'project.themeColor', '#3D6490');
+const siteName = String(business['name'] ?? '');
+---
+
+<title>{title}</title>
+<meta name="description" content={description} />
+<link rel="canonical" href={canonical} />
+<meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1" />
+<meta name="theme-color" content={themeColor} />
+<meta name="author" content={siteName + ', Inhaber ' + String(business['owner'] ?? '')} />
+
+<meta property="og:type" content="website" />
+<meta property="og:locale" content="de_DE" />
+<meta property="og:site_name" content={siteName} />
+<meta property="og:title" content={ogTitle} />
+<meta property="og:description" content={ogDesc} />
+<meta property="og:url" content={canonical} />
+<meta property="og:image" content={ogImage} />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:image:alt" content={siteName} />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content={ogTitle} />
+<meta name="twitter:description" content={ogDesc} />
+<meta name="twitter:image" content={ogImage} />
+
+<link rel="icon" href={siteAbs('/favicon.ico')} />
+<link rel="apple-touch-icon" href={siteAsset(s, 'site/apple-touch-icon.png')} />
+<link rel="manifest" href={siteAbs('/site.webmanifest')} />
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fira+Sans:wght@400;500;600;700&family=Spectral:ital,wght@1,400&display=swap" media="print" onload="this.media='all'" />
+<noscript>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fira+Sans:wght@400;500;600;700&family=Spectral:ital,wght@1,400&display=swap" />
+</noscript>
+
+<link rel="preload" as="image" href={lcp} fetchpriority="high" />
+<link rel="stylesheet" href={siteAsset(s, 'css/styles.css')} />
+<script id="structured-data" type="application/ld+json" set:html={seoStructuredDataJson(s)} />

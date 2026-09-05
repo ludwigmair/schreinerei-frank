@@ -247,9 +247,11 @@ function config_build_files(array $cfg): array
         $src = $read === false ? '' : $read;
     }
     $src = config_htaccess_insert($src, config_htaccess_block(config_admin_path()));
+    // Hinweis (Astro-Template): package.json wird NICHT mehr autogeneriert –
+    // sie ist im Repo fest (Astro dev/build/preview) und darf vom PHP-Runtime
+    // nicht überschrieben werden.
     return [
-        $htaccess                  => $src,
-        $root . '/package.json'     => config_package_json($cfg),
+        $htaccess => $src,
     ];
 }
 
@@ -260,17 +262,9 @@ function config_build_files(array $cfg): array
  */
 function config_sync(): int
 {
-    $cfg = project_config();
-    $files = config_build_files($cfg['project'] ?? []);
-    $written = 0;
-    foreach ($files as $path => $content) {
-        $current = is_file($path) ? @file_get_contents($path) : false;
-        if ($current !== $content) {
-            @file_put_contents($path, $content);
-            $written++;
-        }
-    }
-    return $written;
+    // Astro-Template: .htaccess und package.json werden nicht mehr
+    // dynamisch generiert – alle Änderungen laufen über Git/Build.
+    return 0;
 }
 
 // CLI: --gen-htaccess (nur .htaccess) bzw. --gen (alle Build-Dateien).

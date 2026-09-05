@@ -1,0 +1,29 @@
+---
+/**
+ * Startseite (Port von index.php + php/home.php).
+ * Reihenfolge: Hero, Trust, Leistungen, Galerie, Über uns, FAQ, Rezensionen, Kontakt.
+ */
+import { siteLoad } from '../lib/data.ts';
+import Base from '../layouts/Base.astro';
+import Hero from '../components/sections/Hero.astro';
+import Trust from '../components/sections/Trust.astro';
+import Services from '../components/sections/Services.astro';
+import Gallery from '../components/sections/Gallery.astro';
+import About from '../components/sections/About.astro';
+import Faq from '../components/sections/Faq.astro';
+import Testimonials from '../components/sections/Testimonials.astro';
+import Contact from '../components/sections/Contact.astro';
+
+const s = siteLoad();
+---
+
+<Base s={s} page="">
+  <Hero s={s} />
+  <Trust s={s} />
+  <Services s={s} />
+  <Gallery s={s} />
+  <About s={s} />
+  <Faq s={s} />
+  <Testimonials s={s} />
+  <Contact s={s} />
+</Base>

@@ -1,0 +1,49 @@
+---
+/**
+ * Rezensionen-Sektion (Port von home.php).
+ */
+import { type SiteData, siteGetStr } from '../../lib/data.ts';
+
+interface Props {
+    s: SiteData;
+}
+
+const { s } = Astro.props;
+const testimonialsIntro = (s['testimonialsIntro'] ?? {}) as Record<string, unknown>;
+const testimonials = (s['testimonials'] ?? []) as Record<string, unknown>[];
+const ui = (s['ui'] ?? {}) as Record<string, unknown>;
+---
+
+<section class="section" id="rezensionen">
+  <div class="wrap">
+    <div class="section__head">
+      <span class="kicker">{siteGetStr(testimonialsIntro, 'kicker')}</span>
+      <h2>{siteGetStr(testimonialsIntro, 'heading')}</h2>
+    </div>
+    <div class="testi" data-testi>
+      <ul class="testi__track" data-testi-track role="group" aria-roledescription="Karussell" aria-label={siteGetStr(ui, 'testiAria', 'Kundenrezensionen')}>
+        {
+          testimonials.map((item) => (
+            <li class="testi__slide">
+              <blockquote class="testi__quote">{siteGetStr(item, 'quote')}</blockquote>
+              <cite class="testi__source">{siteGetStr(item, 'source')}</cite>
+            </li>
+          ))
+        }
+      </ul>
+      <div class="testi__nav">
+        <button type="button" data-testi-prev aria-label={siteGetStr(ui, 'testiPrevAria', 'Vorherige Rezension')}>
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M15 5l-7 7 7 7" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+        </button>
+        <div class="testi__dots" data-testi-dots role="list" aria-label={siteGetStr(ui, 'testiDotsAria', 'Zu Rezension springen')}></div>
+        <button type="button" data-testi-next aria-label={siteGetStr(ui, 'testiNextAria', 'Nächste Rezension')}>
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M9 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+        </button>
+      </div>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,26 @@
+---
+/**
+ * Trust-Row (Port von home.php).
+ */
+import { type SiteData, siteGetStr } from '../../lib/data.ts';
+
+interface Props {
+    s: SiteData;
+}
+
+const { s } = Astro.props;
+const trust = (s['trust'] ?? []) as Record<string, unknown>[];
+---
+
+<div class="trust">
+  <div class="wrap trust__inner">
+    {
+      trust.map((item) => (
+        <div class="trust__item">
+          <b>{siteGetStr(item, 'value')}</b>
+          <span>{siteGetStr(item, 'label')}</span>
+        </div>
+      ))
+    }
+  </div>
+</div>

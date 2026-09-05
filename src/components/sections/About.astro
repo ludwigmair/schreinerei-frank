@@ -1,0 +1,46 @@
+---
+/**
+ * Über-uns-Sektion (Port von home.php).
+ */
+import { type SiteData, siteAsset, siteGetStr } from '../../lib/data.ts';
+
+interface Props {
+    s: SiteData;
+}
+
+const { s } = Astro.props;
+const about = (s['about'] ?? {}) as Record<string, unknown>;
+const business = (s['business'] ?? {}) as Record<string, unknown>;
+const points = (about['points'] ?? []) as unknown[];
+---
+
+<section class="section" id="ueber-uns">
+  <div class="wrap">
+    <div class="section__head">
+      <span class="kicker">{siteGetStr(about, 'kicker')}</span>
+      <h2>{siteGetStr(about, 'heading')}</h2>
+    </div>
+    <div class="about">
+      <div>
+        <p>{siteGetStr(about, 'text')}</p>
+        <ul class="checklist">
+          {points.map((pt) => <li>{String(pt ?? '')}</li>)}
+        </ul>
+      </div>
+      <div class="person">
+        <img
+          class="person__portrait"
+          width="300"
+          height="300"
+          loading="lazy"
+          decoding="async"
+          src={siteAsset(s, siteGetStr(about, 'personImage'))}
+          alt={siteGetStr(about, 'personImageAlt')}
+        />
+        <b>{siteGetStr(business, 'owner')}</b>
+        <span>{siteGetStr(about, 'personRole')}</span>
+        <a class="btn btn--ghost btn--block" href="#kontakt">{siteGetStr(about, 'personCta')}</a>
+      </div>
+    </div>
+  </div>
+</section>

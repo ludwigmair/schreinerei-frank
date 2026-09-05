@@ -1,0 +1,119 @@
+---
+/**
+ * Galerie-Sektion + Lightbox (Port von home.php).
+ * data-gallery-categories trägt das JSON (mit Asset-Basis) für main.js.
+ */
+import { type SiteData, siteActiveFilter, siteAsset, siteGetStr } from '../../lib/data.ts';
+
+interface Props {
+    s: SiteData;
+}
+
+const { s } = Astro.props;
+const galleryIntro = (s['galleryIntro'] ?? {}) as Record<string, unknown>;
+const ui = (s['ui'] ?? {}) as Record<string, unknown>;
+const gallery = siteActiveFilter<Record<string, unknown>>((s['gallery'] ?? []) as Record<string, unknown>[]);
+
+const categoriesJson = JSON.stringify(
+    gallery.map((item) => ({
+        category: siteGetStr(item, 'category'),
+        mainImage: siteAsset(s, siteGetStr(item, 'mainImage')),
+        images: ((item['images'] ?? []) as Record<string, unknown>[]).map((img) => ({
+            src: siteAsset(s, siteGetStr(img, 'src')),
+            alt: siteGetStr(img, 'alt'),
+        })),
+    }))
+);
+---
+
+<section class="section section--band" id="galerie">
+  <div class="wrap">
+    <div class="section__head">
+      <span class="kicker">{siteGetStr(galleryIntro, 'kicker')}</span>
+      <h2>{siteGetStr(galleryIntro, 'heading')}</h2>
+    </div>
+
+    <div class="gallery" data-gallery data-autoplay="6000" data-gallery-categories={categoriesJson}>
+      <ul class="gallery__track" role="group" aria-roledescription="Karussell" aria-label={siteGetStr(ui, 'galleryTrackAria', 'Ausgeführte Projekte')} tabindex="0">
+        {
+          gallery.map((item, i) => (
+            <li class="gallery__slide">
+              <figure>
+                <div class="gallery__thumb">
+                  <button class="gallery__open" type="button" data-gallery-open={i} aria-haspopup="dialog" aria-label={siteGetStr(ui, 'galleryOpenAria', 'Bild vergrößern')}>
+                    <picture>
+                      <img
+                        width="1000"
+                        height="1000"
+                        loading="lazy"
+                        decoding="async"
+                        src={siteAsset(s, siteGetStr(item, 'mainImage'))}
+                        alt={siteGetStr(item, 'mainAlt')}
+                      />
+                    </picture>
+                  </button>
+                  <button class="gallery__zoom" type="button" data-gallery-open={i} aria-haspopup="dialog" aria-label={siteGetStr(ui, 'galleryZoomAria', 'Galerie ansehen')}>
+                    <svg viewBox="0 0 24 24" aria-hidden="true">
+                      <circle cx="11" cy="11" r="7" />
+                      <path d="m21 21-4.3-4.3" />
+                      <path d="M8 11h6M11 8v6" />
+                    </svg>
+                  </button>
+                </div>
+                <figcaption>{siteGetStr(item, 'mainAlt')}</figcaption>
+              </figure>
+            </li>
+          ))
+        }
+      </ul>
+
+      <div class="gallery__controls">
+        <ul class="gallery__dots" data-gallery-dots aria-label={siteGetStr(ui, 'galleryDotsAria', 'Zu Bildgruppe springen')}></ul>
+        <div class="gallery__nav">
+          <button type="button" data-gallery-prev aria-label={siteGetStr(ui, 'galleryPrevAria', 'Vorherige Bilder')}>
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M15 5l-7 7 7 7" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+          </button>
+          <button type="button" data-gallery-pause class="gallery__pause" aria-pressed="false" aria-label={siteGetStr(ui, 'galleryPauseAria', 'Autoplay pausieren')}>
+            <svg class="gallery__pause-icon" data-icon-pause viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M7 5v14M17 5v14" />
+            </svg>
+            <svg class="gallery__play-icon" data-icon-play viewBox="0 0 24 24" aria-hidden="true" hidden>
+              <path d="M8 5l12 7-12 7Z" />
+            </svg>
+          </button>
+          <button type="button" data-gallery-next aria-label={siteGetStr(ui, 'galleryNextAria', 'Nächste Bilder')}>
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M9 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+          </button>
+        </div>
+      </div>
+      <p class="gallery__hint">{siteGetStr(ui, 'galleryHint', 'Der Slider bewegt sich von links nach rechts · Bild antippen zum Vergrößern · in der Galerie über die Pfeile bzw. die Lupe alle Fotos der Kategorie durchblättern.')}</p>
+      <p class="sr-only" role="status" aria-live="polite" data-gallery-live></p>
+    </div>
+
+    <div class="lightbox" data-lightbox role="dialog" aria-modal="true" aria-label={siteGetStr(ui, 'lightboxAria', 'Bildergalerie')} hidden>
+      <button class="lightbox__close" type="button" data-lightbox-close aria-label={siteGetStr(ui, 'lightboxCloseAria', 'Schließen')}>×</button>
+      <div class="lightbox__stage">
+        <button class="lightbox__arrow lightbox__arrow--prev" type="button" data-lightbox-prev aria-label={siteGetStr(ui, 'lightboxPrevAria', 'Vorheriges Bild')}>
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M15 5l-7 7 7 7" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+        </button>
+        <figure class="lightbox__figure">
+          <img class="lightbox__img" src="" alt="" />
+          <figcaption class="lightbox__caption"></figcaption>
+        </figure>
+        <button class="lightbox__arrow lightbox__arrow--next" type="button" data-lightbox-next aria-label={siteGetStr(ui, 'lightboxNextAria', 'Nächstes Bild')}>
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M9 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+        </button>
+      </div>
+      <p class="lightbox__counter" data-lightbox-counter aria-live="polite"></p>
+      <div class="lightbox__thumbs" data-lightbox-thumbs role="list" aria-label={siteGetStr(ui, 'lightboxThumbsAria', 'Galerie-Kategorien')}></div>
+    </div>
+  </div>
+</section>

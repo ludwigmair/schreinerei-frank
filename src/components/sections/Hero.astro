@@ -1,0 +1,72 @@
+---
+/**
+ * Hero-Sektion mit Slider (Port von home.php).
+ */
+import { type SiteData, siteActiveFilter, siteAsset, siteGetStr } from '../../lib/data.ts';
+
+interface Props {
+    s: SiteData;
+}
+
+const { s } = Astro.props;
+const hero = (s['hero'] ?? {}) as Record<string, unknown>;
+const ui = (s['ui'] ?? {}) as Record<string, unknown>;
+const heroImages = siteActiveFilter<Record<string, unknown>>((hero['images'] ?? []) as Record<string, unknown>[]);
+const total = heroImages.length;
+---
+
+<section class="hero" id="start">
+  <div class="wrap hero__inner">
+    <div>
+      <span class="kicker">{siteGetStr(hero, 'kicker')}</span>
+      <h1>{siteGetStr(hero, 'heading')}</h1>
+      <p class="hero__claim">{siteGetStr(hero, 'claim')}</p>
+      <p class="hero__lead">{siteGetStr(hero, 'lead')}</p>
+      <div class="hero__cta">
+        <a class="btn" href="#kontakt">{siteGetStr(hero, 'ctaPrimary')}</a>
+        <a class="btn btn--ghost" href="#galerie">{siteGetStr(hero, 'ctaSecondary')}</a>
+      </div>
+    </div>
+    <div class="hero__media">
+      <div class="hero-slider" data-hero-slider data-autoplay="4000">
+        {
+          heroImages.map((img, i) => (
+            <picture class={'hero-slider__img' + (i === 0 ? ' is-active' : '')} data-hero-img>
+              <img
+                class="hero-slider__image"
+                width="1280"
+                height="960"
+                src={siteAsset(s, siteGetStr(img, 'src'))}
+                alt={siteGetStr(img, 'alt')}
+                {...(i === 0 ? { 'fetchpriority': 'high' } : { 'loading': 'lazy' })}
+                decoding="async"
+              />
+            </picture>
+          ))
+        }
+        <button class="hero-slider__arrow hero-slider__arrow--prev" type="button" data-hero-prev aria-label={siteGetStr(ui, 'heroPrevAria', 'Vorheriges Bild')}>
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M15 5l-7 7 7 7" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+        </button>
+        <button class="hero-slider__arrow hero-slider__arrow--next" type="button" data-hero-next aria-label={siteGetStr(ui, 'heroNextAria', 'Nächstes Bild')}>
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M9 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+        </button>
+        <div class="hero-slider__dots" role="list" aria-label={siteGetStr(ui, 'heroDotsAria', 'Hero-Bilder')}>
+          {
+            Array.from({ length: total }, (_, i) => (
+              <button
+                class={'hero-slider__dot' + (i === 0 ? ' is-active' : '')}
+                type="button"
+                data-hero-dot
+                aria-label={siteGetStr(ui, 'heroDotAria', 'Bild {aktuell} von {gesamt}').replace('{aktuell}', String(i + 1)).replace('{gesamt}', String(total))}
+              ></button>
+            ))
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
