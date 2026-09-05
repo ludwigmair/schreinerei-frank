@@ -119,12 +119,15 @@ Aus der alten Qualitäts-Checkliste noch offen:
 
 ---
 
-## 5. Nur-Doku-Checkliste (Checkliste im PLAN abhaken)
+## 5. Nach Abschluss (Doku ins Reine bringen)
 
-- [ ] `ASTRO-TEMPLATE-PLAN.md` Phase-4-Offen-Punkte (Secrets, Button-Test)
-      auf „erledigt“ setzen, sobald Abschnitt 1+2 durchgelaufen sind.
+- [ ] Dieser Punkt ist erledigt, sobald Abschnitt 1+2 (Secrets + Subdomain-Publish)
+      durchgelaufen sind: die Offen-Punkte hier entfernen und `ASTRO.md` auf das
+      Nötigste kürzen.
 - [ ] `TEMPLATE.md` um die real getestete Secrets-/Workflow-Konfiguration
       ergänzen (weitgehend schon dokumentiert).
+- [ ] Historischer Migrations-/Detailstand (alte PHP-Portierungen) ist obsolet –
+      vor dem Löschen eventuell in `TEMPLATE.md` konsolidieren.
 
 ---
 

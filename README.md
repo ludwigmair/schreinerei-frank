@@ -13,8 +13,7 @@ Design: **Konzept C „Meisterhand"** – Details in [`DESIGN.md`](DESIGN.md).
 den **PHP-Admin** `/frank-adm/`. Änderungen im Admin werden beim
 **„Veröffentlichen"** im Admin per GitHub-Action neu gebaut und per SFTP live
 gespielt (~1–2 min). Der Doku- und Rebranding-Überblick steht in
-[`TEMPLATE.md`](TEMPLATE.md), der Migrationsstand in
-[`ASTRO-TEMPLATE-PLAN.md`](ASTRO-TEMPLATE-PLAN.md).
+[`TEMPLATE.md`](TEMPLATE.md), der Migrationsstand in [`ASTRO.md`](ASTRO.md).
 
 > **Warum statisch:** maximale Geschwindigkeit ohne PHP zur Laufzeit; SEO-Tags,
 > Meta, JSON-LD (`LocalBusiness`, `FAQPage`, …), Sitemap, `robots.txt` und
@@ -81,7 +80,7 @@ schreinerei-frank/
 │   ├── publish.yml              # NEU: Content-Publish (Repository-Dispatch → Build+Deploy)
 │   └── deploy-staging.yml       # bestehend: Code-Deploy bei develop→staging-Merge
 ├── .htaccess                    # statische Site + PHP-Reste (Admin/Kontakt/Backup)
-└── DESIGN.md  README.md  PROJECT.md  WORKFLOW.md  TEMPLATE.md  ASTRO-TEMPLATE-PLAN.md
+└── DESIGN.md  README.md  PROJECT.md  WORKFLOW.md  TEMPLATE.md  ASTRO.md
 ```
 
 ---
