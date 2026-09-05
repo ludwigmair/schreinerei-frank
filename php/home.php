@@ -19,6 +19,14 @@ $services = $s['services'] ?? [];
 $trust = $s['trust'] ?? [];
 $faq = site_active_filter($s['faq'] ?? []);
 $testimonials = $s['testimonials'] ?? [];
+
+$kontaktStatus = $_GET['kontakt'] ?? '';
+$kontaktMessage = '';
+if ($kontaktStatus === 'ok') {
+    $kontaktMessage = 'Vielen Dank für Ihre Nachricht! Wir melden uns in Kürze bei Ihnen.';
+} elseif ($kontaktStatus === 'fehler') {
+    $kontaktMessage = 'Beim Senden ist ein Fehler aufgetreten. Bitte rufen Sie uns an oder schreiben Sie uns eine E-Mail.';
+}
 ?>
 
 <!-- ============ HERO ============ -->
@@ -270,7 +278,11 @@ $testimonials = $s['testimonials'] ?? [];
     </div>
     <div class="contact">
       <form data-contact method="post" action="<?php echo site_esc(site_get_str($contact, 'formAction', '/api/kontakt')); ?>" novalidate>
+        <?php if ($kontaktMessage !== ''): ?>
+        <p class="form-status" role="status" aria-live="polite" data-contact-status data-state="<?php echo $kontaktStatus === 'ok' ? 'ok' : 'error'; ?>"><?php echo site_esc($kontaktMessage); ?></p>
+        <?php else: ?>
         <p class="form-status" role="status" aria-live="polite" data-contact-status></p>
+        <?php endif; ?>
         <div class="field">
           <label for="f-name"><?php echo site_esc(site_get_str($ui, 'formNameLabel', 'Name')); ?></label>
           <input id="f-name" name="name" type="text" autocomplete="name" required aria-describedby="f-name-error">
