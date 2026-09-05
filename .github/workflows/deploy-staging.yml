@@ -83,10 +83,11 @@ jobs:
           username: ${{ env.FTP_USERNAME }}
           password: ${{ env.FTP_PASSWORD }}
           port: 22
-          # Der SFTP-Login ländet per Zielpfad direkt im Web-Root
-          # (typopublic.com/schreinerei-frank) – alle Dateien gehören dorthin.
+          # Der SFTP-Login startet im SSH-Home (/home/www/doc/28707/sshroot),
+          # der eigentliche Web-Root der Subdomain ist typopublic.com/schreinerei-frank
+          # unter /home/www/doc/28707/ (per Artfiles-DCP Zielordner; per Marker-Datei HTTP-verifiziert 200).
           localDir: '.'
-          remoteDir: '.'
+          remoteDir: '/home/www/doc/28707/typopublic.com/schreinerei-frank'
           # Kein Hash-Skop: beim ersten Hochladen alles erzwingen.
           forceUpload: true
           concurrency: 4
