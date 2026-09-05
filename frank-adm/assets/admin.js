@@ -751,6 +751,34 @@
     });
   }
 
+  /* ---------- Veröffentlichen ---------- */
+  function publish() {
+    var btn = $('#publish-btn');
+    btn.disabled = true;
+    setStatus('Speichere erst …');
+    uploadPending(work).then(function () {
+      return apiPost('save', { content: work });
+    }).then(function (res) {
+      if (!res.ok) throw new Error(res.error || 'Speichern fehlgeschlagen');
+      setStatus('Starte Build+Deploy … (dauert ca. 1–2 min)');
+      return apiPost('publish', {});
+    }).then(function (res) {
+      btn.disabled = false;
+      if (res.ok) {
+        data = JSON.parse(JSON.stringify(work));
+        toast('Veröffentlichung gestartet – live in ~1–2 min.', 'ok');
+        setStatus('Veröffentlichung läuft ' + new Date().toLocaleTimeString('de-DE'));
+      } else {
+        toast('Fehler beim Veröffentlichen: ' + res.error, 'err');
+        setStatus('Fehler beim Veröffentlichen');
+      }
+    }).catch(function (err) {
+      btn.disabled = false;
+      toast('Fehler: ' + err.message, 'err');
+      setStatus('Fehler');
+    });
+  }
+
   /* ---------- Login ---------- */
   function login() {
     var user = ($('#user').value || '').trim();
@@ -799,6 +827,7 @@
     });
     document.getElementById('reload-btn').addEventListener('click', loadAll);
     document.getElementById('save-btn').addEventListener('click', save);
+    document.getElementById('publish-btn').addEventListener('click', publish);
 
     var searchInp = document.getElementById('search-input');
     searchInp.addEventListener('input', function () { runSearch(searchInp.value.trim()); });

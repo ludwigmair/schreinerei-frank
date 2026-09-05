@@ -50,9 +50,11 @@ function api_has_valid_token(): bool {
 $method = $_SERVER['REQUEST_METHOD'] ?? 'GET';
 $action = $_GET['action'] ?? '';
 
-// Token-geschützte Publish-Endpunkte – nutzbar ohne Admin-Session (Build-Workflow).
+// Token-geschützte Publish-Endpunkte – nutzbar ohne Admin-Session (Build-Workflow);
+// zusätzlich ist "publish" für den eingeloggten Admin (Button im Editor) offen.
 if ($action === 'sitejson' || $action === 'publish') {
-    if (!api_has_valid_token()) {
+    $allowed = api_has_valid_token() || ($action === 'publish' && adm_is_logged_in());
+    if (!$allowed) {
         api_json(['ok' => false, 'error' => 'Ungültiger Token.'], 401);
     }
     if ($action === 'sitejson' && $method === 'GET') {

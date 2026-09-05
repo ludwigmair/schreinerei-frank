@@ -4,7 +4,8 @@
  *
  * Der Editor arbeitet direkt auf data/site.json über die PHP-API
  * (api.php). Änderungen werden per "Speichern" atomar in die Datei
- * geschrieben und sind sofort auf der öffentlichen Seite sichtbar.
+ * geschrieben; "Veröffentlichen" baut die statische Astro-Site neu und
+ * deployed sie (Build-Workflow). Nur die Daten-Datei ist sofort aktuell.
  * Bild-Uploads landen serverseitig in assets/img/ (inkl. WebP-Variante).
  */
 declare(strict_types=1);
@@ -24,7 +25,7 @@ $isLoggedIn = adm_is_logged_in();
 </head>
 <body>
 <div class="wrap">
-  <a class="back" href="../index.php">← Zur Website</a>
+  <a class="back" href="../">← Zur Website</a>
 
   <!-- ===== Login ===== -->
   <div id="login-view" <?php echo $isLoggedIn ? 'hidden' : ''; ?>>
@@ -43,7 +44,7 @@ $isLoggedIn = adm_is_logged_in();
     <header class="top">
       <div>
         <h1>Inhalte pflegen</h1>
-        <div class="sub">Speichern schreibt direkt in <code>data/site.json</code> – sofort auf der Seite sichtbar.</div>
+        <div class="sub">Speichern schreibt direkt in <code>data/site.json</code>; „Veröffentlichen" baut die statische Site neu (live in ~1–2 min).</div>
       </div>
       <div class="search-wrap">
         <input type="text" id="search-input" placeholder="Volltext suchen …" autocomplete="off">
@@ -60,7 +61,9 @@ $isLoggedIn = adm_is_logged_in();
       <span class="status" id="status">Bereit</span>
       <button class="btn secondary" id="reload-btn" type="button">Neu laden</button>
       <button class="btn" id="save-btn" type="button">Speichern</button>
+      <button class="btn publish" id="publish-btn" type="button" title="Speichert zuerst und stößt den Build+Deploy der statischen Site an (~1–2 min)">Veröffentlichen</button>
     </div>
+    <p class="publish-hint">„Veröffentlichen" baut die statische Site neu (aktueller Stand) und spielt sie per SFTP live.</p>
   </div>
 </div>
 <div id="toast" class="toast" hidden></div>
