@@ -408,9 +408,9 @@ h2{font-size:var(--step-3);color:var(--primary)}
 .field textarea{min-height:120px;resize:vertical}
 .field--hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
 .form-note{font-size:.78125rem;color:var(--text-muted);margin-top:12px}
-.form-status{margin-top:14px;font-weight:600;font-size:.9375rem}
-.form-status[data-state="error"]{color:#a12b1e}
-.form-status[data-state="ok"]{color:var(--primary)}
+.form-status{margin-top:14px;font-weight:600;font-size:.9375rem;padding:12px 14px;border-radius:var(--radius);border:1px solid transparent}
+.form-status[data-state="error"]{color:#7a1a10;background:#fdecea;border-color:#f5c6c2}
+.form-status[data-state="ok"]{color:#17603a;background:#e8f6ee;border-color:#bfe3ce}
 .info-card{background:#fff;border:1px solid var(--border);border-radius:var(--radius);padding:24px}
 .info-card dt{font-weight:600;font-size:.8125rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:.06em;margin-top:14px}
 .info-card dt:first-child{margin-top:0}

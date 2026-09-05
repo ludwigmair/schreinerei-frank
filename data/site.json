@@ -2,14 +2,14 @@
     "config": {
         "name": "Schreinerei Frank - Meisterbetrieb",
         "domain": "https://www.schreinerei-frank.de",
-        "email": "info@schreinerei-frank.de",
+        "email": "lmair@mairkreis.com",
         "phone": "+49 8624 1260",
         "phoneSchema": "+49-8624-1260",
         "fax": "+49 8667 1372",
         "faxSchema": "+49-8667-1372",
         "themeColor": "#3D6490",
         "assetsBase": "/assets",
-        "logo": "site/logo-schreinerei-frank.png",
+        "logo": "site/logo.png",
         "port": 9999,
         "adminPath": "/frank-adm"
     },
@@ -104,7 +104,7 @@
         "description": "Meisterschreinerei in Seeon im Chiemgau: Küchen, Treppen, Türen und Möbel aus heimischem Massivholz – Beratung, Fertigung und Montage aus einer Hand.",
         "ogTitle": "Schreinerei Frank - Meisterbetrieb · Massivholz aus Seeon im Chiemgau",
         "ogDescription": "Küchen, Treppen, Türen und Möbel aus heimischem Massivholz. Meisterbetrieb im Chiemgau – Beratung, Fertigung und Montage aus einer Hand.",
-        "ogImage": "/assets/site/og-schreinerei-frank.jpg",
+        "ogImage": "/assets/site/og.jpg",
         "lcpImage": "/assets/img/projekt-badmoebel-5.jpg"
     },
     "about": {

@@ -29,7 +29,7 @@ function seo_structured_data(array $s): array
         '@id' => site_anchor('organization'),
         'name' => $b['name'] ?? '',
         'url' => site_abs('/'),
-        'logo' => site_asset($s, site_config($s, 'project.logo', 'site/logo-schreinerei-frank.png')),
+        'logo' => site_asset($s, site_config($s, 'project.logo', 'site/logo.png')),
         'email' => $b['email'] ?? '',
         'telephone' => $b['phoneSchema'] ?? '',
         'founder' => ['@type' => 'Person', 'name' => $b['owner'] ?? ''],

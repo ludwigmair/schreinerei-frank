@@ -5,7 +5,7 @@ Design-System des Onepagers. Umgesetzt aus **Konzept C „Meisterhand"**
 bewusst *nicht* nach KI-Baukasten aussehend).
 
 Alle Werte leben als CSS Custom Properties in
-[`src/assets/css/styles.css`](src/assets/css/styles.css) (`:root`). Diese Datei ist die
+[`assets/css/styles.css`](assets/css/styles.css) (`:root`). Diese Datei ist die
 Referenz dazu.
 
 ---
@@ -130,14 +130,15 @@ Zeilenhöhe Body 1.65, Überschriften 1.18, `letter-spacing:-.01em` auf Headings
 | Bild-Ladung | Bild 1 eager, ab Bild 2 `loading="lazy"` + `decoding="async"`; Produktions-Pipeline (AVIF/WebP/JPG + `srcset`) als Kommentar im Markup |
 
 Markup: `ul.gallery__track > li.gallery__slide > figure > img + figcaption`.
-JS: [`src/assets/js/main.js`](src/assets/js/main.js), IIFE `gallery()`. Reines Progressive Enhancement.
+JS: [`js/main.js`](js/main.js), IIFE `gallery()`. Reines Progressive Enhancement.
 
 ---
 
 ## 8. Assets
 
-- Bilder in `src/assets/img/` sind **SVG-Platzhalter** (klar beschriftet „Bildplatz").
+- Bilder in `assets/img/` sind **SVG-Platzhalter** (klar beschriftet „Bildplatz").
   Vor Launch durch echte Fotos ersetzen – Dateinamen sind bereits SEO-sprechend
-  (`einbaukueche-wildeiche-seeon.*`).
+  (`einbaukueche-wildeiche-seeon.*`). Content-Fotos liegen in `assets/content/`,
+  Logos/Icons in `assets/site/`.
 - `favicon.svg` = grünes Dachdreieck-Signet. `apple-touch-icon.png` / `icon-192/512.png` /
-  `og-schreinerei-frank.jpg` noch anlegen (im HTML/Manifest referenziert).
+  `og.jpg` noch anlegen (im HTML/Manifest referenziert).

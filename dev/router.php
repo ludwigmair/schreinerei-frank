@@ -13,6 +13,9 @@ require_once $root . '/php/data.php';
 $s = site_load();
 $adminPath = '/' . ltrim(site_config($s, 'project.adminPath', '/admin'), '/');
 
+// Kontakt-Endpunkt (wie .htaccess: ^api/kontakt$ -> api/kontakt.php)
+if ($uri === '/api/kontakt') { require $root . '/api/kontakt.php'; return true; }
+
 // Saubere PEM-Endpunkte
 if ($uri === '/sitemap.xml')   { require $root . '/sitemap.php';   return true; }
 if ($uri === '/robots.txt')    { require $root . '/robots.php';    return true; }

@@ -6,6 +6,9 @@ node_modules/
 # Lokale/Produktions-Admin-Zugangsdaten (NIE versionieren)
 data/admin.local.json
 
+# Lokale Kontakt-Test-Config (NIE versionieren)
+data/kontakt.local.json
+
 # Lokale Dev-Tools / Caches
 dev/.env
 dev/users.php
