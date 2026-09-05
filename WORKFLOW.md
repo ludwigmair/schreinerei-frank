@@ -94,6 +94,13 @@ Ohne diese Geheimnisse schlägt der Deploy-Schritt fehl. Einrichtungsort:
 
 > **Repo → Settings → Secrets and variables → Actions → New repository secret**
 
+FTP_SERVER: typopublic.com
+FTP_USERNAME: a28707
+FTP_PASSWORD: 3RK=9sFu
+BACKUP_URL:  <https://schreinerei-frank.typopublic.com/backup.php>
+BACKUP_TOKEN: 4563
+FTP_TARGET_DIR  /home/www/doc/28707/typopublic.com/schreinerei-frank
+
 | Secret-Name | Bedeutung | Beispiel |
 | --- | --- | --- |
 | `FTP_SERVER` | SFTP-Host des Hosters (ohne Protokoll, ohne Pfad) | `ftp.typopublic.com` |
