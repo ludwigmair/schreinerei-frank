@@ -59,7 +59,7 @@ $baseHref = site_set_base($baseHref ?? './');
   </button>
 </nav>
 
-<script src="<?php echo site_abs('/js/main.js'); ?>?ver=2.4.0"></script>
+<script src="<?php echo site_abs('/js/main.js'); ?>?ver=2.4.1"></script>
 </body>
 
 </html>
