@@ -44,15 +44,16 @@ feature/astro
 ├─ src/
 │  ├─ layouts/Base.astro   # <html>, Head/Seo, Header, Footer, Cookie
 │  ├─ components/
-│  │  ├─ seo/Seo.astro     # Titel/OG/Twitter/JSON-LD
+│  │  ├─ seo/Seo.astro     # Titel/OG/Twitter/JSON-LD (Google-Fonts-Link)
 │  │  └─ sections/         # Hero, Trust, Services, Gallery, About, Faq,
 │  │                       # Testimonials, Contact (austauschbar)
 │  ├─ pages/               # index, impressum, datenschutz
 │  │  ├─ sitemap.xml.ts / robots.txt.ts / llms.txt.ts / site.webmanifest.ts
+│  ├─ styles/global.css    # Design-Tokens + alle Regeln (via Base importiert)
 │  └─ lib/
 │     ├─ data.ts           # site.json laden + {config.X}-Resolve
 │     └─ seo.ts            # JSON-LD @graph
-├─ public/assets/          # CSS, Bilder, Content (statisch deployen)
+├─ public/assets/          # Bilder, Content (statisch deployen; kein CSS mehr)
 ├─ frank-adm/              # PHP-Admin (bleibt; + publish/sitejson-Endpoints)
 └─ data/site.json          # Content-Wahrheit
 ```

@@ -130,7 +130,7 @@ Zeilenhöhe Body 1.65, Überschriften 1.18, `letter-spacing:-.01em` auf Headings
 | Bild-Ladung | Bild 1 eager, ab Bild 2 `loading="lazy"` + `decoding="async"`; Produktions-Pipeline (AVIF/WebP/JPG + `srcset`) als Kommentar im Markup |
 
 Markup: `ul.gallery__track > li.gallery__slide > figure > img + figcaption`.
-JS: [`js/main.js`](js/main.js), IIFE `gallery()`. Reines Progressive Enhancement.
+JS: [`src/scripts/main.js`](src/scripts/main.js), IIFE `gallery()`. Reines Progressive Enhancement.
 
 ---
 

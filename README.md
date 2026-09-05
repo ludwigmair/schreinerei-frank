@@ -49,6 +49,8 @@ wie auf dem Server, ganz ohne PHP.
 
 ## Struktur
 
+Detailbeschreibung jeder Datei: [`STRUCTURE.md`](STRUCTURE.md). Kurzüberblick:
+
 ```
 schreinerei-frank/
 ├── astro.config.mjs             # Astro: site, output static, outDir dist/

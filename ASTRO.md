@@ -3,7 +3,50 @@
 Zwischenstand: **Phasen 0–4 implementiert und lokal auf `feature/astro`
 committet** (Build grün, Inhalte paritätsgleich zur Live-PHP-Site). Was jetzt
 noch fehlt, steht hier – nach „kann nur du“, „Abnahme/Switch“ und
-„Qualität“ sortiert.
+„Qualität“ sortiert. Erledigte Optimierungen stehen am Ende („Doku +
+CSS-Stand“).
+
+---
+
+## 0. CSS-Stand & Doku (erledigt, Stand 05/2026)
+
+- **Einzige CSS-Datei:** `src/styles/global.css` (vorher
+  `public/assets/css/styles.css`). Enthält alle Design-Tokens + Regeln
+  (Referenz: `DESIGN.md`).
+- **Einbindung:** `import '../styles/global.css'` in `src/layouts/Base.astro`
+  → Astro/Vite bündelt sie zu einem minifizierten `dist/assets/*.css`
+  (Cache-Hashing). Kein 1:1-Kopie-Pfad aus `public/` mehr; den separaten
+  `<link>` in `Seo.astro` gibt es nicht mehr.
+- **Optimierung:** ungenutzte Regeln entfernt (`.section--secondary`,
+  Google-Rezensions-Block, redundante `.map__btn:hover .map__badge`).
+  Bewusst behalten wurden `.js`/`.no-js` (HTML-Klassen-Swap in Base),
+  `.legal__pre` (dynamisch gesetzt) und `.lightbox__thumb-btn` (per JS
+  generiert) – dauerkontrolle via Klassen-Inventar (src + dist + main.js).
+- **Commit:** `8c659fe` („CSS-Optimierung: ungenutzte Regeln entfernt, CSS via
+  Astro-Bundle“).
+- Für Projekte: Design-Anpassung immer in `src/styles/global.css` (`:root`),
+  siehe `TEMPLATE.md` → „Rebranding“.
+
+### Lokal bauen & testen (alles ohne Server/GitHub)
+
+```bash
+nvm use                    # Node 22 laden
+npm run dev                # Dev-Server mit Hot-Reload (Port 4321; bei Konflikt: --port 4322)
+npm run build              # statische Site nach dist/ (gitignored)
+npm run preview -- --port 4322   # gebaute Site lokal ansehen
+```
+
+- `dist/` ist gitignored; der Build erzeugt 3 Seiten (index, impressum,
+  datenschutz) + SEO-Dateien (`sitemap.xml`, `robots.txt`, `llms.txt`,
+  `site.webmanifest`) + assets.
+- **Dev vs. Build:** Im Dev-Modus serviert Vite das CSS aus
+  `src/styles/global.css` inline (ein direkter Abruf wie `/global.css` liefert
+  darum 404 – normal). Erst `npm run build` bündelt+minifiziert zu
+  `dist/assets/Base.*.css` (gehast, Cache-freundlich).
+- **Publish-Pfad lokal simulieren:** admin speichern (`data/site.json` via
+  Admin) → `?action=sitejson` → `npm run build` → `_deploy/`-Zusammenstellen →
+  `npm run preview`. Exakte Etappen: `TEMPLATE.md` → „Lokal testen“.
+  Nicht lokal simulierbar: GitHub-Dispatch, Backup, SFTP.
 
 ---
 

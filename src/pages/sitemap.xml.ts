@@ -1,13 +1,15 @@
 /**
  * sitemap.xml (Port von sitemap.php) – liefert die URL-Liste aus site.json.
+ * Absolute URLs aus meta.siteUrl (Suchmaschinen-Pflicht); Domain kommt aus
+ * dem config-Block in data/site.json.
  */
 import type { APIRoute } from 'astro';
 import { siteLoad, siteGetStr, siteEsc } from '../lib/data.ts';
 
 export const GET: APIRoute = () => {
     const s = siteLoad();
-    // domainfrei wie im Original (site_base): Seiten liegen unter '/'
-    const base = '';
+    // Basis = config.domain/siteUrl (ohne Slash), z. B. https://www.schreinerei-frank.de
+    const base = siteGetStr(s, 'meta.siteUrl', '').replace(/\/+$/, '');
     const pages = [
         { loc: base + '/', priority: '1.0', changefreq: 'monthly' },
         { loc: base + '/impressum/', priority: '0.3', changefreq: 'yearly' },
