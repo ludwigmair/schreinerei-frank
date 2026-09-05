@@ -66,26 +66,27 @@ function kontakt_expects_json(): bool
     return strpos($accept, 'application/json') !== false;
 }
 
+function kontakt_redirect(string $fragment): never
+{
+    $target = '';
+    $referer = $_SERVER['HTTP_REFERER'] ?? '';
+    if ($referer !== '') {
+        $target = (string) preg_replace('/[?#].*$/', '', $referer);
+    }
+    if ($target === '') {
+        $scheme = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http';
+        $host = $_SERVER['HTTP_HOST'] ?? '';
+        $target = ($host !== '') ? $scheme . '://' . $host . '/' : '/';
+    }
+    header('Location: ' . $target . ltrim($fragment, '/'), true, 303);
+    exit;
+}
+
 function kontakt_respond_json(int $code, array $payload): never
 {
     http_response_code($code);
     header('Content-Type: application/json; charset=utf-8');
     echo json_encode($payload, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
-    exit;
-}
-
-function kontakt_respond_html(int $code, string $title, string $text): never
-{
-    http_response_code($code);
-    header('Content-Type: text/html; charset=utf-8');
-    $config = kontakt_config();
-    $home = $config['domain'] !== '' ? 'https://' . $config['domain'] . '/' : '/';
-    echo '<!doctype html><html lang="de"><meta charset="utf-8">'
-        . '<meta name="robots" content="noindex"><title>' . htmlspecialchars($title, ENT_QUOTES, 'UTF-8') . '</title>'
-        . '<body style="font-family:sans-serif;max-width:34rem;margin:4rem auto;line-height:1.6">'
-        . '<h1>' . htmlspecialchars($title, ENT_QUOTES, 'UTF-8') . '</h1>'
-        . '<p>' . nl2br(htmlspecialchars($text, ENT_QUOTES, 'UTF-8')) . '</p>'
-        . '<a href="' . htmlspecialchars($home, ENT_QUOTES, 'UTF-8') . '">Zurück zur Startseite</a></body></html>';
     exit;
 }
 
@@ -152,7 +153,7 @@ if (kontakt_value('website') !== '') {
     if (kontakt_expects_json()) {
         kontakt_respond_json(200, ['ok' => true, 'status' => 'sent']);
     }
-    kontakt_respond_html(200, 'Vielen Dank', 'Ihre Nachricht wurde übermittelt.');
+    kontakt_redirect('#kontakt');
 }
 
 $config = kontakt_config();
@@ -160,7 +161,7 @@ if ($config['to'] === '') {
     if (kontakt_expects_json()) {
         kontakt_respond_json(500, ['ok' => false, 'status' => 'error', 'error' => 'Empfänger nicht konfiguriert.']);
     }
-    kontakt_respond_html(500, 'Fehler', 'Das Formular ist derzeit nicht erreichbar. Bitte rufen Sie uns an.');
+    kontakt_redirect('#kontakt');
 }
 
 $values = [];
@@ -173,8 +174,7 @@ if ($errors !== []) {
     if (kontakt_expects_json()) {
         kontakt_respond_json(422, ['ok' => false, 'status' => 'validation', 'errors' => $errors]);
     }
-    $text = 'Bitte prüfen Sie Ihre Eingaben und versuchen Sie es erneut.';
-    kontakt_respond_html(422, 'Eingabe unvollständig', $text);
+    kontakt_redirect('#kontakt');
 }
 
 $name = $values['name'];
@@ -206,10 +206,10 @@ if ($sent) {
     if (kontakt_expects_json()) {
         kontakt_respond_json(200, ['ok' => true, 'status' => 'sent']);
     }
-    kontakt_respond_html(200, 'Vielen Dank', 'Ihre Nachricht wurde übermittelt. Wir melden uns in Kürze bei Ihnen.');
+    kontakt_redirect('#kontakt');
 }
 
 if (kontakt_expects_json()) {
     kontakt_respond_json(500, ['ok' => false, 'status' => 'error', 'error' => 'Senden fehlgeschlagen.']);
 }
-kontakt_respond_html(500, 'Fehler', 'Senden fehlgeschlagen. Bitte rufen Sie uns an oder schreiben Sie uns eine E-Mail.');
+kontakt_redirect('#kontakt');
