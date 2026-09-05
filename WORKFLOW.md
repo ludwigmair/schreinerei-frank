@@ -249,7 +249,44 @@ Falls die Action startet, aber nichts hochlädt, ist das in der Regel gewollt:
 
 ---
 
-## 9. Kurzreferenz
+## 9. Admin-Zugänge lokal verwalten (`dev/users.php`)
+
+Die Website hält ihre Admin-Logins als SHA-256-Hash-Map in `data/admin.json`
+(versioniert, wird gedeployed) – oder für Produktions-Passwörter in
+`data/admin.local.json` (unversioniert, **nicht** deployed, serverseitig).
+Zur Verwaltung gibt es ein **lokales CLI-Tool**:
+
+**Datei:** `dev/users.php` (bewusst **unversioniert**, steht im `.gitignore`)
+
+> **Wichtig:** `dev/users.php` ist ein reines **Kommandozeilen-Werkzeug** –
+> es ist **kein Web-Endpunkt**. Ein Browser-Aufruf wie
+> `http://localhost:10000/dev/users.php` ist **nicht** vorgesehen und wäre
+> unsicher (jeder mit HTTP-Zugriff könnte User anlegen). Nutzung nur über
+> das Terminal im Projekt-Root:
+
+```bash
+php dev/users.php add stefan demo123      # User anlegen (Passwort auch interaktiv)
+php dev/users.php setpw stefan neu123     # Passwort ändern
+php dev/users.php remove stefan           # User löschen
+php dev/users.php list                    # Alle User auflisten
+php dev/users.php hash deinpasswort       # Nur SHA-256-Hash ausgeben
+php dev/users.php --json data/admin.local.json add frank geheim  # alternative Datei
+```
+
+**Verhalten:**
+
+- Nutername wird kleingeschrieben und der Hash exakt wie die Login-Prüfung
+  (`frank-adm/includes/helpers.php`) erzeugt: `hash('sha256', $passwort)`.
+- `add`/`setpw`/`remove` schreiben die User in `data/admin.json` und spiegeln
+  **alle** User als `ADMIN_USERS='{...}'` in die lokale `.env` (nur
+  Gedächtnisstütze – wird von keinem PHP-Code gelesen).
+- Für **echte Produktions-Passwörter** gehört der Zugang serverseitig in
+  `data/admin.local.json` (nie committen, nie deployen) – die Default-Accounts
+  aus `data/admin.json` (`lmair`, `stefan` …) sind Entwicklungs-Zugänge.
+
+---
+
+## 10. Kurzreferenz
 
 - Workflow-Datei: `.github/workflows/deploy-staging.yml`
 - Secrets: `FTP_SERVER`, `FTP_USERNAME`, `FTP_PASSWORD`, `FTP_TARGET_DIR` (opt.), `BACKUP_TOKEN`, `BACKUP_URL`
