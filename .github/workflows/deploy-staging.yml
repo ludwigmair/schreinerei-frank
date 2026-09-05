@@ -17,7 +17,6 @@ jobs:
       FTP_SERVER: ${{ secrets.FTP_SERVER }}
       FTP_USERNAME: ${{ secrets.FTP_USERNAME }}
       FTP_PASSWORD: ${{ secrets.FTP_PASSWORD }}
-      FTP_TARGET_DIR: ${{ secrets.FTP_TARGET_DIR || 'schreinerei-frank' }}
       BACKUP_URL: ${{ secrets.BACKUP_URL }}
       BACKUP_TOKEN: ${{ secrets.BACKUP_TOKEN }}
     steps:
@@ -85,7 +84,7 @@ jobs:
           password: ${{ env.FTP_PASSWORD }}
           port: 22
           uploads: |
-            ./ => ./${{ env.FTP_TARGET_DIR }}/
+            ./ => ./
           # Git-Interna, Dev-Tools, .env und serverseitige Backups ausschließen.
           # KEIN delete – serverseitige Uploads (Bilder) und .env bleiben unangetastet.
           ignore: |
