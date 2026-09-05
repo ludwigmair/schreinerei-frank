@@ -493,6 +493,10 @@
       var f = fields[name];
       if (!f || !f.input) return true;
       var value = f.input.value || '';
+      if (form._sent && value.trim() === '') {
+        setError(name, '');
+        return true;
+      }
       var ok = true;
       if (f.required && value.trim() === '') ok = false;
       else if (value.trim() !== '' && !f.validate(value)) ok = false;
@@ -500,15 +504,16 @@
       return ok;
     }
 
+    var pending = {};
     Object.keys(fields).forEach(function (name) {
       var f = fields[name];
       if (!f.input) return;
-      var t;
       f.input.addEventListener('blur', function () { validateField(name); });
       f.input.addEventListener('input', function (e) {
         if (!e || e.isTrusted === false) return;
-        clearTimeout(t);
-        t = setTimeout(function () { validateField(name); }, 300);
+        form._sent = false;
+        clearTimeout(pending[name]);
+        pending[name] = setTimeout(function () { validateField(name); }, 300);
       });
     });
 
@@ -516,6 +521,7 @@
       // Honeypot
       if (form.website && form.website.value) { e.preventDefault(); return; }
 
+      form._sent = false;
       var firstInvalid = null;
       var valid = true;
       Object.keys(fields).forEach(function (name) {
@@ -549,6 +555,8 @@
         })
         .then(function () {
           if (form._ok) {
+            form._sent = true;
+            Object.keys(pending).forEach(function (name) { clearTimeout(pending[name]); });
             form.reset();
             Object.keys(fields).forEach(function (name) { setError(name, ''); });
             status.dataset.state = 'ok';
