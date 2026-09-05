@@ -8,6 +8,7 @@ data/admin.local.json
 
 # Lokale Dev-Tools / Caches
 dev/.env
+dev/users.php
 
 # Statischer SSG-Build-Output (Eleventy/Jekyll) – wird vom PHP-Deploy nicht genutzt
 _site/
